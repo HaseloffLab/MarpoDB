@@ -1,0 +1,18 @@
+Installation
+
+1. Create a psql database:
+	$ createdb marpodb
+
+2. Create tables:
+	$ psql -d marpodb -f psql/tables.sql
+
+3. Run populate.db script:
+	$ cd src
+	$ ./populatedb.sh
+
+4. Start server:
+	$ cd server
+	$ python server.py
+
+5. Navigate to the server:
+	http://127.0.0.1:5000 

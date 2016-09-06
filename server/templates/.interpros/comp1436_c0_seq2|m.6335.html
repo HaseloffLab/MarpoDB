@@ -1,0 +1,1318 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" content="text/html">
+    <title>
+    comp1436_c0_seq2|m.6335 - InterPro
+    </title>
+    <meta name="description" content="InterProScan result page: Protein matches and sequence features">
+    <meta name="author" content="InterPro Team, European Bioinformatics Institute">
+
+
+    <link href="resources/css/type_colours.css" rel="stylesheet" type="text/css"/>
+    <link class="database" href="resources/css/database.css" rel="stylesheet" type="text/css"/>
+    <link href="resources/javascript/qtip2/jquery.qtip.css" rel="stylesheet" type="text/css"/>
+    <link href="resources/css/protein.css" rel="stylesheet" type="text/css"/>
+    <script src="resources/javascript/jquery/jquery-1.7.1.min.js" type="text/javascript"></script>
+    <script src="resources/javascript/jquery/jquery-ui-1.8.17.custom.min.js" type="text/javascript"></script>
+    <script src="resources/javascript/qtip2/jquery.qtip.min.js" type="text/javascript"></script>
+    <script src="resources/javascript/common.js" type="text/javascript"></script>
+    <script src="resources/javascript/protein.js" type="text/javascript"></script>
+    <script src="resources/javascript/protein-popups.js" type="text/javascript"></script>
+    <script src="resources/javascript/jquery/jquery.cookie.js" type="text/javascript"></script>
+    <script src="resources/javascript/jquery/jquery.jscroll.min.js" type="text/javascript"></script>
+
+</head>
+<body>
+<div class="container_24">
+<div class="grid_24 clearfix" id="content" >
+
+    <div class="grid_5 alpha">
+<div id="menu" style="display: none;">
+    <div class="menu-filter">
+
+        <h1>Filter view on</h1>
+
+        <div class="menu-filter-type"><h1>Entry type</h1>
+
+            <fieldset>
+                <div >
+                    <input type="checkbox" class="type" id="check-2" value="Family-row"
+                           checked="checked" />
+                    <label for="check-2" class="family">Family</label>
+                </div>
+                <div >
+                    <input type="checkbox" class="type" id="check-3" value="Domain-row"
+                           checked="checked" />
+                    <label for="check-3" class="domains">Domains</label>
+                </div>
+                <div class="disabled">
+                    <input type="checkbox" class="type" id="check-4" value="Repeat-row"
+                           checked="checked" disabled="disabled"/>
+                    <label for="check-4" class="repeats">Repeats</label>
+                </div>
+                <div >
+                    <input type="checkbox" class="type" id="check-5"
+                           value="SITE-row Conserved_site-row PTM-row Binding_site-row Active_site-row"
+                           checked="checked" />
+                    <label for="check-5" class="site">Site</label>
+                </div>
+            </fieldset>
+        </div>
+
+        <div class="menu-filter-status"><h1>Status</h1>
+
+            <fieldset>
+                <div >
+                    <input type="checkbox" name="type" id="check-6" value="unintegrated"
+                           checked="checked" />
+                    <label for="check-6" class="uni">Unintegrated</label>
+                </div>
+            </fieldset>
+        </div>
+
+        <div class="menu-filter-colour">
+            <div class="filter-colour-head">
+                <div class="filter-colour-title-l">
+                    Colour by
+                </div>
+
+            </div>
+            <fieldset>
+                <input type="radio" name="blobColour" id="domainColour" value="domainColour" checked="checked"/>
+                <label for="domainColour">domain relationship</label> <br/>
+
+                <input type="radio" name="blobColour" id="databaseColour" value="databaseColour"/>
+                <label for="databaseColour">source database</label>
+            </fieldset>
+        </div>
+    </div>
+
+</div>
+<script type="text/javascript">
+    $(document).ready(function() {
+// Read colour preference from cookie (requires http://plugins.jquery.com/project/Cookie)
+
+            // Retrieve existing cookies and set checkbox states accordingly
+            var checkBoxIDs = ["#check-2", "#check-3", "#check-4", "#check-5", "#check-6"];
+            for (i = 0; i < checkBoxIDs.length; i++) {
+                var checkBoxId = checkBoxIDs[i];
+                var cookieVal = $.cookie(checkBoxId);
+                if (cookieVal != null) {
+                    $(checkBoxId).prop("checked", cookieVal == "true");
+                }
+            }
+
+            // and the radio button group
+            var radioCookieVal = $.cookie("colour-by-domain");
+            if (radioCookieVal != null) {
+                if (radioCookieVal == "true") {
+                    $('#domainColour').prop("checked", true);
+                }
+                else {
+                    $('#databaseColour').prop("checked", true);
+                }
+            }
+
+            // Keep the filter menu in view
+//            $("#menu").jScroll();
+            // CSS switching
+            configureStylesheets($('input[name="blobColour"]:checked').attr('id') == 'domainColour'); // initialise
+
+            $('input[name="blobColour"]').change(function() {
+                configureStylesheets($('input[name="blobColour"]:checked').attr('id') == 'domainColour');
+            });
+
+            // Change event for type checkboxes (Family, Domain etc.)
+            $(".type").change(function() {
+                displayType(this);
+            });
+
+            // Initialise types
+            $(".type").each(function() {
+                displayType(this);
+            });
+
+            // Change event for un-integrated sig matches checkbox
+            $("#check-6").change(function() {
+                displayUnintegrated(this);
+            });
+
+            // Initialise un-integrated.
+            // TODO Work out how to do this without each! Only one thing with an ID of "check-6"!
+            $("#check-6").each(function() {
+                displayUnintegrated(this);
+            });
+
+        // Make the menu visible - Javascript is enabled.
+        $("#menu").css('display', 'block');
+    });
+</script>
+    </div>
+
+    <div class="grid_19 omega main-content">
+        <div class="tab">
+            <div class="Protein_tab">Protein</div>
+        </div>
+
+        <div class="main-box">
+                <h2 class="strapline">comp1436_c0_seq2|m.6335 </h2>
+<div class="prot_gal">
+
+
+    <div class="prot_gal_bloc">
+        <div class="prot_gal_col"><b>Length</b></div>
+        <div class="prot_gal_desc">783 amino acids
+        </div>
+    </div>
+
+    <br/>
+    <hr/>
+</div>
+
+
+
+
+          <h3>Protein family membership</h3>
+          <div class="Family rel_tree"><ul><li><a href="http://www.ebi.ac.uk/interpro/entry/IPR010280">(Uracil-5)-methyltransferase family</a><span> (IPR010280)</span></li></ul></div>
+
+
+
+    <h3>Domains and repeats</h3>
+
+
+    <div class="prot_sum">
+    <div class="bot-row">
+        <div class="bot-row-line-top"></div>
+        <ol class="signatures">
+
+
+
+    <li class="signature entry-signatures">
+        <div class="bot-row-signame">Domain</div>
+        <div class="bot-row-line">
+            <div class="matches">
+
+
+<span id="supermatch-span-1"
+      class="match c60 Domain"
+      style="left:  11.239%;
+              width: 4.47%;"
+      title="Domain 89 - 123" >
+</span>
+        <div id="supermatch-popup-1" style="display: none;">
+        <div class="popup_topl">
+            <span class="c60 Domain caption_puce"></span>89 - 123
+        </div>
+        <div class="rel_tree"><ul><li class="Domain" ><a href="http://www.ebi.ac.uk/interpro/entry/IPR000571">Zinc finger, CCCH-type</a><span> (IPR000571)</span></li></ul></div>
+    </div>
+
+
+
+
+<span id="supermatch-span-2"
+      class="match c45 Domain"
+      style="left:  22.605%;
+              width: 9.195%;"
+      title="Domain 178 - 249" >
+</span>
+        <div id="supermatch-popup-2" style="display: none;">
+        <div class="popup_topl">
+            <span class="c45 Domain caption_puce"></span>178 - 249
+        </div>
+        <div class="rel_tree"><ul><li class="Domain" ><a href="http://www.ebi.ac.uk/interpro/entry/IPR012677">Nucleotide-binding alpha-beta plait domain</a><span> (IPR012677)</span></li></ul></div>
+    </div>
+
+
+
+
+<span id="supermatch-span-3"
+      class="match c57 Domain"
+      style="left:  36.909%;
+              width: 3.448%;"
+      title="Domain 290 - 316" >
+</span>
+        <div id="supermatch-popup-3" style="display: none;">
+        <div class="popup_topl">
+            <span class="c57 Domain caption_puce"></span>290 - 316
+        </div>
+        <div class="rel_tree"><ul><li class="Domain" ><a href="http://www.ebi.ac.uk/interpro/entry/IPR029063">S-adenosyl-L-methionine-dependent methyltransferase</a><span> (IPR029063)</span></li></ul></div>
+    </div>
+
+
+
+
+<span id="supermatch-span-4"
+      class="match c57 Domain"
+      style="left:  44.317%;
+              width: 16.347%;"
+      title="Domain 348 - 475" >
+</span>
+        <div id="supermatch-popup-4" style="display: none;">
+        <div class="popup_topl">
+            <span class="c57 Domain caption_puce"></span>348 - 475
+        </div>
+        <div class="rel_tree"><ul><li class="Domain" ><a href="http://www.ebi.ac.uk/interpro/entry/IPR029063">S-adenosyl-L-methionine-dependent methyltransferase</a><span> (IPR029063)</span></li></ul></div>
+    </div>
+
+
+
+
+<span id="supermatch-span-5"
+      class="match c57 Domain"
+      style="left:  64.623%;
+              width: 27.586%;"
+      title="Domain 507 - 722" >
+</span>
+        <div id="supermatch-popup-5" style="display: none;">
+        <div class="popup_topl">
+            <span class="c57 Domain caption_puce"></span>507 - 722
+        </div>
+        <div class="rel_tree"><ul><li class="Domain" ><a href="http://www.ebi.ac.uk/interpro/entry/IPR029063">S-adenosyl-L-methionine-dependent methyltransferase</a><span> (IPR029063)</span></li></ul></div>
+    </div>
+
+
+
+
+<span id="supermatch-span-6"
+      class="match c57 Domain"
+      style="left:  96.679%;
+              width: 3.321%;"
+      title="Domain 758 - 783" >
+</span>
+        <div id="supermatch-popup-6" style="display: none;">
+        <div class="popup_topl">
+            <span class="c57 Domain caption_puce"></span>758 - 783
+        </div>
+        <div class="rel_tree"><ul><li class="Domain" ><a href="http://www.ebi.ac.uk/interpro/entry/IPR029063">S-adenosyl-L-methionine-dependent methyltransferase</a><span> (IPR029063)</span></li></ul></div>
+    </div>
+
+
+
+                    <span class="grade" style="left:0%;" title="0"></span>
+                    <span class="grade" style="left:12.771%;" title="100"></span>
+                    <span class="grade" style="left:25.543%;" title="200"></span>
+                    <span class="grade" style="left:38.314%;" title="300"></span>
+                    <span class="grade" style="left:51.086%;" title="400"></span>
+                    <span class="grade" style="left:63.857%;" title="500"></span>
+                    <span class="grade" style="left:76.628%;" title="600"></span>
+                    <span class="grade" style="left:89.4%;" title="700"></span>
+                    <span class="grade" style="left:100%;" title="783"></span>
+
+            </div>
+        </div>
+    </li>
+
+        </ol>
+        <div class="bot-row-line-bot"></div>
+    </div>
+
+    <div class="prot_scale">
+        <div class="bot-row">
+
+            <div class="bot-row-line">
+                <div style="position:relative;">
+                            <span class="scale_bar" style="left:0%;"
+                                  title="1"></span>
+                                <span class="scale_numb"
+                                      style="left:1%;">1</span>
+                            <span class="scale_bar" style="left:12.771%;"
+                                  title="100"></span>
+                                <span class="scale_numb"
+                                      style="left:12.771%;">100</span>
+                            <span class="scale_bar" style="left:25.543%;"
+                                  title="200"></span>
+                                <span class="scale_numb"
+                                      style="left:25.543%;">200</span>
+                            <span class="scale_bar" style="left:38.314%;"
+                                  title="300"></span>
+                                <span class="scale_numb"
+                                      style="left:38.314%;">300</span>
+                            <span class="scale_bar" style="left:51.086%;"
+                                  title="400"></span>
+                                <span class="scale_numb"
+                                      style="left:51.086%;">400</span>
+                            <span class="scale_bar" style="left:63.857%;"
+                                  title="500"></span>
+                                <span class="scale_numb"
+                                      style="left:63.857%;">500</span>
+                            <span class="scale_bar" style="left:76.628%;"
+                                  title="600"></span>
+                                <span class="scale_numb"
+                                      style="left:76.628%;">600</span>
+                            <span class="scale_bar" style="left:89.4%;"
+                                  title="700"></span>
+                                <span class="scale_numb"
+                                      style="left:89.4%;">700</span>
+                            <span class="scale_bar" style="left:100%;"
+                                  title="783"></span>
+                                <span class="scale_numb"
+                                      style="left:100%;">783</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    </div>
+
+
+
+    <h3>Detailed signature matches</h3>
+
+
+        <div class="prot_entries">
+            <ol class="entries">
+                    <li class="entry Family-row">
+
+                        <div class="top-row">
+                            <div class="top-row-id"><img src="resources/images/ico_type_family_small.png"
+                                                         alt="Family" title="Family"/> <a
+                                    href="http://www.ebi.ac.uk/interpro/entry/IPR010280">IPR010280</a></div>
+                            <div class="top-row-name"><a href="http://www.ebi.ac.uk/interpro/entry/IPR010280"
+                                                         class="neutral">(Uracil-5)-methyltransferase family</a></div>
+                        </div>
+
+                        <div class="bot-row">
+                            <div class="bot-row-line-top"></div>
+                            <ol class="signatures" style="border:0px solid pink;">
+
+
+                                    <li id="IPR010280-signatures" class="signature entry-signatures">
+<div class="bot-row-signame">
+    <a href="http://www.expasy.org/prosite/PS51687" title="PS51687 (SAM_MT_RNA_M5U)"
+       class="neutral">
+        PS51687
+</a>
+
+            <span>(SAM_MT_RNA...)</span>
+
+</div>
+<div class="bot-row-line">
+    <div class="matches">
+
+
+
+<span id="PS51687-span-1"
+      class="match prosite-profiles Family"
+      style="left:  36.654%;
+              width: 63.346%;"
+      title="PS51687 288 - 783" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="PS51687-popup-1" style="display: none;">
+
+        <div class="popup_topl"><span class="prosite-profiles Family caption_puce"></span>288 - 783</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>PROSITE profiles</b> <abbr class="icon icon-generic" data-icon="i" title="PROSITE consists of documentation entries describing protein domains, families and functional sites, as well as associated patterns and profiles to identify them. Profiles and patterns are constructed from manually edited seed alignments. PROSITE is complemented by ProRule, a collection of rules based on profiles and patterns, which increases the discriminatory power of profiles and patterns by providing additional information about functionally and/or structurally critical amino acids."></abbr> <br/>
+            <a href='http://www.expasy.org/prosite/PS51687' class="ext">PS51687 </a>
+            <span>(SAM_MT_RNA_M5U)</span>
+        </div>
+    </div>
+
+
+            <span class="grade" style="left:0%;" title="0"></span>
+            <span class="grade" style="left:12.771%;" title="100"></span>
+            <span class="grade" style="left:25.543%;" title="200"></span>
+            <span class="grade" style="left:38.314%;" title="300"></span>
+            <span class="grade" style="left:51.086%;" title="400"></span>
+            <span class="grade" style="left:63.857%;" title="500"></span>
+            <span class="grade" style="left:76.628%;" title="600"></span>
+            <span class="grade" style="left:89.4%;" title="700"></span>
+            <span class="grade" style="left:100%;" title="783"></span>
+
+    </div>
+
+</div>
+                                    </li>
+
+                                    <li id="IPR010280-signatures" class="signature entry-signatures">
+<div class="bot-row-signame">
+    <a href="http://pfam.sanger.ac.uk/family/PF05958" title="PF05958 (tRNA_U5-meth_tr)"
+       class="neutral">
+        PF05958
+</a>
+
+            <span>(tRNA_U5-me...)</span>
+
+</div>
+<div class="bot-row-line">
+    <div class="matches">
+
+
+
+<span id="PF05958-span-2"
+      class="match pfam Family"
+      style="left:  69.093%;
+              width: 22.478%;"
+      title="PF05958 542 - 717" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="PF05958-popup-2" style="display: none;">
+
+        <div class="popup_topl"><span class="pfam Family caption_puce"></span>542 - 717</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>Pfam</b> <abbr class="icon icon-generic" data-icon="i" title="Pfam is a collection of protein family alignments which were constructed semi-automatically using hidden Markov models (HMMs). Sequences that were not covered by Pfam were clustered and aligned automatically, and are released as Pfam-B. Pfam families have permanent accession numbers and contain functional annotation and cross-references to other databases, while Pfam-B families are re-generated at each release and are unannotated."></abbr> <br/>
+            <a href='http://pfam.sanger.ac.uk/family/PF05958' class="ext">PF05958 </a>
+            <span>(tRNA_U5-meth_tr)</span>
+        </div>
+    </div>
+
+
+            <span class="grade" style="left:0%;" title="0"></span>
+            <span class="grade" style="left:12.771%;" title="100"></span>
+            <span class="grade" style="left:25.543%;" title="200"></span>
+            <span class="grade" style="left:38.314%;" title="300"></span>
+            <span class="grade" style="left:51.086%;" title="400"></span>
+            <span class="grade" style="left:63.857%;" title="500"></span>
+            <span class="grade" style="left:76.628%;" title="600"></span>
+            <span class="grade" style="left:89.4%;" title="700"></span>
+            <span class="grade" style="left:100%;" title="783"></span>
+
+    </div>
+
+</div>
+                                    </li>
+                            </ol>
+                            <div class="bot-row-line-bot"></div>
+                        </div>
+                    </li>
+                    <li class="entry Domain-row">
+
+                        <div class="top-row">
+                            <div class="top-row-id"><img src="resources/images/ico_type_domain_small.png"
+                                                         alt="Domain" title="Domain"/> <a
+                                    href="http://www.ebi.ac.uk/interpro/entry/IPR000571">IPR000571</a></div>
+                            <div class="top-row-name"><a href="http://www.ebi.ac.uk/interpro/entry/IPR000571"
+                                                         class="neutral">Zinc finger, CCCH-type</a></div>
+                        </div>
+
+                        <div class="bot-row">
+                            <div class="bot-row-line-top"></div>
+                            <ol class="signatures" style="border:0px solid pink;">
+
+
+                                    <li id="IPR000571-signatures" class="signature entry-signatures">
+<div class="bot-row-signame">
+    <a href="http://smart.embl-heidelberg.de/smart/do_annotation.pl?ACC=SM00356&amp;BLAST=DUMMY" title="SM00356 (ZnF_C3H1)"
+       class="neutral">
+        SM00356
+</a>
+
+                <span>(ZnF_C3H1)</span>
+
+</div>
+<div class="bot-row-line">
+    <div class="matches">
+
+
+
+<span id="SM00356-span-3"
+      class="match smart c60 Domain"
+      style="left:  11.622%;
+              width: 3.448%;"
+      title="SM00356 92 - 118" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="SM00356-popup-3" style="display: none;">
+
+        <div class="popup_topl"><span class="smart c60 Domain caption_puce"></span>92 - 118</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>SMART</b> <abbr class="icon icon-generic" data-icon="i" title="SMART (a Simple Modular Architecture Research Tool) uses hidden Markov models (HMMs) and allows the identification of genetically mobile domains and the analysis of domain architectures. These domains are extensively annotated with respect to phyletic distributions, functional class, tertiary structures and functionally important residues."></abbr> <br/>
+            <a href='http://smart.embl-heidelberg.de/smart/do_annotation.pl?ACC=SM00356&amp;BLAST=DUMMY' class="ext">SM00356 </a>
+            <span>(ZnF_C3H1)</span>
+        </div>
+    </div>
+
+
+            <span class="grade" style="left:0%;" title="0"></span>
+            <span class="grade" style="left:12.771%;" title="100"></span>
+            <span class="grade" style="left:25.543%;" title="200"></span>
+            <span class="grade" style="left:38.314%;" title="300"></span>
+            <span class="grade" style="left:51.086%;" title="400"></span>
+            <span class="grade" style="left:63.857%;" title="500"></span>
+            <span class="grade" style="left:76.628%;" title="600"></span>
+            <span class="grade" style="left:89.4%;" title="700"></span>
+            <span class="grade" style="left:100%;" title="783"></span>
+
+    </div>
+
+</div>
+                                    </li>
+
+                                    <li id="IPR000571-signatures" class="signature entry-signatures">
+<div class="bot-row-signame">
+    <a href="http://supfam.cs.bris.ac.uk/SUPERFAMILY/cgi-bin/scop.cgi?ipid=SSF90229" title="SSF90229 (CCCH zinc finger)"
+       class="neutral">
+        SSF90229
+</a>
+
+            <span>(CCCH zinc...)</span>
+
+</div>
+<div class="bot-row-line">
+    <div class="matches">
+
+
+
+<span id="SSF90229-span-4"
+      class="match superfamily c60 Domain"
+      style="left:  11.239%;
+              width: 4.47%;"
+      title="SSF90229 89 - 123" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="SSF90229-popup-4" style="display: none;">
+
+        <div class="popup_topl"><span class="superfamily c60 Domain caption_puce"></span>89 - 123</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>SUPERFAMILY</b> <abbr class="icon icon-generic" data-icon="i" title="SUPERFAMILY is a library of profile hidden Markov models that represent all proteins of known structure. The library is based on the SCOP classification of proteins. Models correspond to SCOP domains at the superfamily level and a hybrid method subsequently sub-classifies domains at the family level. SUPERFAMILY provides its structural assignments at both levels to all completely sequenced genomes."></abbr> <br/>
+            <a href='http://supfam.cs.bris.ac.uk/SUPERFAMILY/cgi-bin/scop.cgi?ipid=SSF90229' class="ext">SSF90229 </a>
+            <span>(CCCH zinc finger)</span>
+        </div>
+    </div>
+
+
+            <span class="grade" style="left:0%;" title="0"></span>
+            <span class="grade" style="left:12.771%;" title="100"></span>
+            <span class="grade" style="left:25.543%;" title="200"></span>
+            <span class="grade" style="left:38.314%;" title="300"></span>
+            <span class="grade" style="left:51.086%;" title="400"></span>
+            <span class="grade" style="left:63.857%;" title="500"></span>
+            <span class="grade" style="left:76.628%;" title="600"></span>
+            <span class="grade" style="left:89.4%;" title="700"></span>
+            <span class="grade" style="left:100%;" title="783"></span>
+
+    </div>
+
+</div>
+                                    </li>
+
+                                    <li id="IPR000571-signatures" class="signature entry-signatures">
+<div class="bot-row-signame">
+    <a href="http://pfam.sanger.ac.uk/family/PF00642" title="PF00642 (zf-CCCH)"
+       class="neutral">
+        PF00642
+</a>
+
+                <span>(zf-CCCH)</span>
+
+</div>
+<div class="bot-row-line">
+    <div class="matches">
+
+
+
+<span id="PF00642-span-5"
+      class="match pfam c60 Domain"
+      style="left:  11.877%;
+              width: 3.193%;"
+      title="PF00642 94 - 118" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="PF00642-popup-5" style="display: none;">
+
+        <div class="popup_topl"><span class="pfam c60 Domain caption_puce"></span>94 - 118</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>Pfam</b> <abbr class="icon icon-generic" data-icon="i" title="Pfam is a collection of protein family alignments which were constructed semi-automatically using hidden Markov models (HMMs). Sequences that were not covered by Pfam were clustered and aligned automatically, and are released as Pfam-B. Pfam families have permanent accession numbers and contain functional annotation and cross-references to other databases, while Pfam-B families are re-generated at each release and are unannotated."></abbr> <br/>
+            <a href='http://pfam.sanger.ac.uk/family/PF00642' class="ext">PF00642 </a>
+            <span>(zf-CCCH)</span>
+        </div>
+    </div>
+
+
+            <span class="grade" style="left:0%;" title="0"></span>
+            <span class="grade" style="left:12.771%;" title="100"></span>
+            <span class="grade" style="left:25.543%;" title="200"></span>
+            <span class="grade" style="left:38.314%;" title="300"></span>
+            <span class="grade" style="left:51.086%;" title="400"></span>
+            <span class="grade" style="left:63.857%;" title="500"></span>
+            <span class="grade" style="left:76.628%;" title="600"></span>
+            <span class="grade" style="left:89.4%;" title="700"></span>
+            <span class="grade" style="left:100%;" title="783"></span>
+
+    </div>
+
+</div>
+                                    </li>
+
+                                    <li id="IPR000571-signatures" class="signature entry-signatures">
+<div class="bot-row-signame">
+    <a href="http://www.expasy.org/prosite/PS50103" title="PS50103 (ZF_C3H1)"
+       class="neutral">
+        PS50103
+</a>
+
+                <span>(ZF_C3H1)</span>
+
+</div>
+<div class="bot-row-line">
+    <div class="matches">
+
+
+
+<span id="PS50103-span-6"
+      class="match prosite-profiles c60 Domain"
+      style="left:  11.622%;
+              width: 3.576%;"
+      title="PS50103 92 - 119" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="PS50103-popup-6" style="display: none;">
+
+        <div class="popup_topl"><span class="prosite-profiles c60 Domain caption_puce"></span>92 - 119</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>PROSITE profiles</b> <abbr class="icon icon-generic" data-icon="i" title="PROSITE consists of documentation entries describing protein domains, families and functional sites, as well as associated patterns and profiles to identify them. Profiles and patterns are constructed from manually edited seed alignments. PROSITE is complemented by ProRule, a collection of rules based on profiles and patterns, which increases the discriminatory power of profiles and patterns by providing additional information about functionally and/or structurally critical amino acids."></abbr> <br/>
+            <a href='http://www.expasy.org/prosite/PS50103' class="ext">PS50103 </a>
+            <span>(ZF_C3H1)</span>
+        </div>
+    </div>
+
+
+            <span class="grade" style="left:0%;" title="0"></span>
+            <span class="grade" style="left:12.771%;" title="100"></span>
+            <span class="grade" style="left:25.543%;" title="200"></span>
+            <span class="grade" style="left:38.314%;" title="300"></span>
+            <span class="grade" style="left:51.086%;" title="400"></span>
+            <span class="grade" style="left:63.857%;" title="500"></span>
+            <span class="grade" style="left:76.628%;" title="600"></span>
+            <span class="grade" style="left:89.4%;" title="700"></span>
+            <span class="grade" style="left:100%;" title="783"></span>
+
+    </div>
+
+</div>
+                                    </li>
+
+                                    <li id="IPR000571-signatures" class="signature entry-signatures">
+<div class="bot-row-signame">
+        <a href="http://www.cathdb.info/superfamily/4.10.1000.10" title="G3DSA:4.10.1000.10"
+           class="neutral">
+    G3DSA:4.10.10...
+</a>
+
+
+</div>
+<div class="bot-row-line">
+    <div class="matches">
+
+
+
+<span id="G3DSA410100010-span-7"
+      class="match gene3d c60 Domain"
+      style="left:  11.494%;
+              width: 4.215%;"
+      title="G3DSA:4.10.1000.10 91 - 123" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="G3DSA410100010-popup-7" style="display: none;">
+
+        <div class="popup_topl"><span class="gene3d c60 Domain caption_puce"></span>91 - 123</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>GENE3D</b> <abbr class="icon icon-generic" data-icon="i" title="Gene3D HMMs extended predictions of CATH protein structures."></abbr> <br/>
+            <a href='http://www.cathdb.info/superfamily/4.10.1000.10' class="ext">G3DSA:4.10.1000.10 </a>
+            <span>(G3DSA:4.10.1000.10)</span>
+        </div>
+    </div>
+
+
+            <span class="grade" style="left:0%;" title="0"></span>
+            <span class="grade" style="left:12.771%;" title="100"></span>
+            <span class="grade" style="left:25.543%;" title="200"></span>
+            <span class="grade" style="left:38.314%;" title="300"></span>
+            <span class="grade" style="left:51.086%;" title="400"></span>
+            <span class="grade" style="left:63.857%;" title="500"></span>
+            <span class="grade" style="left:76.628%;" title="600"></span>
+            <span class="grade" style="left:89.4%;" title="700"></span>
+            <span class="grade" style="left:100%;" title="783"></span>
+
+    </div>
+
+</div>
+                                    </li>
+                            </ol>
+                            <div class="bot-row-line-bot"></div>
+                        </div>
+                    </li>
+                    <li class="entry Domain-row">
+
+                        <div class="top-row">
+                            <div class="top-row-id"><img src="resources/images/ico_type_domain_small.png"
+                                                         alt="Domain" title="Domain"/> <a
+                                    href="http://www.ebi.ac.uk/interpro/entry/IPR012677">IPR012677</a></div>
+                            <div class="top-row-name"><a href="http://www.ebi.ac.uk/interpro/entry/IPR012677"
+                                                         class="neutral">Nucleotide-binding alpha-beta plait domain</a></div>
+                        </div>
+
+                        <div class="bot-row">
+                            <div class="bot-row-line-top"></div>
+                            <ol class="signatures" style="border:0px solid pink;">
+
+
+                                    <li id="IPR012677-signatures" class="signature entry-signatures">
+<div class="bot-row-signame">
+        <a href="http://www.cathdb.info/superfamily/3.30.70.330" title="G3DSA:3.30.70.330"
+           class="neutral">
+    G3DSA:3.30.70...
+</a>
+
+
+</div>
+<div class="bot-row-line">
+    <div class="matches">
+
+
+
+<span id="G3DSA33070330-span-8"
+      class="match gene3d c45 Domain"
+      style="left:  23.372%;
+              width: 7.535%;"
+      title="G3DSA:3.30.70.330 184 - 242" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="G3DSA33070330-popup-8" style="display: none;">
+
+        <div class="popup_topl"><span class="gene3d c45 Domain caption_puce"></span>184 - 242</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>GENE3D</b> <abbr class="icon icon-generic" data-icon="i" title="Gene3D HMMs extended predictions of CATH protein structures."></abbr> <br/>
+            <a href='http://www.cathdb.info/superfamily/3.30.70.330' class="ext">G3DSA:3.30.70.330 </a>
+            <span>(G3DSA:3.30.70.330)</span>
+        </div>
+    </div>
+
+
+            <span class="grade" style="left:0%;" title="0"></span>
+            <span class="grade" style="left:12.771%;" title="100"></span>
+            <span class="grade" style="left:25.543%;" title="200"></span>
+            <span class="grade" style="left:38.314%;" title="300"></span>
+            <span class="grade" style="left:51.086%;" title="400"></span>
+            <span class="grade" style="left:63.857%;" title="500"></span>
+            <span class="grade" style="left:76.628%;" title="600"></span>
+            <span class="grade" style="left:89.4%;" title="700"></span>
+            <span class="grade" style="left:100%;" title="783"></span>
+
+    </div>
+
+</div>
+                                    </li>
+
+                                    <li id="IPR012677-signatures" class="signature entry-signatures">
+<div class="bot-row-signame">
+    <a href="http://supfam.cs.bris.ac.uk/SUPERFAMILY/cgi-bin/scop.cgi?ipid=SSF54928" title="SSF54928 (RNA-binding domain, RBD)"
+       class="neutral">
+        SSF54928
+</a>
+
+            <span>(RNA-bindi...)</span>
+
+</div>
+<div class="bot-row-line">
+    <div class="matches">
+
+
+
+<span id="SSF54928-span-9"
+      class="match superfamily c45 Domain"
+      style="left:  22.605%;
+              width: 9.195%;"
+      title="SSF54928 178 - 249" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="SSF54928-popup-9" style="display: none;">
+
+        <div class="popup_topl"><span class="superfamily c45 Domain caption_puce"></span>178 - 249</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>SUPERFAMILY</b> <abbr class="icon icon-generic" data-icon="i" title="SUPERFAMILY is a library of profile hidden Markov models that represent all proteins of known structure. The library is based on the SCOP classification of proteins. Models correspond to SCOP domains at the superfamily level and a hybrid method subsequently sub-classifies domains at the family level. SUPERFAMILY provides its structural assignments at both levels to all completely sequenced genomes."></abbr> <br/>
+            <a href='http://supfam.cs.bris.ac.uk/SUPERFAMILY/cgi-bin/scop.cgi?ipid=SSF54928' class="ext">SSF54928 </a>
+            <span>(RNA-binding domain, RBD)</span>
+        </div>
+    </div>
+
+
+            <span class="grade" style="left:0%;" title="0"></span>
+            <span class="grade" style="left:12.771%;" title="100"></span>
+            <span class="grade" style="left:25.543%;" title="200"></span>
+            <span class="grade" style="left:38.314%;" title="300"></span>
+            <span class="grade" style="left:51.086%;" title="400"></span>
+            <span class="grade" style="left:63.857%;" title="500"></span>
+            <span class="grade" style="left:76.628%;" title="600"></span>
+            <span class="grade" style="left:89.4%;" title="700"></span>
+            <span class="grade" style="left:100%;" title="783"></span>
+
+    </div>
+
+</div>
+                                    </li>
+                            </ol>
+                            <div class="bot-row-line-bot"></div>
+                        </div>
+                    </li>
+                    <li class="entry Domain-row">
+
+                        <div class="top-row">
+                            <div class="top-row-id"><img src="resources/images/ico_type_domain_small.png"
+                                                         alt="Domain" title="Domain"/> <a
+                                    href="http://www.ebi.ac.uk/interpro/entry/IPR029063">IPR029063</a></div>
+                            <div class="top-row-name"><a href="http://www.ebi.ac.uk/interpro/entry/IPR029063"
+                                                         class="neutral">S-adenosyl-L-methionine-dependent methyltransferase</a></div>
+                        </div>
+
+                        <div class="bot-row">
+                            <div class="bot-row-line-top"></div>
+                            <ol class="signatures" style="border:0px solid pink;">
+
+
+                                    <li id="IPR029063-signatures" class="signature entry-signatures">
+<div class="bot-row-signame">
+    <a href="http://supfam.cs.bris.ac.uk/SUPERFAMILY/cgi-bin/scop.cgi?ipid=SSF53335" title="SSF53335 (S-adenosyl-L-methionine-dependent methyltransferases)"
+       class="neutral">
+        SSF53335
+</a>
+
+            <span>(S-adenosy...)</span>
+
+</div>
+<div class="bot-row-line">
+    <div class="matches">
+
+
+
+<span id="SSF53335-span-10"
+      class="match superfamily c57 Domain"
+      style="left:  36.909%;
+              width: 3.448%;"
+      title="SSF53335 290 - 316" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="SSF53335-popup-10" style="display: none;">
+
+        <div class="popup_topl"><span class="superfamily c57 Domain caption_puce"></span>290 - 316</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>SUPERFAMILY</b> <abbr class="icon icon-generic" data-icon="i" title="SUPERFAMILY is a library of profile hidden Markov models that represent all proteins of known structure. The library is based on the SCOP classification of proteins. Models correspond to SCOP domains at the superfamily level and a hybrid method subsequently sub-classifies domains at the family level. SUPERFAMILY provides its structural assignments at both levels to all completely sequenced genomes."></abbr> <br/>
+            <a href='http://supfam.cs.bris.ac.uk/SUPERFAMILY/cgi-bin/scop.cgi?ipid=SSF53335' class="ext">SSF53335 </a>
+            <span>(S-adenosyl-L-methionine-dependent methyltransferases)</span>
+        </div>
+    </div>
+
+
+<span id="SSF53335-span-11"
+      class="match superfamily c57 Domain"
+      style="left:  85.313%;
+              width: 6.897%;"
+      title="SSF53335 669 - 722" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="SSF53335-popup-11" style="display: none;">
+
+        <div class="popup_topl"><span class="superfamily c57 Domain caption_puce"></span>669 - 722</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>SUPERFAMILY</b> <abbr class="icon icon-generic" data-icon="i" title="SUPERFAMILY is a library of profile hidden Markov models that represent all proteins of known structure. The library is based on the SCOP classification of proteins. Models correspond to SCOP domains at the superfamily level and a hybrid method subsequently sub-classifies domains at the family level. SUPERFAMILY provides its structural assignments at both levels to all completely sequenced genomes."></abbr> <br/>
+            <a href='http://supfam.cs.bris.ac.uk/SUPERFAMILY/cgi-bin/scop.cgi?ipid=SSF53335' class="ext">SSF53335 </a>
+            <span>(S-adenosyl-L-methionine-dependent methyltransferases)</span>
+        </div>
+    </div>
+
+
+<span id="SSF53335-span-12"
+      class="match superfamily c57 Domain"
+      style="left:  44.317%;
+              width: 16.347%;"
+      title="SSF53335 348 - 475" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="SSF53335-popup-12" style="display: none;">
+
+        <div class="popup_topl"><span class="superfamily c57 Domain caption_puce"></span>348 - 475</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>SUPERFAMILY</b> <abbr class="icon icon-generic" data-icon="i" title="SUPERFAMILY is a library of profile hidden Markov models that represent all proteins of known structure. The library is based on the SCOP classification of proteins. Models correspond to SCOP domains at the superfamily level and a hybrid method subsequently sub-classifies domains at the family level. SUPERFAMILY provides its structural assignments at both levels to all completely sequenced genomes."></abbr> <br/>
+            <a href='http://supfam.cs.bris.ac.uk/SUPERFAMILY/cgi-bin/scop.cgi?ipid=SSF53335' class="ext">SSF53335 </a>
+            <span>(S-adenosyl-L-methionine-dependent methyltransferases)</span>
+        </div>
+    </div>
+
+
+<span id="SSF53335-span-13"
+      class="match superfamily c57 Domain"
+      style="left:  97.829%;
+              width: 2.171%;"
+      title="SSF53335 767 - 783" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="SSF53335-popup-13" style="display: none;">
+
+        <div class="popup_topl"><span class="superfamily c57 Domain caption_puce"></span>767 - 783</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>SUPERFAMILY</b> <abbr class="icon icon-generic" data-icon="i" title="SUPERFAMILY is a library of profile hidden Markov models that represent all proteins of known structure. The library is based on the SCOP classification of proteins. Models correspond to SCOP domains at the superfamily level and a hybrid method subsequently sub-classifies domains at the family level. SUPERFAMILY provides its structural assignments at both levels to all completely sequenced genomes."></abbr> <br/>
+            <a href='http://supfam.cs.bris.ac.uk/SUPERFAMILY/cgi-bin/scop.cgi?ipid=SSF53335' class="ext">SSF53335 </a>
+            <span>(S-adenosyl-L-methionine-dependent methyltransferases)</span>
+        </div>
+    </div>
+
+
+<span id="SSF53335-span-14"
+      class="match superfamily c57 Domain"
+      style="left:  64.623%;
+              width: 16.475%;"
+      title="SSF53335 507 - 635" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="SSF53335-popup-14" style="display: none;">
+
+        <div class="popup_topl"><span class="superfamily c57 Domain caption_puce"></span>507 - 635</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>SUPERFAMILY</b> <abbr class="icon icon-generic" data-icon="i" title="SUPERFAMILY is a library of profile hidden Markov models that represent all proteins of known structure. The library is based on the SCOP classification of proteins. Models correspond to SCOP domains at the superfamily level and a hybrid method subsequently sub-classifies domains at the family level. SUPERFAMILY provides its structural assignments at both levels to all completely sequenced genomes."></abbr> <br/>
+            <a href='http://supfam.cs.bris.ac.uk/SUPERFAMILY/cgi-bin/scop.cgi?ipid=SSF53335' class="ext">SSF53335 </a>
+            <span>(S-adenosyl-L-methionine-dependent methyltransferases)</span>
+        </div>
+    </div>
+
+
+            <span class="grade" style="left:0%;" title="0"></span>
+            <span class="grade" style="left:12.771%;" title="100"></span>
+            <span class="grade" style="left:25.543%;" title="200"></span>
+            <span class="grade" style="left:38.314%;" title="300"></span>
+            <span class="grade" style="left:51.086%;" title="400"></span>
+            <span class="grade" style="left:63.857%;" title="500"></span>
+            <span class="grade" style="left:76.628%;" title="600"></span>
+            <span class="grade" style="left:89.4%;" title="700"></span>
+            <span class="grade" style="left:100%;" title="783"></span>
+
+    </div>
+
+</div>
+                                    </li>
+
+                                    <li id="IPR029063-signatures" class="signature entry-signatures">
+<div class="bot-row-signame">
+        <a href="http://www.cathdb.info/superfamily/3.40.50.150" title="G3DSA:3.40.50.150"
+           class="neutral">
+    G3DSA:3.40.50...
+</a>
+
+
+</div>
+<div class="bot-row-line">
+    <div class="matches">
+
+
+
+<span id="G3DSA34050150-span-15"
+      class="match gene3d c57 Domain"
+      style="left:  96.679%;
+              width: 3.321%;"
+      title="G3DSA:3.40.50.150 758 - 783" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="G3DSA34050150-popup-15" style="display: none;">
+
+        <div class="popup_topl"><span class="gene3d c57 Domain caption_puce"></span>758 - 783</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>GENE3D</b> <abbr class="icon icon-generic" data-icon="i" title="Gene3D HMMs extended predictions of CATH protein structures."></abbr> <br/>
+            <a href='http://www.cathdb.info/superfamily/3.40.50.150' class="ext">G3DSA:3.40.50.150 </a>
+            <span>(G3DSA:3.40.50.150)</span>
+        </div>
+    </div>
+
+
+<span id="G3DSA34050150-span-16"
+      class="match gene3d c57 Domain"
+      style="left:  68.072%;
+              width: 24.01%;"
+      title="G3DSA:3.40.50.150 534 - 721" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="G3DSA34050150-popup-16" style="display: none;">
+
+        <div class="popup_topl"><span class="gene3d c57 Domain caption_puce"></span>534 - 721</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>GENE3D</b> <abbr class="icon icon-generic" data-icon="i" title="Gene3D HMMs extended predictions of CATH protein structures."></abbr> <br/>
+            <a href='http://www.cathdb.info/superfamily/3.40.50.150' class="ext">G3DSA:3.40.50.150 </a>
+            <span>(G3DSA:3.40.50.150)</span>
+        </div>
+    </div>
+
+
+            <span class="grade" style="left:0%;" title="0"></span>
+            <span class="grade" style="left:12.771%;" title="100"></span>
+            <span class="grade" style="left:25.543%;" title="200"></span>
+            <span class="grade" style="left:38.314%;" title="300"></span>
+            <span class="grade" style="left:51.086%;" title="400"></span>
+            <span class="grade" style="left:63.857%;" title="500"></span>
+            <span class="grade" style="left:76.628%;" title="600"></span>
+            <span class="grade" style="left:89.4%;" title="700"></span>
+            <span class="grade" style="left:100%;" title="783"></span>
+
+    </div>
+
+</div>
+                                    </li>
+                            </ol>
+                            <div class="bot-row-line-bot"></div>
+                        </div>
+                    </li>
+                    <li class="entry SITE-row">
+
+                        <div class="top-row">
+                            <div class="top-row-id"><img src="resources/images/ico_type_site_small.png"
+                                                         alt="SITE" title="SITE"/> <a
+                                    href="http://www.ebi.ac.uk/interpro/entry/IPR030390">IPR030390</a></div>
+                            <div class="top-row-name"><a href="http://www.ebi.ac.uk/interpro/entry/IPR030390"
+                                                         class="neutral">RNA methyltransferase TrmA, active site</a></div>
+                        </div>
+
+                        <div class="bot-row">
+                            <div class="bot-row-line-top"></div>
+                            <ol class="signatures" style="border:0px solid pink;">
+
+
+                                    <li id="IPR030390-signatures" class="signature entry-signatures">
+<div class="bot-row-signame">
+    <a href="http://www.expasy.org/prosite/PS01230" title="PS01230 (TRMA_1)"
+       class="neutral">
+        PS01230
+</a>
+
+                <span>(TRMA_1)</span>
+
+</div>
+<div class="bot-row-line">
+    <div class="matches">
+
+
+
+<span id="PS01230-span-17"
+      class="match prosite-patterns SITE"
+      style="left:  86.335%;
+              width: 4.215%;"
+      title="PS01230 677 - 709" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="PS01230-popup-17" style="display: none;">
+
+        <div class="popup_topl"><span class="prosite-patterns SITE caption_puce"></span>677 - 709</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>PROSITE patterns</b> <abbr class="icon icon-generic" data-icon="i" title="PROSITE consists of documentation entries describing protein domains, families and functional sites, as well as associated patterns and profiles to identify them. Profiles and patterns are constructed from manually edited seed alignments. PROSITE is complemented by ProRule, a collection of rules based on profiles and patterns, which increases the discriminatory power of profiles and patterns by providing additional information about functionally and/or structurally critical amino acids."></abbr> <br/>
+            <a href='http://www.expasy.org/prosite/PS01230' class="ext">PS01230 </a>
+            <span>(TRMA_1)</span>
+        </div>
+    </div>
+
+
+            <span class="grade" style="left:0%;" title="0"></span>
+            <span class="grade" style="left:12.771%;" title="100"></span>
+            <span class="grade" style="left:25.543%;" title="200"></span>
+            <span class="grade" style="left:38.314%;" title="300"></span>
+            <span class="grade" style="left:51.086%;" title="400"></span>
+            <span class="grade" style="left:63.857%;" title="500"></span>
+            <span class="grade" style="left:76.628%;" title="600"></span>
+            <span class="grade" style="left:89.4%;" title="700"></span>
+            <span class="grade" style="left:100%;" title="783"></span>
+
+    </div>
+
+</div>
+                                    </li>
+                            </ol>
+                            <div class="bot-row-line-bot"></div>
+                        </div>
+                    </li>
+            </ol>
+        </div>
+
+
+            <div class="prot_entries" id="uni_sign">
+                <div class="top-row">
+                    <div class="top-row-id"><img src="resources/images/ico_type_uni_small.png"
+                                                 alt="Unintegrated signatures" title="Unintegrated signatures"/> no IPR
+                    </div>
+                    <div class="top-row-name">Unintegrated signatures</div>
+                </div>
+                <div class="bot-row">
+                    <div class="bot-row-line-top"></div>
+                    <ol class="signatures">
+                            <li class="signature">
+<div class="bot-row-signame">
+        <a href="http://embnet.vital-it.ch/software/COILS_form.html" title="Coil"
+           class="neutral">
+        Coil
+</a>
+
+
+</div>
+<div class="bot-row-line">
+    <div class="matches">
+
+
+
+<span id="Coil-span-18"
+      class="match coils uni"
+      style="left:  37.931%;
+              width: 2.682%;"
+      title="Coil 298 - 318" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="Coil-popup-18" style="display: none;">
+
+        <div class="popup_topl"><span class="coils uni caption_puce"></span>298 - 318</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>COILS</b> <abbr class="icon icon-generic" data-icon="i" title="COILS compares a sequence to a database of known parallel two-stranded coiled-coils and derives a similarity score and then calculates the probability that the sequence will adopt a coiled-coil conformation."></abbr> <br/>
+            <a href='http://embnet.vital-it.ch/software/COILS_form.html' class="ext">Coil </a>
+            <span>(Coil)</span>
+        </div>
+    </div>
+
+
+            <span class="grade" style="left:0%;" title="0"></span>
+            <span class="grade" style="left:12.771%;" title="100"></span>
+            <span class="grade" style="left:25.543%;" title="200"></span>
+            <span class="grade" style="left:38.314%;" title="300"></span>
+            <span class="grade" style="left:51.086%;" title="400"></span>
+            <span class="grade" style="left:63.857%;" title="500"></span>
+            <span class="grade" style="left:76.628%;" title="600"></span>
+            <span class="grade" style="left:89.4%;" title="700"></span>
+            <span class="grade" style="left:100%;" title="783"></span>
+
+    </div>
+
+</div>
+                            </li>
+                    </ol>
+                    <div class="bot-row-line-bot"></div>
+                </div>
+            </div>
+
+
+<h3>GO term prediction</h3>
+
+<div class="prot_go">
+
+    <div class="go_terms">
+        <h4>Biological Process</h4>
+        <div class="go_terms_box">
+
+            <p>
+            <a href="http://www.ebi.ac.uk/QuickGO/GTerm?id=GO:0006396"
+                   class="ext">GO:0006396</a> RNA processing
+                <br/>
+            </p>
+        </div>
+
+        <h4>Molecular Function</h4>
+        <div class="go_terms_box">
+
+        <p>
+              <a href="http://www.ebi.ac.uk/QuickGO/GTerm?id=GO:0000166"
+                   class="ext">GO:0000166</a> nucleotide binding
+                <br/>
+            
+              <a href="http://www.ebi.ac.uk/QuickGO/GTerm?id=GO:0008173"
+                   class="ext">GO:0008173</a> RNA methyltransferase activity
+                <br/>
+            
+              <a href="http://www.ebi.ac.uk/QuickGO/GTerm?id=GO:0046872"
+                   class="ext">GO:0046872</a> metal ion binding
+                <br/>
+            </p>
+        </div>
+
+        <h4>Cellular Component</h4>
+        <div class="go_terms_box">
+
+        <p></p>
+                <p>None predicted.</p>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+            // Use hidden DIVs to display popups
+            $('span[id*="span-"]').each(
+                    function(i) {
+                            preparePopup(this.id, 6);
+                    }
+            );
+    });
+</script>
+
+        </div>
+    </div>
+
+
+</div>
+</div>
+</body>
+</html>

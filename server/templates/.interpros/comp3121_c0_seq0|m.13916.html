@@ -1,0 +1,2855 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" content="text/html">
+    <title>
+    comp3121_c0_seq0|m.13916 - InterPro
+    </title>
+    <meta name="description" content="InterProScan result page: Protein matches and sequence features">
+    <meta name="author" content="InterPro Team, European Bioinformatics Institute">
+
+
+    <link href="resources/css/type_colours.css" rel="stylesheet" type="text/css"/>
+    <link class="database" href="resources/css/database.css" rel="stylesheet" type="text/css"/>
+    <link href="resources/javascript/qtip2/jquery.qtip.css" rel="stylesheet" type="text/css"/>
+    <link href="resources/css/protein.css" rel="stylesheet" type="text/css"/>
+    <script src="resources/javascript/jquery/jquery-1.7.1.min.js" type="text/javascript"></script>
+    <script src="resources/javascript/jquery/jquery-ui-1.8.17.custom.min.js" type="text/javascript"></script>
+    <script src="resources/javascript/qtip2/jquery.qtip.min.js" type="text/javascript"></script>
+    <script src="resources/javascript/common.js" type="text/javascript"></script>
+    <script src="resources/javascript/protein.js" type="text/javascript"></script>
+    <script src="resources/javascript/protein-popups.js" type="text/javascript"></script>
+    <script src="resources/javascript/jquery/jquery.cookie.js" type="text/javascript"></script>
+    <script src="resources/javascript/jquery/jquery.jscroll.min.js" type="text/javascript"></script>
+
+</head>
+<body>
+<div class="container_24">
+<div class="grid_24 clearfix" id="content" >
+
+    <div class="grid_5 alpha">
+<div id="menu" style="display: none;">
+    <div class="menu-filter">
+
+        <h1>Filter view on</h1>
+
+        <div class="menu-filter-type"><h1>Entry type</h1>
+
+            <fieldset>
+                <div class="disabled">
+                    <input type="checkbox" class="type" id="check-2" value="Family-row"
+                           checked="checked" disabled="disabled"/>
+                    <label for="check-2" class="family">Family</label>
+                </div>
+                <div >
+                    <input type="checkbox" class="type" id="check-3" value="Domain-row"
+                           checked="checked" />
+                    <label for="check-3" class="domains">Domains</label>
+                </div>
+                <div >
+                    <input type="checkbox" class="type" id="check-4" value="Repeat-row"
+                           checked="checked" />
+                    <label for="check-4" class="repeats">Repeats</label>
+                </div>
+                <div >
+                    <input type="checkbox" class="type" id="check-5"
+                           value="SITE-row Conserved_site-row PTM-row Binding_site-row Active_site-row"
+                           checked="checked" />
+                    <label for="check-5" class="site">Site</label>
+                </div>
+            </fieldset>
+        </div>
+
+        <div class="menu-filter-status"><h1>Status</h1>
+
+            <fieldset>
+                <div class="disabled">
+                    <input type="checkbox" name="type" id="check-6" value="unintegrated"
+                           checked="checked" disabled="disabled"/>
+                    <label for="check-6" class="uni">Unintegrated</label>
+                </div>
+            </fieldset>
+        </div>
+
+        <div class="menu-filter-colour">
+            <div class="filter-colour-head">
+                <div class="filter-colour-title-l">
+                    Colour by
+                </div>
+
+            </div>
+            <fieldset>
+                <input type="radio" name="blobColour" id="domainColour" value="domainColour" checked="checked"/>
+                <label for="domainColour">domain relationship</label> <br/>
+
+                <input type="radio" name="blobColour" id="databaseColour" value="databaseColour"/>
+                <label for="databaseColour">source database</label>
+            </fieldset>
+        </div>
+    </div>
+
+</div>
+<script type="text/javascript">
+    $(document).ready(function() {
+// Read colour preference from cookie (requires http://plugins.jquery.com/project/Cookie)
+
+            // Retrieve existing cookies and set checkbox states accordingly
+            var checkBoxIDs = ["#check-2", "#check-3", "#check-4", "#check-5", "#check-6"];
+            for (i = 0; i < checkBoxIDs.length; i++) {
+                var checkBoxId = checkBoxIDs[i];
+                var cookieVal = $.cookie(checkBoxId);
+                if (cookieVal != null) {
+                    $(checkBoxId).prop("checked", cookieVal == "true");
+                }
+            }
+
+            // and the radio button group
+            var radioCookieVal = $.cookie("colour-by-domain");
+            if (radioCookieVal != null) {
+                if (radioCookieVal == "true") {
+                    $('#domainColour').prop("checked", true);
+                }
+                else {
+                    $('#databaseColour').prop("checked", true);
+                }
+            }
+
+            // Keep the filter menu in view
+//            $("#menu").jScroll();
+            // CSS switching
+            configureStylesheets($('input[name="blobColour"]:checked').attr('id') == 'domainColour'); // initialise
+
+            $('input[name="blobColour"]').change(function() {
+                configureStylesheets($('input[name="blobColour"]:checked').attr('id') == 'domainColour');
+            });
+
+            // Change event for type checkboxes (Family, Domain etc.)
+            $(".type").change(function() {
+                displayType(this);
+            });
+
+            // Initialise types
+            $(".type").each(function() {
+                displayType(this);
+            });
+
+            // Change event for un-integrated sig matches checkbox
+            $("#check-6").change(function() {
+                displayUnintegrated(this);
+            });
+
+            // Initialise un-integrated.
+            // TODO Work out how to do this without each! Only one thing with an ID of "check-6"!
+            $("#check-6").each(function() {
+                displayUnintegrated(this);
+            });
+
+        // Make the menu visible - Javascript is enabled.
+        $("#menu").css('display', 'block');
+    });
+</script>
+    </div>
+
+    <div class="grid_19 omega main-content">
+        <div class="tab">
+            <div class="Protein_tab">Protein</div>
+        </div>
+
+        <div class="main-box">
+                <h2 class="strapline">comp3121_c0_seq0|m.13916 </h2>
+<div class="prot_gal">
+
+
+    <div class="prot_gal_bloc">
+        <div class="prot_gal_col"><b>Length</b></div>
+        <div class="prot_gal_desc">1,662 amino acids
+        </div>
+    </div>
+
+    <br/>
+    <hr/>
+</div>
+
+
+
+
+        <h3>Protein family membership</h3>
+        <p>None predicted.</p>
+
+
+
+    <h3>Domains and repeats</h3>
+
+
+    <div class="prot_sum">
+    <div class="bot-row">
+        <div class="bot-row-line-top"></div>
+        <ol class="signatures">
+
+
+
+    <li class="signature entry-signatures">
+        <div class="bot-row-signame">Domain</div>
+        <div class="bot-row-line">
+            <div class="matches">
+
+
+<span id="supermatch-span-1"
+      class="match c5 Domain"
+      style="left:  1.986%;
+              width: 8.123%;"
+      title="Domain 34 - 168" >
+</span>
+        <div id="supermatch-popup-1" style="display: none;">
+        <div class="popup_topl">
+            <span class="c5 Domain caption_puce"></span>34 - 168
+        </div>
+        <div class="rel_tree"><ul><li class="Domain" ><a href="http://www.ebi.ac.uk/interpro/entry/IPR001715">Calponin homology domain</a><span> (IPR001715)</span></li></ul></div>
+    </div>
+
+
+
+
+<span id="supermatch-span-2"
+      class="match c4 Domain"
+      style="left:  33.213%;
+              width: 4.753%;"
+      title="Domain 553 - 631" >
+</span>
+        <div id="supermatch-popup-2" style="display: none;">
+        <div class="popup_topl">
+            <span class="c4 Domain caption_puce"></span>553 - 631
+        </div>
+        <div class="rel_tree"><ul><li class="Domain" ><a href="http://www.ebi.ac.uk/interpro/entry/IPR027417">P-loop containing nucleoside triphosphate hydrolase</a><span> (IPR027417)</span></li></ul></div>
+    </div>
+
+
+
+
+<span id="supermatch-span-3"
+      class="match c4 Domain"
+      style="left:  37.425%;
+              width: 4.332%;"
+      title="Domain 623 - 694" >
+</span>
+        <div id="supermatch-popup-3" style="display: none;">
+        <div class="popup_topl">
+            <span class="c4 Domain caption_puce"></span>623 - 694
+        </div>
+        <div class="rel_tree"><ul><li class="Domain" ><a href="http://www.ebi.ac.uk/interpro/entry/IPR027417">P-loop containing nucleoside triphosphate hydrolase</a><span> (IPR027417)</span></li></ul></div>
+    </div>
+
+
+
+
+<span id="supermatch-span-4"
+      class="match c4 Domain"
+      style="left:  41.937%;
+              width: 5.957%;"
+      title="Domain 698 - 796" >
+</span>
+        <div id="supermatch-popup-4" style="display: none;">
+        <div class="popup_topl">
+            <span class="c4 Domain caption_puce"></span>698 - 796
+        </div>
+        <div class="rel_tree"><ul><li class="Domain" ><a href="http://www.ebi.ac.uk/interpro/entry/IPR027417">P-loop containing nucleoside triphosphate hydrolase</a><span> (IPR027417)</span></li></ul></div>
+    </div>
+
+
+
+
+<span id="supermatch-span-5"
+      class="match c4 Domain"
+      style="left:  51.564%;
+              width: 3.73%;"
+      title="Domain 858 - 919" >
+</span>
+        <div id="supermatch-popup-5" style="display: none;">
+        <div class="popup_topl">
+            <span class="c4 Domain caption_puce"></span>858 - 919
+        </div>
+        <div class="rel_tree"><ul><li class="Domain" ><a href="http://www.ebi.ac.uk/interpro/entry/IPR027417">P-loop containing nucleoside triphosphate hydrolase</a><span> (IPR027417)</span></li></ul></div>
+    </div>
+
+
+
+
+<span id="supermatch-span-6"
+      class="match c4 Domain"
+      style="left:  63.237%;
+              width: 3.61%;"
+      title="Domain 1,052 - 1,111" >
+</span>
+        <div id="supermatch-popup-6" style="display: none;">
+        <div class="popup_topl">
+            <span class="c4 Domain caption_puce"></span>1,052 - 1,111
+        </div>
+        <div class="rel_tree"><ul><li class="Domain" ><a href="http://www.ebi.ac.uk/interpro/entry/IPR027417">P-loop containing nucleoside triphosphate hydrolase</a><span> (IPR027417)</span></li></ul></div>
+    </div>
+
+
+
+
+<span id="supermatch-span-7"
+      class="match c4 Domain"
+      style="left:  80.024%;
+              width: 3.61%;"
+      title="Domain 1,331 - 1,390" >
+</span>
+        <div id="supermatch-popup-7" style="display: none;">
+        <div class="popup_topl">
+            <span class="c4 Domain caption_puce"></span>1,331 - 1,390
+        </div>
+        <div class="rel_tree"><ul><li class="Domain" ><a href="http://www.ebi.ac.uk/interpro/entry/IPR027417">P-loop containing nucleoside triphosphate hydrolase</a><span> (IPR027417)</span></li></ul></div>
+    </div>
+
+
+
+
+<span id="supermatch-span-8"
+      class="match c46 Domain"
+      style="left:  85.86%;
+              width: 8.063%;"
+      title="Domain 1,428 - 1,561" >
+</span>
+        <div id="supermatch-popup-8" style="display: none;">
+        <div class="popup_topl">
+            <span class="c46 Domain caption_puce"></span>1,428 - 1,561
+        </div>
+        <div class="rel_tree"><ul><li class="Domain" ><a href="http://www.ebi.ac.uk/interpro/entry/IPR016024">Armadillo-type fold</a><span> (IPR016024)</span><ul><li><a href="http://www.ebi.ac.uk/interpro/entry/IPR011989">Armadillo-like helical</a><span> (IPR011989)</span></li></ul></li></ul></div>
+    </div>
+
+
+
+                    <span class="grade" style="left:0%;" title="0"></span>
+                    <span class="grade" style="left:12.034%;" title="200"></span>
+                    <span class="grade" style="left:24.067%;" title="400"></span>
+                    <span class="grade" style="left:36.101%;" title="600"></span>
+                    <span class="grade" style="left:48.135%;" title="800"></span>
+                    <span class="grade" style="left:60.168%;" title="1000"></span>
+                    <span class="grade" style="left:72.202%;" title="1200"></span>
+                    <span class="grade" style="left:84.236%;" title="1400"></span>
+                    <span class="grade" style="left:100%;" title="1662"></span>
+
+            </div>
+        </div>
+    </li>
+    <li class="signature entry-signatures">
+        <div class="bot-row-signame">Repeat</div>
+        <div class="bot-row-line">
+            <div class="matches">
+
+
+<span id="supermatch-span-9"
+      class="match c49 Repeat"
+      style="left:  87.786%;
+              width: 2.888%;"
+      title="Repeat 1,460 - 1,507" >
+</span>
+        <div id="supermatch-popup-9" style="display: none;">
+        <div class="popup_topl">
+            <span class="c49 Repeat caption_puce"></span>1,460 - 1,507
+        </div>
+        <div class="rel_tree"><ul><li class="Repeat" ><a href="http://www.ebi.ac.uk/interpro/entry/IPR000225">Armadillo</a><span> (IPR000225)</span></li></ul></div>
+    </div>
+
+
+
+                    <span class="grade" style="left:0%;" title="0"></span>
+                    <span class="grade" style="left:12.034%;" title="200"></span>
+                    <span class="grade" style="left:24.067%;" title="400"></span>
+                    <span class="grade" style="left:36.101%;" title="600"></span>
+                    <span class="grade" style="left:48.135%;" title="800"></span>
+                    <span class="grade" style="left:60.168%;" title="1000"></span>
+                    <span class="grade" style="left:72.202%;" title="1200"></span>
+                    <span class="grade" style="left:84.236%;" title="1400"></span>
+                    <span class="grade" style="left:100%;" title="1662"></span>
+
+            </div>
+        </div>
+    </li>
+
+        </ol>
+        <div class="bot-row-line-bot"></div>
+    </div>
+
+    <div class="prot_scale">
+        <div class="bot-row">
+
+            <div class="bot-row-line">
+                <div style="position:relative;">
+                            <span class="scale_bar" style="left:0%;"
+                                  title="1"></span>
+                                <span class="scale_numb"
+                                      style="left:1%;">1</span>
+                            <span class="scale_bar" style="left:12.034%;"
+                                  title="200"></span>
+                                <span class="scale_numb"
+                                      style="left:12.034%;">200</span>
+                            <span class="scale_bar" style="left:24.067%;"
+                                  title="400"></span>
+                                <span class="scale_numb"
+                                      style="left:24.067%;">400</span>
+                            <span class="scale_bar" style="left:36.101%;"
+                                  title="600"></span>
+                                <span class="scale_numb"
+                                      style="left:36.101%;">600</span>
+                            <span class="scale_bar" style="left:48.135%;"
+                                  title="800"></span>
+                                <span class="scale_numb"
+                                      style="left:48.135%;">800</span>
+                            <span class="scale_bar" style="left:60.168%;"
+                                  title="1000"></span>
+                                <span class="scale_numb"
+                                      style="left:60.168%;">1000</span>
+                            <span class="scale_bar" style="left:72.202%;"
+                                  title="1200"></span>
+                                <span class="scale_numb"
+                                      style="left:72.202%;">1200</span>
+                            <span class="scale_bar" style="left:84.236%;"
+                                  title="1400"></span>
+                                <span class="scale_numb"
+                                      style="left:84.236%;">1400</span>
+                            <span class="scale_bar" style="left:100%;"
+                                  title="1662"></span>
+                                <span class="scale_numb"
+                                      style="left:100%;">1662</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    </div>
+
+
+
+    <h3>Detailed signature matches</h3>
+
+
+        <div class="prot_entries">
+            <ol class="entries">
+                    <li class="entry Domain-row">
+
+                        <div class="top-row">
+                            <div class="top-row-id"><img src="resources/images/ico_type_domain_small.png"
+                                                         alt="Domain" title="Domain"/> <a
+                                    href="http://www.ebi.ac.uk/interpro/entry/IPR001715">IPR001715</a></div>
+                            <div class="top-row-name"><a href="http://www.ebi.ac.uk/interpro/entry/IPR001715"
+                                                         class="neutral">Calponin homology domain</a></div>
+                        </div>
+
+                        <div class="bot-row">
+                            <div class="bot-row-line-top"></div>
+                            <ol class="signatures" style="border:0px solid pink;">
+
+
+                                    <li id="IPR001715-signatures" class="signature entry-signatures">
+<div class="bot-row-signame">
+        <a href="http://www.cathdb.info/superfamily/1.10.418.10" title="G3DSA:1.10.418.10"
+           class="neutral">
+    G3DSA:1.10.41...
+</a>
+
+
+</div>
+<div class="bot-row-line">
+    <div class="matches">
+
+
+
+<span id="G3DSA11041810-span-1"
+      class="match gene3d c5 Domain"
+      style="left:  2.347%;
+              width: 7.762%;"
+      title="G3DSA:1.10.418.10 40 - 168" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="G3DSA11041810-popup-1" style="display: none;">
+
+        <div class="popup_topl"><span class="gene3d c5 Domain caption_puce"></span>40 - 168</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>GENE3D</b> <abbr class="icon icon-generic" data-icon="i" title="Gene3D HMMs extended predictions of CATH protein structures."></abbr> <br/>
+            <a href='http://www.cathdb.info/superfamily/1.10.418.10' class="ext">G3DSA:1.10.418.10 </a>
+            <span>(G3DSA:1.10.418.10)</span>
+        </div>
+    </div>
+
+
+            <span class="grade" style="left:0%;" title="0"></span>
+            <span class="grade" style="left:12.034%;" title="200"></span>
+            <span class="grade" style="left:24.067%;" title="400"></span>
+            <span class="grade" style="left:36.101%;" title="600"></span>
+            <span class="grade" style="left:48.135%;" title="800"></span>
+            <span class="grade" style="left:60.168%;" title="1000"></span>
+            <span class="grade" style="left:72.202%;" title="1200"></span>
+            <span class="grade" style="left:84.236%;" title="1400"></span>
+            <span class="grade" style="left:100%;" title="1662"></span>
+
+    </div>
+
+</div>
+                                    </li>
+
+                                    <li id="IPR001715-signatures" class="signature entry-signatures">
+<div class="bot-row-signame">
+    <a href="http://supfam.cs.bris.ac.uk/SUPERFAMILY/cgi-bin/scop.cgi?ipid=SSF47576" title="SSF47576 (Calponin-homology domain, CH-domain)"
+       class="neutral">
+        SSF47576
+</a>
+
+            <span>(Calponin-...)</span>
+
+</div>
+<div class="bot-row-line">
+    <div class="matches">
+
+
+
+<span id="SSF47576-span-2"
+      class="match superfamily c5 Domain"
+      style="left:  1.986%;
+              width: 7.942%;"
+      title="SSF47576 34 - 165" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="SSF47576-popup-2" style="display: none;">
+
+        <div class="popup_topl"><span class="superfamily c5 Domain caption_puce"></span>34 - 165</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>SUPERFAMILY</b> <abbr class="icon icon-generic" data-icon="i" title="SUPERFAMILY is a library of profile hidden Markov models that represent all proteins of known structure. The library is based on the SCOP classification of proteins. Models correspond to SCOP domains at the superfamily level and a hybrid method subsequently sub-classifies domains at the family level. SUPERFAMILY provides its structural assignments at both levels to all completely sequenced genomes."></abbr> <br/>
+            <a href='http://supfam.cs.bris.ac.uk/SUPERFAMILY/cgi-bin/scop.cgi?ipid=SSF47576' class="ext">SSF47576 </a>
+            <span>(Calponin-homology domain, CH-domain)</span>
+        </div>
+    </div>
+
+
+            <span class="grade" style="left:0%;" title="0"></span>
+            <span class="grade" style="left:12.034%;" title="200"></span>
+            <span class="grade" style="left:24.067%;" title="400"></span>
+            <span class="grade" style="left:36.101%;" title="600"></span>
+            <span class="grade" style="left:48.135%;" title="800"></span>
+            <span class="grade" style="left:60.168%;" title="1000"></span>
+            <span class="grade" style="left:72.202%;" title="1200"></span>
+            <span class="grade" style="left:84.236%;" title="1400"></span>
+            <span class="grade" style="left:100%;" title="1662"></span>
+
+    </div>
+
+</div>
+                                    </li>
+
+                                    <li id="IPR001715-signatures" class="signature entry-signatures">
+<div class="bot-row-signame">
+    <a href="http://www.expasy.org/prosite/PS50021" title="PS50021 (CH)"
+       class="neutral">
+        PS50021
+</a>
+
+                <span>(CH)</span>
+
+</div>
+<div class="bot-row-line">
+    <div class="matches">
+
+
+
+<span id="PS50021-span-3"
+      class="match prosite-profiles c5 Domain"
+      style="left:  2.046%;
+              width: 7.702%;"
+      title="PS50021 35 - 162" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="PS50021-popup-3" style="display: none;">
+
+        <div class="popup_topl"><span class="prosite-profiles c5 Domain caption_puce"></span>35 - 162</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>PROSITE profiles</b> <abbr class="icon icon-generic" data-icon="i" title="PROSITE consists of documentation entries describing protein domains, families and functional sites, as well as associated patterns and profiles to identify them. Profiles and patterns are constructed from manually edited seed alignments. PROSITE is complemented by ProRule, a collection of rules based on profiles and patterns, which increases the discriminatory power of profiles and patterns by providing additional information about functionally and/or structurally critical amino acids."></abbr> <br/>
+            <a href='http://www.expasy.org/prosite/PS50021' class="ext">PS50021 </a>
+            <span>(CH)</span>
+        </div>
+    </div>
+
+
+            <span class="grade" style="left:0%;" title="0"></span>
+            <span class="grade" style="left:12.034%;" title="200"></span>
+            <span class="grade" style="left:24.067%;" title="400"></span>
+            <span class="grade" style="left:36.101%;" title="600"></span>
+            <span class="grade" style="left:48.135%;" title="800"></span>
+            <span class="grade" style="left:60.168%;" title="1000"></span>
+            <span class="grade" style="left:72.202%;" title="1200"></span>
+            <span class="grade" style="left:84.236%;" title="1400"></span>
+            <span class="grade" style="left:100%;" title="1662"></span>
+
+    </div>
+
+</div>
+                                    </li>
+                            </ol>
+                            <div class="bot-row-line-bot"></div>
+                        </div>
+                    </li>
+                    <li class="entry Domain-row">
+
+                        <div class="top-row">
+                            <div class="top-row-id"><img src="resources/images/ico_type_domain_small.png"
+                                                         alt="Domain" title="Domain"/> <a
+                                    href="http://www.ebi.ac.uk/interpro/entry/IPR027417">IPR027417</a></div>
+                            <div class="top-row-name"><a href="http://www.ebi.ac.uk/interpro/entry/IPR027417"
+                                                         class="neutral">P-loop containing nucleoside triphosphate hydrolase</a></div>
+                        </div>
+
+                        <div class="bot-row">
+                            <div class="bot-row-line-top"></div>
+                            <ol class="signatures" style="border:0px solid pink;">
+
+
+                                    <li id="IPR027417-signatures" class="signature entry-signatures">
+<div class="bot-row-signame">
+    <a href="http://supfam.cs.bris.ac.uk/SUPERFAMILY/cgi-bin/scop.cgi?ipid=SSF52540" title="SSF52540 (P-loop containing nucleoside triphosphate hydrolases)"
+       class="neutral">
+        SSF52540
+</a>
+
+            <span>(P-loop co...)</span>
+
+</div>
+<div class="bot-row-line">
+    <div class="matches">
+
+
+
+<span id="SSF52540-span-4"
+      class="match superfamily c4 Domain"
+      style="left:  37.425%;
+              width: 4.332%;"
+      title="SSF52540 623 - 694" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="SSF52540-popup-4" style="display: none;">
+
+        <div class="popup_topl"><span class="superfamily c4 Domain caption_puce"></span>623 - 694</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>SUPERFAMILY</b> <abbr class="icon icon-generic" data-icon="i" title="SUPERFAMILY is a library of profile hidden Markov models that represent all proteins of known structure. The library is based on the SCOP classification of proteins. Models correspond to SCOP domains at the superfamily level and a hybrid method subsequently sub-classifies domains at the family level. SUPERFAMILY provides its structural assignments at both levels to all completely sequenced genomes."></abbr> <br/>
+            <a href='http://supfam.cs.bris.ac.uk/SUPERFAMILY/cgi-bin/scop.cgi?ipid=SSF52540' class="ext">SSF52540 </a>
+            <span>(P-loop containing nucleoside triphosphate hydrolases)</span>
+        </div>
+    </div>
+
+
+<span id="SSF52540-span-5"
+      class="match superfamily c4 Domain"
+      style="left:  80.024%;
+              width: 3.61%;"
+      title="SSF52540 1,331 - 1,390" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="SSF52540-popup-5" style="display: none;">
+
+        <div class="popup_topl"><span class="superfamily c4 Domain caption_puce"></span>1,331 - 1,390</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>SUPERFAMILY</b> <abbr class="icon icon-generic" data-icon="i" title="SUPERFAMILY is a library of profile hidden Markov models that represent all proteins of known structure. The library is based on the SCOP classification of proteins. Models correspond to SCOP domains at the superfamily level and a hybrid method subsequently sub-classifies domains at the family level. SUPERFAMILY provides its structural assignments at both levels to all completely sequenced genomes."></abbr> <br/>
+            <a href='http://supfam.cs.bris.ac.uk/SUPERFAMILY/cgi-bin/scop.cgi?ipid=SSF52540' class="ext">SSF52540 </a>
+            <span>(P-loop containing nucleoside triphosphate hydrolases)</span>
+        </div>
+    </div>
+
+
+<span id="SSF52540-span-6"
+      class="match superfamily c4 Domain"
+      style="left:  51.564%;
+              width: 3.73%;"
+      title="SSF52540 858 - 919" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="SSF52540-popup-6" style="display: none;">
+
+        <div class="popup_topl"><span class="superfamily c4 Domain caption_puce"></span>858 - 919</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>SUPERFAMILY</b> <abbr class="icon icon-generic" data-icon="i" title="SUPERFAMILY is a library of profile hidden Markov models that represent all proteins of known structure. The library is based on the SCOP classification of proteins. Models correspond to SCOP domains at the superfamily level and a hybrid method subsequently sub-classifies domains at the family level. SUPERFAMILY provides its structural assignments at both levels to all completely sequenced genomes."></abbr> <br/>
+            <a href='http://supfam.cs.bris.ac.uk/SUPERFAMILY/cgi-bin/scop.cgi?ipid=SSF52540' class="ext">SSF52540 </a>
+            <span>(P-loop containing nucleoside triphosphate hydrolases)</span>
+        </div>
+    </div>
+
+
+<span id="SSF52540-span-7"
+      class="match superfamily c4 Domain"
+      style="left:  63.237%;
+              width: 3.61%;"
+      title="SSF52540 1,052 - 1,111" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="SSF52540-popup-7" style="display: none;">
+
+        <div class="popup_topl"><span class="superfamily c4 Domain caption_puce"></span>1,052 - 1,111</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>SUPERFAMILY</b> <abbr class="icon icon-generic" data-icon="i" title="SUPERFAMILY is a library of profile hidden Markov models that represent all proteins of known structure. The library is based on the SCOP classification of proteins. Models correspond to SCOP domains at the superfamily level and a hybrid method subsequently sub-classifies domains at the family level. SUPERFAMILY provides its structural assignments at both levels to all completely sequenced genomes."></abbr> <br/>
+            <a href='http://supfam.cs.bris.ac.uk/SUPERFAMILY/cgi-bin/scop.cgi?ipid=SSF52540' class="ext">SSF52540 </a>
+            <span>(P-loop containing nucleoside triphosphate hydrolases)</span>
+        </div>
+    </div>
+
+
+<span id="SSF52540-span-8"
+      class="match superfamily c4 Domain"
+      style="left:  33.213%;
+              width: 4.753%;"
+      title="SSF52540 553 - 631" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="SSF52540-popup-8" style="display: none;">
+
+        <div class="popup_topl"><span class="superfamily c4 Domain caption_puce"></span>553 - 631</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>SUPERFAMILY</b> <abbr class="icon icon-generic" data-icon="i" title="SUPERFAMILY is a library of profile hidden Markov models that represent all proteins of known structure. The library is based on the SCOP classification of proteins. Models correspond to SCOP domains at the superfamily level and a hybrid method subsequently sub-classifies domains at the family level. SUPERFAMILY provides its structural assignments at both levels to all completely sequenced genomes."></abbr> <br/>
+            <a href='http://supfam.cs.bris.ac.uk/SUPERFAMILY/cgi-bin/scop.cgi?ipid=SSF52540' class="ext">SSF52540 </a>
+            <span>(P-loop containing nucleoside triphosphate hydrolases)</span>
+        </div>
+    </div>
+
+
+<span id="SSF52540-span-9"
+      class="match superfamily c4 Domain"
+      style="left:  41.937%;
+              width: 5.957%;"
+      title="SSF52540 698 - 796" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="SSF52540-popup-9" style="display: none;">
+
+        <div class="popup_topl"><span class="superfamily c4 Domain caption_puce"></span>698 - 796</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>SUPERFAMILY</b> <abbr class="icon icon-generic" data-icon="i" title="SUPERFAMILY is a library of profile hidden Markov models that represent all proteins of known structure. The library is based on the SCOP classification of proteins. Models correspond to SCOP domains at the superfamily level and a hybrid method subsequently sub-classifies domains at the family level. SUPERFAMILY provides its structural assignments at both levels to all completely sequenced genomes."></abbr> <br/>
+            <a href='http://supfam.cs.bris.ac.uk/SUPERFAMILY/cgi-bin/scop.cgi?ipid=SSF52540' class="ext">SSF52540 </a>
+            <span>(P-loop containing nucleoside triphosphate hydrolases)</span>
+        </div>
+    </div>
+
+
+            <span class="grade" style="left:0%;" title="0"></span>
+            <span class="grade" style="left:12.034%;" title="200"></span>
+            <span class="grade" style="left:24.067%;" title="400"></span>
+            <span class="grade" style="left:36.101%;" title="600"></span>
+            <span class="grade" style="left:48.135%;" title="800"></span>
+            <span class="grade" style="left:60.168%;" title="1000"></span>
+            <span class="grade" style="left:72.202%;" title="1200"></span>
+            <span class="grade" style="left:84.236%;" title="1400"></span>
+            <span class="grade" style="left:100%;" title="1662"></span>
+
+    </div>
+
+</div>
+                                    </li>
+                            </ol>
+                            <div class="bot-row-line-bot"></div>
+                        </div>
+                    </li>
+                    <li class="entry Domain-row">
+
+                        <div class="top-row">
+                            <div class="top-row-id"><img src="resources/images/ico_type_domain_small.png"
+                                                         alt="Domain" title="Domain"/> <a
+                                    href="http://www.ebi.ac.uk/interpro/entry/IPR016024">IPR016024</a></div>
+                            <div class="top-row-name"><a href="http://www.ebi.ac.uk/interpro/entry/IPR016024"
+                                                         class="neutral">Armadillo-type fold</a></div>
+                        </div>
+
+                        <div class="bot-row">
+                            <div class="bot-row-line-top"></div>
+                            <ol class="signatures" style="border:0px solid pink;">
+
+
+                                    <li id="IPR016024-signatures" class="signature entry-signatures">
+<div class="bot-row-signame">
+    <a href="http://supfam.cs.bris.ac.uk/SUPERFAMILY/cgi-bin/scop.cgi?ipid=SSF48371" title="SSF48371 (ARM repeat)"
+       class="neutral">
+        SSF48371
+</a>
+
+                <span>(ARM repeat)</span>
+
+</div>
+<div class="bot-row-line">
+    <div class="matches">
+
+
+
+<span id="SSF48371-span-10"
+      class="match superfamily c46 Domain"
+      style="left:  85.86%;
+              width: 8.063%;"
+      title="SSF48371 1,428 - 1,561" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="SSF48371-popup-10" style="display: none;">
+
+        <div class="popup_topl"><span class="superfamily c46 Domain caption_puce"></span>1,428 - 1,561</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>SUPERFAMILY</b> <abbr class="icon icon-generic" data-icon="i" title="SUPERFAMILY is a library of profile hidden Markov models that represent all proteins of known structure. The library is based on the SCOP classification of proteins. Models correspond to SCOP domains at the superfamily level and a hybrid method subsequently sub-classifies domains at the family level. SUPERFAMILY provides its structural assignments at both levels to all completely sequenced genomes."></abbr> <br/>
+            <a href='http://supfam.cs.bris.ac.uk/SUPERFAMILY/cgi-bin/scop.cgi?ipid=SSF48371' class="ext">SSF48371 </a>
+            <span>(ARM repeat)</span>
+        </div>
+    </div>
+
+
+            <span class="grade" style="left:0%;" title="0"></span>
+            <span class="grade" style="left:12.034%;" title="200"></span>
+            <span class="grade" style="left:24.067%;" title="400"></span>
+            <span class="grade" style="left:36.101%;" title="600"></span>
+            <span class="grade" style="left:48.135%;" title="800"></span>
+            <span class="grade" style="left:60.168%;" title="1000"></span>
+            <span class="grade" style="left:72.202%;" title="1200"></span>
+            <span class="grade" style="left:84.236%;" title="1400"></span>
+            <span class="grade" style="left:100%;" title="1662"></span>
+
+    </div>
+
+</div>
+                                    </li>
+                            </ol>
+                            <div class="bot-row-line-bot"></div>
+                        </div>
+                    </li>
+                    <li class="entry Domain-row">
+
+                        <div class="top-row">
+                            <div class="top-row-id"><img src="resources/images/ico_type_domain_small.png"
+                                                         alt="Domain" title="Domain"/> <a
+                                    href="http://www.ebi.ac.uk/interpro/entry/IPR011989">IPR011989</a></div>
+                            <div class="top-row-name"><a href="http://www.ebi.ac.uk/interpro/entry/IPR011989"
+                                                         class="neutral">Armadillo-like helical</a></div>
+                        </div>
+
+                        <div class="bot-row">
+                            <div class="bot-row-line-top"></div>
+                            <ol class="signatures" style="border:0px solid pink;">
+
+
+                                    <li id="IPR011989-signatures" class="signature entry-signatures">
+<div class="bot-row-signame">
+        <a href="http://www.cathdb.info/superfamily/1.25.10.10" title="G3DSA:1.25.10.10"
+           class="neutral">
+        G3DSA:1.25.10.10
+</a>
+
+
+</div>
+<div class="bot-row-line">
+    <div class="matches">
+
+
+
+<span id="G3DSA1251010-span-11"
+      class="match gene3d c46 Domain"
+      style="left:  86.943%;
+              width: 4.332%;"
+      title="G3DSA:1.25.10.10 1,446 - 1,517" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="G3DSA1251010-popup-11" style="display: none;">
+
+        <div class="popup_topl"><span class="gene3d c46 Domain caption_puce"></span>1,446 - 1,517</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>GENE3D</b> <abbr class="icon icon-generic" data-icon="i" title="Gene3D HMMs extended predictions of CATH protein structures."></abbr> <br/>
+            <a href='http://www.cathdb.info/superfamily/1.25.10.10' class="ext">G3DSA:1.25.10.10 </a>
+            <span>(G3DSA:1.25.10.10)</span>
+        </div>
+    </div>
+
+
+            <span class="grade" style="left:0%;" title="0"></span>
+            <span class="grade" style="left:12.034%;" title="200"></span>
+            <span class="grade" style="left:24.067%;" title="400"></span>
+            <span class="grade" style="left:36.101%;" title="600"></span>
+            <span class="grade" style="left:48.135%;" title="800"></span>
+            <span class="grade" style="left:60.168%;" title="1000"></span>
+            <span class="grade" style="left:72.202%;" title="1200"></span>
+            <span class="grade" style="left:84.236%;" title="1400"></span>
+            <span class="grade" style="left:100%;" title="1662"></span>
+
+    </div>
+
+</div>
+                                    </li>
+                            </ol>
+                            <div class="bot-row-line-bot"></div>
+                        </div>
+                    </li>
+                    <li class="entry Repeat-row">
+
+                        <div class="top-row">
+                            <div class="top-row-id"><img src="resources/images/ico_type_repeat_small.png"
+                                                         alt="Repeat" title="Repeat"/> <a
+                                    href="http://www.ebi.ac.uk/interpro/entry/IPR000225">IPR000225</a></div>
+                            <div class="top-row-name"><a href="http://www.ebi.ac.uk/interpro/entry/IPR000225"
+                                                         class="neutral">Armadillo</a></div>
+                        </div>
+
+                        <div class="bot-row">
+                            <div class="bot-row-line-top"></div>
+                            <ol class="signatures" style="border:0px solid pink;">
+
+
+                                    <li id="IPR000225-signatures" class="signature entry-signatures">
+<div class="bot-row-signame">
+    <a href="http://www.expasy.org/prosite/PS50176" title="PS50176 (ARM_REPEAT)"
+       class="neutral">
+        PS50176
+</a>
+
+                <span>(ARM_REPEAT)</span>
+
+</div>
+<div class="bot-row-line">
+    <div class="matches">
+
+
+
+<span id="PS50176-span-12"
+      class="match prosite-profiles c49 Repeat"
+      style="left:  87.786%;
+              width: 2.888%;"
+      title="PS50176 1,460 - 1,507" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="PS50176-popup-12" style="display: none;">
+
+        <div class="popup_topl"><span class="prosite-profiles c49 Repeat caption_puce"></span>1,460 - 1,507</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>PROSITE profiles</b> <abbr class="icon icon-generic" data-icon="i" title="PROSITE consists of documentation entries describing protein domains, families and functional sites, as well as associated patterns and profiles to identify them. Profiles and patterns are constructed from manually edited seed alignments. PROSITE is complemented by ProRule, a collection of rules based on profiles and patterns, which increases the discriminatory power of profiles and patterns by providing additional information about functionally and/or structurally critical amino acids."></abbr> <br/>
+            <a href='http://www.expasy.org/prosite/PS50176' class="ext">PS50176 </a>
+            <span>(ARM_REPEAT)</span>
+        </div>
+    </div>
+
+
+            <span class="grade" style="left:0%;" title="0"></span>
+            <span class="grade" style="left:12.034%;" title="200"></span>
+            <span class="grade" style="left:24.067%;" title="400"></span>
+            <span class="grade" style="left:36.101%;" title="600"></span>
+            <span class="grade" style="left:48.135%;" title="800"></span>
+            <span class="grade" style="left:60.168%;" title="1000"></span>
+            <span class="grade" style="left:72.202%;" title="1200"></span>
+            <span class="grade" style="left:84.236%;" title="1400"></span>
+            <span class="grade" style="left:100%;" title="1662"></span>
+
+    </div>
+
+</div>
+                                    </li>
+                            </ol>
+                            <div class="bot-row-line-bot"></div>
+                        </div>
+                    </li>
+                    <li class="entry SITE-row">
+
+                        <div class="top-row">
+                            <div class="top-row-id"><img src="resources/images/ico_type_site_small.png"
+                                                         alt="SITE" title="SITE"/> <a
+                                    href="http://www.ebi.ac.uk/interpro/entry/IPR000048">IPR000048</a></div>
+                            <div class="top-row-name"><a href="http://www.ebi.ac.uk/interpro/entry/IPR000048"
+                                                         class="neutral">IQ motif, EF-hand binding site</a></div>
+                        </div>
+
+                        <div class="bot-row">
+                            <div class="bot-row-line-top"></div>
+                            <ol class="signatures" style="border:0px solid pink;">
+
+
+                                    <li id="IPR000048-signatures" class="signature entry-signatures">
+<div class="bot-row-signame">
+    <a href="http://smart.embl-heidelberg.de/smart/do_annotation.pl?ACC=SM00015&amp;BLAST=DUMMY" title="SM00015 (IQ)"
+       class="neutral">
+        SM00015
+</a>
+
+                <span>(IQ)</span>
+
+</div>
+<div class="bot-row-line">
+    <div class="matches">
+
+
+
+<span id="SM00015-span-13"
+      class="match smart SITE"
+      style="left:  64.2%;
+              width: 1.384%;"
+      title="SM00015 1,068 - 1,090" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="SM00015-popup-13" style="display: none;">
+
+        <div class="popup_topl"><span class="smart SITE caption_puce"></span>1,068 - 1,090</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>SMART</b> <abbr class="icon icon-generic" data-icon="i" title="SMART (a Simple Modular Architecture Research Tool) uses hidden Markov models (HMMs) and allows the identification of genetically mobile domains and the analysis of domain architectures. These domains are extensively annotated with respect to phyletic distributions, functional class, tertiary structures and functionally important residues."></abbr> <br/>
+            <a href='http://smart.embl-heidelberg.de/smart/do_annotation.pl?ACC=SM00015&amp;BLAST=DUMMY' class="ext">SM00015 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="SM00015-span-14"
+      class="match smart SITE"
+      style="left:  18.051%;
+              width: 1.384%;"
+      title="SM00015 301 - 323" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="SM00015-popup-14" style="display: none;">
+
+        <div class="popup_topl"><span class="smart SITE caption_puce"></span>301 - 323</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>SMART</b> <abbr class="icon icon-generic" data-icon="i" title="SMART (a Simple Modular Architecture Research Tool) uses hidden Markov models (HMMs) and allows the identification of genetically mobile domains and the analysis of domain architectures. These domains are extensively annotated with respect to phyletic distributions, functional class, tertiary structures and functionally important residues."></abbr> <br/>
+            <a href='http://smart.embl-heidelberg.de/smart/do_annotation.pl?ACC=SM00015&amp;BLAST=DUMMY' class="ext">SM00015 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="SM00015-span-15"
+      class="match smart SITE"
+      style="left:  20.217%;
+              width: 1.384%;"
+      title="SM00015 337 - 359" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="SM00015-popup-15" style="display: none;">
+
+        <div class="popup_topl"><span class="smart SITE caption_puce"></span>337 - 359</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>SMART</b> <abbr class="icon icon-generic" data-icon="i" title="SMART (a Simple Modular Architecture Research Tool) uses hidden Markov models (HMMs) and allows the identification of genetically mobile domains and the analysis of domain architectures. These domains are extensively annotated with respect to phyletic distributions, functional class, tertiary structures and functionally important residues."></abbr> <br/>
+            <a href='http://smart.embl-heidelberg.de/smart/do_annotation.pl?ACC=SM00015&amp;BLAST=DUMMY' class="ext">SM00015 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="SM00015-span-16"
+      class="match smart SITE"
+      style="left:  62.816%;
+              width: 1.384%;"
+      title="SM00015 1,045 - 1,067" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="SM00015-popup-16" style="display: none;">
+
+        <div class="popup_topl"><span class="smart SITE caption_puce"></span>1,045 - 1,067</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>SMART</b> <abbr class="icon icon-generic" data-icon="i" title="SMART (a Simple Modular Architecture Research Tool) uses hidden Markov models (HMMs) and allows the identification of genetically mobile domains and the analysis of domain architectures. These domains are extensively annotated with respect to phyletic distributions, functional class, tertiary structures and functionally important residues."></abbr> <br/>
+            <a href='http://smart.embl-heidelberg.de/smart/do_annotation.pl?ACC=SM00015&amp;BLAST=DUMMY' class="ext">SM00015 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="SM00015-span-17"
+      class="match smart SITE"
+      style="left:  54.091%;
+              width: 1.324%;"
+      title="SM00015 900 - 921" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="SM00015-popup-17" style="display: none;">
+
+        <div class="popup_topl"><span class="smart SITE caption_puce"></span>900 - 921</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>SMART</b> <abbr class="icon icon-generic" data-icon="i" title="SMART (a Simple Modular Architecture Research Tool) uses hidden Markov models (HMMs) and allows the identification of genetically mobile domains and the analysis of domain architectures. These domains are extensively annotated with respect to phyletic distributions, functional class, tertiary structures and functionally important residues."></abbr> <br/>
+            <a href='http://smart.embl-heidelberg.de/smart/do_annotation.pl?ACC=SM00015&amp;BLAST=DUMMY' class="ext">SM00015 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="SM00015-span-18"
+      class="match smart SITE"
+      style="left:  45.969%;
+              width: 1.324%;"
+      title="SM00015 765 - 786" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="SM00015-popup-18" style="display: none;">
+
+        <div class="popup_topl"><span class="smart SITE caption_puce"></span>765 - 786</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>SMART</b> <abbr class="icon icon-generic" data-icon="i" title="SMART (a Simple Modular Architecture Research Tool) uses hidden Markov models (HMMs) and allows the identification of genetically mobile domains and the analysis of domain architectures. These domains are extensively annotated with respect to phyletic distributions, functional class, tertiary structures and functionally important residues."></abbr> <br/>
+            <a href='http://smart.embl-heidelberg.de/smart/do_annotation.pl?ACC=SM00015&amp;BLAST=DUMMY' class="ext">SM00015 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="SM00015-span-19"
+      class="match smart SITE"
+      style="left:  30.505%;
+              width: 1.384%;"
+      title="SM00015 508 - 530" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="SM00015-popup-19" style="display: none;">
+
+        <div class="popup_topl"><span class="smart SITE caption_puce"></span>508 - 530</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>SMART</b> <abbr class="icon icon-generic" data-icon="i" title="SMART (a Simple Modular Architecture Research Tool) uses hidden Markov models (HMMs) and allows the identification of genetically mobile domains and the analysis of domain architectures. These domains are extensively annotated with respect to phyletic distributions, functional class, tertiary structures and functionally important residues."></abbr> <br/>
+            <a href='http://smart.embl-heidelberg.de/smart/do_annotation.pl?ACC=SM00015&amp;BLAST=DUMMY' class="ext">SM00015 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="SM00015-span-20"
+      class="match smart SITE"
+      style="left:  31.889%;
+              width: 1.384%;"
+      title="SM00015 531 - 553" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="SM00015-popup-20" style="display: none;">
+
+        <div class="popup_topl"><span class="smart SITE caption_puce"></span>531 - 553</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>SMART</b> <abbr class="icon icon-generic" data-icon="i" title="SMART (a Simple Modular Architecture Research Tool) uses hidden Markov models (HMMs) and allows the identification of genetically mobile domains and the analysis of domain architectures. These domains are extensively annotated with respect to phyletic distributions, functional class, tertiary structures and functionally important residues."></abbr> <br/>
+            <a href='http://smart.embl-heidelberg.de/smart/do_annotation.pl?ACC=SM00015&amp;BLAST=DUMMY' class="ext">SM00015 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="SM00015-span-21"
+      class="match smart SITE"
+      style="left:  65.584%;
+              width: 1.384%;"
+      title="SM00015 1,091 - 1,113" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="SM00015-popup-21" style="display: none;">
+
+        <div class="popup_topl"><span class="smart SITE caption_puce"></span>1,091 - 1,113</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>SMART</b> <abbr class="icon icon-generic" data-icon="i" title="SMART (a Simple Modular Architecture Research Tool) uses hidden Markov models (HMMs) and allows the identification of genetically mobile domains and the analysis of domain architectures. These domains are extensively annotated with respect to phyletic distributions, functional class, tertiary structures and functionally important residues."></abbr> <br/>
+            <a href='http://smart.embl-heidelberg.de/smart/do_annotation.pl?ACC=SM00015&amp;BLAST=DUMMY' class="ext">SM00015 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="SM00015-span-22"
+      class="match smart SITE"
+      style="left:  15.523%;
+              width: 1.384%;"
+      title="SM00015 259 - 281" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="SM00015-popup-22" style="display: none;">
+
+        <div class="popup_topl"><span class="smart SITE caption_puce"></span>259 - 281</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>SMART</b> <abbr class="icon icon-generic" data-icon="i" title="SMART (a Simple Modular Architecture Research Tool) uses hidden Markov models (HMMs) and allows the identification of genetically mobile domains and the analysis of domain architectures. These domains are extensively annotated with respect to phyletic distributions, functional class, tertiary structures and functionally important residues."></abbr> <br/>
+            <a href='http://smart.embl-heidelberg.de/smart/do_annotation.pl?ACC=SM00015&amp;BLAST=DUMMY' class="ext">SM00015 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="SM00015-span-23"
+      class="match smart SITE"
+      style="left:  57.28%;
+              width: 1.384%;"
+      title="SM00015 953 - 975" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="SM00015-popup-23" style="display: none;">
+
+        <div class="popup_topl"><span class="smart SITE caption_puce"></span>953 - 975</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>SMART</b> <abbr class="icon icon-generic" data-icon="i" title="SMART (a Simple Modular Architecture Research Tool) uses hidden Markov models (HMMs) and allows the identification of genetically mobile domains and the analysis of domain architectures. These domains are extensively annotated with respect to phyletic distributions, functional class, tertiary structures and functionally important residues."></abbr> <br/>
+            <a href='http://smart.embl-heidelberg.de/smart/do_annotation.pl?ACC=SM00015&amp;BLAST=DUMMY' class="ext">SM00015 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="SM00015-span-24"
+      class="match smart SITE"
+      style="left:  82.19%;
+              width: 1.384%;"
+      title="SM00015 1,367 - 1,389" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="SM00015-popup-24" style="display: none;">
+
+        <div class="popup_topl"><span class="smart SITE caption_puce"></span>1,367 - 1,389</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>SMART</b> <abbr class="icon icon-generic" data-icon="i" title="SMART (a Simple Modular Architecture Research Tool) uses hidden Markov models (HMMs) and allows the identification of genetically mobile domains and the analysis of domain architectures. These domains are extensively annotated with respect to phyletic distributions, functional class, tertiary structures and functionally important residues."></abbr> <br/>
+            <a href='http://smart.embl-heidelberg.de/smart/do_annotation.pl?ACC=SM00015&amp;BLAST=DUMMY' class="ext">SM00015 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="SM00015-span-25"
+      class="match smart SITE"
+      style="left:  80.806%;
+              width: 1.384%;"
+      title="SM00015 1,344 - 1,366" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="SM00015-popup-25" style="display: none;">
+
+        <div class="popup_topl"><span class="smart SITE caption_puce"></span>1,344 - 1,366</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>SMART</b> <abbr class="icon icon-generic" data-icon="i" title="SMART (a Simple Modular Architecture Research Tool) uses hidden Markov models (HMMs) and allows the identification of genetically mobile domains and the analysis of domain architectures. These domains are extensively annotated with respect to phyletic distributions, functional class, tertiary structures and functionally important residues."></abbr> <br/>
+            <a href='http://smart.embl-heidelberg.de/smart/do_annotation.pl?ACC=SM00015&amp;BLAST=DUMMY' class="ext">SM00015 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="SM00015-span-26"
+      class="match smart SITE"
+      style="left:  36.041%;
+              width: 1.384%;"
+      title="SM00015 600 - 622" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="SM00015-popup-26" style="display: none;">
+
+        <div class="popup_topl"><span class="smart SITE caption_puce"></span>600 - 622</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>SMART</b> <abbr class="icon icon-generic" data-icon="i" title="SMART (a Simple Modular Architecture Research Tool) uses hidden Markov models (HMMs) and allows the identification of genetically mobile domains and the analysis of domain architectures. These domains are extensively annotated with respect to phyletic distributions, functional class, tertiary structures and functionally important residues."></abbr> <br/>
+            <a href='http://smart.embl-heidelberg.de/smart/do_annotation.pl?ACC=SM00015&amp;BLAST=DUMMY' class="ext">SM00015 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="SM00015-span-27"
+      class="match smart SITE"
+      style="left:  47.292%;
+              width: 1.324%;"
+      title="SM00015 787 - 808" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="SM00015-popup-27" style="display: none;">
+
+        <div class="popup_topl"><span class="smart SITE caption_puce"></span>787 - 808</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>SMART</b> <abbr class="icon icon-generic" data-icon="i" title="SMART (a Simple Modular Architecture Research Tool) uses hidden Markov models (HMMs) and allows the identification of genetically mobile domains and the analysis of domain architectures. These domains are extensively annotated with respect to phyletic distributions, functional class, tertiary structures and functionally important residues."></abbr> <br/>
+            <a href='http://smart.embl-heidelberg.de/smart/do_annotation.pl?ACC=SM00015&amp;BLAST=DUMMY' class="ext">SM00015 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="SM00015-span-28"
+      class="match smart SITE"
+      style="left:  40.193%;
+              width: 1.384%;"
+      title="SM00015 669 - 691" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="SM00015-popup-28" style="display: none;">
+
+        <div class="popup_topl"><span class="smart SITE caption_puce"></span>669 - 691</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>SMART</b> <abbr class="icon icon-generic" data-icon="i" title="SMART (a Simple Modular Architecture Research Tool) uses hidden Markov models (HMMs) and allows the identification of genetically mobile domains and the analysis of domain architectures. These domains are extensively annotated with respect to phyletic distributions, functional class, tertiary structures and functionally important residues."></abbr> <br/>
+            <a href='http://smart.embl-heidelberg.de/smart/do_annotation.pl?ACC=SM00015&amp;BLAST=DUMMY' class="ext">SM00015 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="SM00015-span-29"
+      class="match smart SITE"
+      style="left:  55.897%;
+              width: 1.384%;"
+      title="SM00015 930 - 952" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="SM00015-popup-29" style="display: none;">
+
+        <div class="popup_topl"><span class="smart SITE caption_puce"></span>930 - 952</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>SMART</b> <abbr class="icon icon-generic" data-icon="i" title="SMART (a Simple Modular Architecture Research Tool) uses hidden Markov models (HMMs) and allows the identification of genetically mobile domains and the analysis of domain architectures. These domains are extensively annotated with respect to phyletic distributions, functional class, tertiary structures and functionally important residues."></abbr> <br/>
+            <a href='http://smart.embl-heidelberg.de/smart/do_annotation.pl?ACC=SM00015&amp;BLAST=DUMMY' class="ext">SM00015 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="SM00015-span-30"
+      class="match smart SITE"
+      style="left:  48.616%;
+              width: 1.384%;"
+      title="SM00015 809 - 831" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="SM00015-popup-30" style="display: none;">
+
+        <div class="popup_topl"><span class="smart SITE caption_puce"></span>809 - 831</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>SMART</b> <abbr class="icon icon-generic" data-icon="i" title="SMART (a Simple Modular Architecture Research Tool) uses hidden Markov models (HMMs) and allows the identification of genetically mobile domains and the analysis of domain architectures. These domains are extensively annotated with respect to phyletic distributions, functional class, tertiary structures and functionally important residues."></abbr> <br/>
+            <a href='http://smart.embl-heidelberg.de/smart/do_annotation.pl?ACC=SM00015&amp;BLAST=DUMMY' class="ext">SM00015 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="SM00015-span-31"
+      class="match smart SITE"
+      style="left:  58.664%;
+              width: 1.384%;"
+      title="SM00015 976 - 998" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="SM00015-popup-31" style="display: none;">
+
+        <div class="popup_topl"><span class="smart SITE caption_puce"></span>976 - 998</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>SMART</b> <abbr class="icon icon-generic" data-icon="i" title="SMART (a Simple Modular Architecture Research Tool) uses hidden Markov models (HMMs) and allows the identification of genetically mobile domains and the analysis of domain architectures. These domains are extensively annotated with respect to phyletic distributions, functional class, tertiary structures and functionally important residues."></abbr> <br/>
+            <a href='http://smart.embl-heidelberg.de/smart/do_annotation.pl?ACC=SM00015&amp;BLAST=DUMMY' class="ext">SM00015 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="SM00015-span-32"
+      class="match smart SITE"
+      style="left:  76.354%;
+              width: 1.384%;"
+      title="SM00015 1,270 - 1,292" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="SM00015-popup-32" style="display: none;">
+
+        <div class="popup_topl"><span class="smart SITE caption_puce"></span>1,270 - 1,292</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>SMART</b> <abbr class="icon icon-generic" data-icon="i" title="SMART (a Simple Modular Architecture Research Tool) uses hidden Markov models (HMMs) and allows the identification of genetically mobile domains and the analysis of domain architectures. These domains are extensively annotated with respect to phyletic distributions, functional class, tertiary structures and functionally important residues."></abbr> <br/>
+            <a href='http://smart.embl-heidelberg.de/smart/do_annotation.pl?ACC=SM00015&amp;BLAST=DUMMY' class="ext">SM00015 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="SM00015-span-33"
+      class="match smart SITE"
+      style="left:  52.708%;
+              width: 1.384%;"
+      title="SM00015 877 - 899" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="SM00015-popup-33" style="display: none;">
+
+        <div class="popup_topl"><span class="smart SITE caption_puce"></span>877 - 899</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>SMART</b> <abbr class="icon icon-generic" data-icon="i" title="SMART (a Simple Modular Architecture Research Tool) uses hidden Markov models (HMMs) and allows the identification of genetically mobile domains and the analysis of domain architectures. These domains are extensively annotated with respect to phyletic distributions, functional class, tertiary structures and functionally important residues."></abbr> <br/>
+            <a href='http://smart.embl-heidelberg.de/smart/do_annotation.pl?ACC=SM00015&amp;BLAST=DUMMY' class="ext">SM00015 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="SM00015-span-34"
+      class="match smart SITE"
+      style="left:  33.273%;
+              width: 1.384%;"
+      title="SM00015 554 - 576" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="SM00015-popup-34" style="display: none;">
+
+        <div class="popup_topl"><span class="smart SITE caption_puce"></span>554 - 576</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>SMART</b> <abbr class="icon icon-generic" data-icon="i" title="SMART (a Simple Modular Architecture Research Tool) uses hidden Markov models (HMMs) and allows the identification of genetically mobile domains and the analysis of domain architectures. These domains are extensively annotated with respect to phyletic distributions, functional class, tertiary structures and functionally important residues."></abbr> <br/>
+            <a href='http://smart.embl-heidelberg.de/smart/do_annotation.pl?ACC=SM00015&amp;BLAST=DUMMY' class="ext">SM00015 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="SM00015-span-35"
+      class="match smart SITE"
+      style="left:  37.425%;
+              width: 1.384%;"
+      title="SM00015 623 - 645" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="SM00015-popup-35" style="display: none;">
+
+        <div class="popup_topl"><span class="smart SITE caption_puce"></span>623 - 645</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>SMART</b> <abbr class="icon icon-generic" data-icon="i" title="SMART (a Simple Modular Architecture Research Tool) uses hidden Markov models (HMMs) and allows the identification of genetically mobile domains and the analysis of domain architectures. These domains are extensively annotated with respect to phyletic distributions, functional class, tertiary structures and functionally important residues."></abbr> <br/>
+            <a href='http://smart.embl-heidelberg.de/smart/do_annotation.pl?ACC=SM00015&amp;BLAST=DUMMY' class="ext">SM00015 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="SM00015-span-36"
+      class="match smart SITE"
+      style="left:  41.576%;
+              width: 1.384%;"
+      title="SM00015 692 - 714" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="SM00015-popup-36" style="display: none;">
+
+        <div class="popup_topl"><span class="smart SITE caption_puce"></span>692 - 714</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>SMART</b> <abbr class="icon icon-generic" data-icon="i" title="SMART (a Simple Modular Architecture Research Tool) uses hidden Markov models (HMMs) and allows the identification of genetically mobile domains and the analysis of domain architectures. These domains are extensively annotated with respect to phyletic distributions, functional class, tertiary structures and functionally important residues."></abbr> <br/>
+            <a href='http://smart.embl-heidelberg.de/smart/do_annotation.pl?ACC=SM00015&amp;BLAST=DUMMY' class="ext">SM00015 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="SM00015-span-37"
+      class="match smart SITE"
+      style="left:  71.42%;
+              width: 1.384%;"
+      title="SM00015 1,188 - 1,210" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="SM00015-popup-37" style="display: none;">
+
+        <div class="popup_topl"><span class="smart SITE caption_puce"></span>1,188 - 1,210</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>SMART</b> <abbr class="icon icon-generic" data-icon="i" title="SMART (a Simple Modular Architecture Research Tool) uses hidden Markov models (HMMs) and allows the identification of genetically mobile domains and the analysis of domain architectures. These domains are extensively annotated with respect to phyletic distributions, functional class, tertiary structures and functionally important residues."></abbr> <br/>
+            <a href='http://smart.embl-heidelberg.de/smart/do_annotation.pl?ACC=SM00015&amp;BLAST=DUMMY' class="ext">SM00015 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="SM00015-span-38"
+      class="match smart SITE"
+      style="left:  44.585%;
+              width: 1.384%;"
+      title="SM00015 742 - 764" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="SM00015-popup-38" style="display: none;">
+
+        <div class="popup_topl"><span class="smart SITE caption_puce"></span>742 - 764</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>SMART</b> <abbr class="icon icon-generic" data-icon="i" title="SMART (a Simple Modular Architecture Research Tool) uses hidden Markov models (HMMs) and allows the identification of genetically mobile domains and the analysis of domain architectures. These domains are extensively annotated with respect to phyletic distributions, functional class, tertiary structures and functionally important residues."></abbr> <br/>
+            <a href='http://smart.embl-heidelberg.de/smart/do_annotation.pl?ACC=SM00015&amp;BLAST=DUMMY' class="ext">SM00015 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="SM00015-span-39"
+      class="match smart SITE"
+      style="left:  34.657%;
+              width: 1.384%;"
+      title="SM00015 577 - 599" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="SM00015-popup-39" style="display: none;">
+
+        <div class="popup_topl"><span class="smart SITE caption_puce"></span>577 - 599</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>SMART</b> <abbr class="icon icon-generic" data-icon="i" title="SMART (a Simple Modular Architecture Research Tool) uses hidden Markov models (HMMs) and allows the identification of genetically mobile domains and the analysis of domain architectures. These domains are extensively annotated with respect to phyletic distributions, functional class, tertiary structures and functionally important residues."></abbr> <br/>
+            <a href='http://smart.embl-heidelberg.de/smart/do_annotation.pl?ACC=SM00015&amp;BLAST=DUMMY' class="ext">SM00015 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="SM00015-span-40"
+      class="match smart SITE"
+      style="left:  27.978%;
+              width: 1.384%;"
+      title="SM00015 466 - 488" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="SM00015-popup-40" style="display: none;">
+
+        <div class="popup_topl"><span class="smart SITE caption_puce"></span>466 - 488</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>SMART</b> <abbr class="icon icon-generic" data-icon="i" title="SMART (a Simple Modular Architecture Research Tool) uses hidden Markov models (HMMs) and allows the identification of genetically mobile domains and the analysis of domain architectures. These domains are extensively annotated with respect to phyletic distributions, functional class, tertiary structures and functionally important residues."></abbr> <br/>
+            <a href='http://smart.embl-heidelberg.de/smart/do_annotation.pl?ACC=SM00015&amp;BLAST=DUMMY' class="ext">SM00015 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="SM00015-span-41"
+      class="match smart SITE"
+      style="left:  51.324%;
+              width: 1.384%;"
+      title="SM00015 854 - 876" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="SM00015-popup-41" style="display: none;">
+
+        <div class="popup_topl"><span class="smart SITE caption_puce"></span>854 - 876</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>SMART</b> <abbr class="icon icon-generic" data-icon="i" title="SMART (a Simple Modular Architecture Research Tool) uses hidden Markov models (HMMs) and allows the identification of genetically mobile domains and the analysis of domain architectures. These domains are extensively annotated with respect to phyletic distributions, functional class, tertiary structures and functionally important residues."></abbr> <br/>
+            <a href='http://smart.embl-heidelberg.de/smart/do_annotation.pl?ACC=SM00015&amp;BLAST=DUMMY' class="ext">SM00015 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="SM00015-span-42"
+      class="match smart SITE"
+      style="left:  38.809%;
+              width: 1.384%;"
+      title="SM00015 646 - 668" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="SM00015-popup-42" style="display: none;">
+
+        <div class="popup_topl"><span class="smart SITE caption_puce"></span>646 - 668</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>SMART</b> <abbr class="icon icon-generic" data-icon="i" title="SMART (a Simple Modular Architecture Research Tool) uses hidden Markov models (HMMs) and allows the identification of genetically mobile domains and the analysis of domain architectures. These domains are extensively annotated with respect to phyletic distributions, functional class, tertiary structures and functionally important residues."></abbr> <br/>
+            <a href='http://smart.embl-heidelberg.de/smart/do_annotation.pl?ACC=SM00015&amp;BLAST=DUMMY' class="ext">SM00015 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="SM00015-span-43"
+      class="match smart SITE"
+      style="left:  60.048%;
+              width: 1.384%;"
+      title="SM00015 999 - 1,021" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="SM00015-popup-43" style="display: none;">
+
+        <div class="popup_topl"><span class="smart SITE caption_puce"></span>999 - 1,021</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>SMART</b> <abbr class="icon icon-generic" data-icon="i" title="SMART (a Simple Modular Architecture Research Tool) uses hidden Markov models (HMMs) and allows the identification of genetically mobile domains and the analysis of domain architectures. These domains are extensively annotated with respect to phyletic distributions, functional class, tertiary structures and functionally important residues."></abbr> <br/>
+            <a href='http://smart.embl-heidelberg.de/smart/do_annotation.pl?ACC=SM00015&amp;BLAST=DUMMY' class="ext">SM00015 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="SM00015-span-44"
+      class="match smart SITE"
+      style="left:  42.96%;
+              width: 1.384%;"
+      title="SM00015 715 - 737" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="SM00015-popup-44" style="display: none;">
+
+        <div class="popup_topl"><span class="smart SITE caption_puce"></span>715 - 737</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>SMART</b> <abbr class="icon icon-generic" data-icon="i" title="SMART (a Simple Modular Architecture Research Tool) uses hidden Markov models (HMMs) and allows the identification of genetically mobile domains and the analysis of domain architectures. These domains are extensively annotated with respect to phyletic distributions, functional class, tertiary structures and functionally important residues."></abbr> <br/>
+            <a href='http://smart.embl-heidelberg.de/smart/do_annotation.pl?ACC=SM00015&amp;BLAST=DUMMY' class="ext">SM00015 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+            <span class="grade" style="left:0%;" title="0"></span>
+            <span class="grade" style="left:12.034%;" title="200"></span>
+            <span class="grade" style="left:24.067%;" title="400"></span>
+            <span class="grade" style="left:36.101%;" title="600"></span>
+            <span class="grade" style="left:48.135%;" title="800"></span>
+            <span class="grade" style="left:60.168%;" title="1000"></span>
+            <span class="grade" style="left:72.202%;" title="1200"></span>
+            <span class="grade" style="left:84.236%;" title="1400"></span>
+            <span class="grade" style="left:100%;" title="1662"></span>
+
+    </div>
+
+</div>
+                                    </li>
+
+                                    <li id="IPR000048-signatures" class="signature entry-signatures">
+<div class="bot-row-signame">
+    <a href="http://www.expasy.org/prosite/PS50096" title="PS50096 (IQ)"
+       class="neutral">
+        PS50096
+</a>
+
+                <span>(IQ)</span>
+
+</div>
+<div class="bot-row-line">
+    <div class="matches">
+
+
+
+<span id="PS50096-span-45"
+      class="match prosite-profiles SITE"
+      style="left:  60.108%;
+              width: 1.805%;"
+      title="PS50096 1,000 - 1,029" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="PS50096-popup-45" style="display: none;">
+
+        <div class="popup_topl"><span class="prosite-profiles SITE caption_puce"></span>1,000 - 1,029</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>PROSITE profiles</b> <abbr class="icon icon-generic" data-icon="i" title="PROSITE consists of documentation entries describing protein domains, families and functional sites, as well as associated patterns and profiles to identify them. Profiles and patterns are constructed from manually edited seed alignments. PROSITE is complemented by ProRule, a collection of rules based on profiles and patterns, which increases the discriminatory power of profiles and patterns by providing additional information about functionally and/or structurally critical amino acids."></abbr> <br/>
+            <a href='http://www.expasy.org/prosite/PS50096' class="ext">PS50096 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="PS50096-span-46"
+      class="match prosite-profiles SITE"
+      style="left:  31.949%;
+              width: 1.685%;"
+      title="PS50096 532 - 559" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="PS50096-popup-46" style="display: none;">
+
+        <div class="popup_topl"><span class="prosite-profiles SITE caption_puce"></span>532 - 559</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>PROSITE profiles</b> <abbr class="icon icon-generic" data-icon="i" title="PROSITE consists of documentation entries describing protein domains, families and functional sites, as well as associated patterns and profiles to identify them. Profiles and patterns are constructed from manually edited seed alignments. PROSITE is complemented by ProRule, a collection of rules based on profiles and patterns, which increases the discriminatory power of profiles and patterns by providing additional information about functionally and/or structurally critical amino acids."></abbr> <br/>
+            <a href='http://www.expasy.org/prosite/PS50096' class="ext">PS50096 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="PS50096-span-47"
+      class="match prosite-profiles SITE"
+      style="left:  76.414%;
+              width: 1.685%;"
+      title="PS50096 1,271 - 1,298" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="PS50096-popup-47" style="display: none;">
+
+        <div class="popup_topl"><span class="prosite-profiles SITE caption_puce"></span>1,271 - 1,298</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>PROSITE profiles</b> <abbr class="icon icon-generic" data-icon="i" title="PROSITE consists of documentation entries describing protein domains, families and functional sites, as well as associated patterns and profiles to identify them. Profiles and patterns are constructed from manually edited seed alignments. PROSITE is complemented by ProRule, a collection of rules based on profiles and patterns, which increases the discriminatory power of profiles and patterns by providing additional information about functionally and/or structurally critical amino acids."></abbr> <br/>
+            <a href='http://www.expasy.org/prosite/PS50096' class="ext">PS50096 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="PS50096-span-48"
+      class="match prosite-profiles SITE"
+      style="left:  45.969%;
+              width: 1.625%;"
+      title="PS50096 765 - 791" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="PS50096-popup-48" style="display: none;">
+
+        <div class="popup_topl"><span class="prosite-profiles SITE caption_puce"></span>765 - 791</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>PROSITE profiles</b> <abbr class="icon icon-generic" data-icon="i" title="PROSITE consists of documentation entries describing protein domains, families and functional sites, as well as associated patterns and profiles to identify them. Profiles and patterns are constructed from manually edited seed alignments. PROSITE is complemented by ProRule, a collection of rules based on profiles and patterns, which increases the discriminatory power of profiles and patterns by providing additional information about functionally and/or structurally critical amino acids."></abbr> <br/>
+            <a href='http://www.expasy.org/prosite/PS50096' class="ext">PS50096 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="PS50096-span-49"
+      class="match prosite-profiles SITE"
+      style="left:  15.704%;
+              width: 1.685%;"
+      title="PS50096 262 - 289" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="PS50096-popup-49" style="display: none;">
+
+        <div class="popup_topl"><span class="prosite-profiles SITE caption_puce"></span>262 - 289</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>PROSITE profiles</b> <abbr class="icon icon-generic" data-icon="i" title="PROSITE consists of documentation entries describing protein domains, families and functional sites, as well as associated patterns and profiles to identify them. Profiles and patterns are constructed from manually edited seed alignments. PROSITE is complemented by ProRule, a collection of rules based on profiles and patterns, which increases the discriminatory power of profiles and patterns by providing additional information about functionally and/or structurally critical amino acids."></abbr> <br/>
+            <a href='http://www.expasy.org/prosite/PS50096' class="ext">PS50096 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="PS50096-span-50"
+      class="match prosite-profiles SITE"
+      style="left:  80.866%;
+              width: 1.685%;"
+      title="PS50096 1,345 - 1,372" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="PS50096-popup-50" style="display: none;">
+
+        <div class="popup_topl"><span class="prosite-profiles SITE caption_puce"></span>1,345 - 1,372</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>PROSITE profiles</b> <abbr class="icon icon-generic" data-icon="i" title="PROSITE consists of documentation entries describing protein domains, families and functional sites, as well as associated patterns and profiles to identify them. Profiles and patterns are constructed from manually edited seed alignments. PROSITE is complemented by ProRule, a collection of rules based on profiles and patterns, which increases the discriminatory power of profiles and patterns by providing additional information about functionally and/or structurally critical amino acids."></abbr> <br/>
+            <a href='http://www.expasy.org/prosite/PS50096' class="ext">PS50096 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="PS50096-span-51"
+      class="match prosite-profiles SITE"
+      style="left:  82.25%;
+              width: 1.805%;"
+      title="PS50096 1,368 - 1,397" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="PS50096-popup-51" style="display: none;">
+
+        <div class="popup_topl"><span class="prosite-profiles SITE caption_puce"></span>1,368 - 1,397</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>PROSITE profiles</b> <abbr class="icon icon-generic" data-icon="i" title="PROSITE consists of documentation entries describing protein domains, families and functional sites, as well as associated patterns and profiles to identify them. Profiles and patterns are constructed from manually edited seed alignments. PROSITE is complemented by ProRule, a collection of rules based on profiles and patterns, which increases the discriminatory power of profiles and patterns by providing additional information about functionally and/or structurally critical amino acids."></abbr> <br/>
+            <a href='http://www.expasy.org/prosite/PS50096' class="ext">PS50096 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="PS50096-span-52"
+      class="match prosite-profiles SITE"
+      style="left:  40.313%;
+              width: 1.745%;"
+      title="PS50096 671 - 699" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="PS50096-popup-52" style="display: none;">
+
+        <div class="popup_topl"><span class="prosite-profiles SITE caption_puce"></span>671 - 699</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>PROSITE profiles</b> <abbr class="icon icon-generic" data-icon="i" title="PROSITE consists of documentation entries describing protein domains, families and functional sites, as well as associated patterns and profiles to identify them. Profiles and patterns are constructed from manually edited seed alignments. PROSITE is complemented by ProRule, a collection of rules based on profiles and patterns, which increases the discriminatory power of profiles and patterns by providing additional information about functionally and/or structurally critical amino acids."></abbr> <br/>
+            <a href='http://www.expasy.org/prosite/PS50096' class="ext">PS50096 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="PS50096-span-53"
+      class="match prosite-profiles SITE"
+      style="left:  65.764%;
+              width: 1.685%;"
+      title="PS50096 1,094 - 1,121" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="PS50096-popup-53" style="display: none;">
+
+        <div class="popup_topl"><span class="prosite-profiles SITE caption_puce"></span>1,094 - 1,121</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>PROSITE profiles</b> <abbr class="icon icon-generic" data-icon="i" title="PROSITE consists of documentation entries describing protein domains, families and functional sites, as well as associated patterns and profiles to identify them. Profiles and patterns are constructed from manually edited seed alignments. PROSITE is complemented by ProRule, a collection of rules based on profiles and patterns, which increases the discriminatory power of profiles and patterns by providing additional information about functionally and/or structurally critical amino acids."></abbr> <br/>
+            <a href='http://www.expasy.org/prosite/PS50096' class="ext">PS50096 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="PS50096-span-54"
+      class="match prosite-profiles SITE"
+      style="left:  44.645%;
+              width: 1.745%;"
+      title="PS50096 743 - 771" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="PS50096-popup-54" style="display: none;">
+
+        <div class="popup_topl"><span class="prosite-profiles SITE caption_puce"></span>743 - 771</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>PROSITE profiles</b> <abbr class="icon icon-generic" data-icon="i" title="PROSITE consists of documentation entries describing protein domains, families and functional sites, as well as associated patterns and profiles to identify them. Profiles and patterns are constructed from manually edited seed alignments. PROSITE is complemented by ProRule, a collection of rules based on profiles and patterns, which increases the discriminatory power of profiles and patterns by providing additional information about functionally and/or structurally critical amino acids."></abbr> <br/>
+            <a href='http://www.expasy.org/prosite/PS50096' class="ext">PS50096 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="PS50096-span-55"
+      class="match prosite-profiles SITE"
+      style="left:  36.101%;
+              width: 1.745%;"
+      title="PS50096 601 - 629" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="PS50096-popup-55" style="display: none;">
+
+        <div class="popup_topl"><span class="prosite-profiles SITE caption_puce"></span>601 - 629</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>PROSITE profiles</b> <abbr class="icon icon-generic" data-icon="i" title="PROSITE consists of documentation entries describing protein domains, families and functional sites, as well as associated patterns and profiles to identify them. Profiles and patterns are constructed from manually edited seed alignments. PROSITE is complemented by ProRule, a collection of rules based on profiles and patterns, which increases the discriminatory power of profiles and patterns by providing additional information about functionally and/or structurally critical amino acids."></abbr> <br/>
+            <a href='http://www.expasy.org/prosite/PS50096' class="ext">PS50096 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="PS50096-span-56"
+      class="match prosite-profiles SITE"
+      style="left:  34.838%;
+              width: 1.564%;"
+      title="PS50096 580 - 605" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="PS50096-popup-56" style="display: none;">
+
+        <div class="popup_topl"><span class="prosite-profiles SITE caption_puce"></span>580 - 605</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>PROSITE profiles</b> <abbr class="icon icon-generic" data-icon="i" title="PROSITE consists of documentation entries describing protein domains, families and functional sites, as well as associated patterns and profiles to identify them. Profiles and patterns are constructed from manually edited seed alignments. PROSITE is complemented by ProRule, a collection of rules based on profiles and patterns, which increases the discriminatory power of profiles and patterns by providing additional information about functionally and/or structurally critical amino acids."></abbr> <br/>
+            <a href='http://www.expasy.org/prosite/PS50096' class="ext">PS50096 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="PS50096-span-57"
+      class="match prosite-profiles SITE"
+      style="left:  43.02%;
+              width: 1.805%;"
+      title="PS50096 716 - 745" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="PS50096-popup-57" style="display: none;">
+
+        <div class="popup_topl"><span class="prosite-profiles SITE caption_puce"></span>716 - 745</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>PROSITE profiles</b> <abbr class="icon icon-generic" data-icon="i" title="PROSITE consists of documentation entries describing protein domains, families and functional sites, as well as associated patterns and profiles to identify them. Profiles and patterns are constructed from manually edited seed alignments. PROSITE is complemented by ProRule, a collection of rules based on profiles and patterns, which increases the discriminatory power of profiles and patterns by providing additional information about functionally and/or structurally critical amino acids."></abbr> <br/>
+            <a href='http://www.expasy.org/prosite/PS50096' class="ext">PS50096 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="PS50096-span-58"
+      class="match prosite-profiles SITE"
+      style="left:  56.077%;
+              width: 1.685%;"
+      title="PS50096 933 - 960" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="PS50096-popup-58" style="display: none;">
+
+        <div class="popup_topl"><span class="prosite-profiles SITE caption_puce"></span>933 - 960</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>PROSITE profiles</b> <abbr class="icon icon-generic" data-icon="i" title="PROSITE consists of documentation entries describing protein domains, families and functional sites, as well as associated patterns and profiles to identify them. Profiles and patterns are constructed from manually edited seed alignments. PROSITE is complemented by ProRule, a collection of rules based on profiles and patterns, which increases the discriminatory power of profiles and patterns by providing additional information about functionally and/or structurally critical amino acids."></abbr> <br/>
+            <a href='http://www.expasy.org/prosite/PS50096' class="ext">PS50096 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="PS50096-span-59"
+      class="match prosite-profiles SITE"
+      style="left:  58.724%;
+              width: 1.805%;"
+      title="PS50096 977 - 1,006" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="PS50096-popup-59" style="display: none;">
+
+        <div class="popup_topl"><span class="prosite-profiles SITE caption_puce"></span>977 - 1,006</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>PROSITE profiles</b> <abbr class="icon icon-generic" data-icon="i" title="PROSITE consists of documentation entries describing protein domains, families and functional sites, as well as associated patterns and profiles to identify them. Profiles and patterns are constructed from manually edited seed alignments. PROSITE is complemented by ProRule, a collection of rules based on profiles and patterns, which increases the discriminatory power of profiles and patterns by providing additional information about functionally and/or structurally critical amino acids."></abbr> <br/>
+            <a href='http://www.expasy.org/prosite/PS50096' class="ext">PS50096 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="PS50096-span-60"
+      class="match prosite-profiles SITE"
+      style="left:  52.768%;
+              width: 1.625%;"
+      title="PS50096 878 - 904" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="PS50096-popup-60" style="display: none;">
+
+        <div class="popup_topl"><span class="prosite-profiles SITE caption_puce"></span>878 - 904</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>PROSITE profiles</b> <abbr class="icon icon-generic" data-icon="i" title="PROSITE consists of documentation entries describing protein domains, families and functional sites, as well as associated patterns and profiles to identify them. Profiles and patterns are constructed from manually edited seed alignments. PROSITE is complemented by ProRule, a collection of rules based on profiles and patterns, which increases the discriminatory power of profiles and patterns by providing additional information about functionally and/or structurally critical amino acids."></abbr> <br/>
+            <a href='http://www.expasy.org/prosite/PS50096' class="ext">PS50096 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="PS50096-span-61"
+      class="match prosite-profiles SITE"
+      style="left:  28.039%;
+              width: 1.625%;"
+      title="PS50096 467 - 493" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="PS50096-popup-61" style="display: none;">
+
+        <div class="popup_topl"><span class="prosite-profiles SITE caption_puce"></span>467 - 493</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>PROSITE profiles</b> <abbr class="icon icon-generic" data-icon="i" title="PROSITE consists of documentation entries describing protein domains, families and functional sites, as well as associated patterns and profiles to identify them. Profiles and patterns are constructed from manually edited seed alignments. PROSITE is complemented by ProRule, a collection of rules based on profiles and patterns, which increases the discriminatory power of profiles and patterns by providing additional information about functionally and/or structurally critical amino acids."></abbr> <br/>
+            <a href='http://www.expasy.org/prosite/PS50096' class="ext">PS50096 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="PS50096-span-62"
+      class="match prosite-profiles SITE"
+      style="left:  18.111%;
+              width: 1.685%;"
+      title="PS50096 302 - 329" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="PS50096-popup-62" style="display: none;">
+
+        <div class="popup_topl"><span class="prosite-profiles SITE caption_puce"></span>302 - 329</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>PROSITE profiles</b> <abbr class="icon icon-generic" data-icon="i" title="PROSITE consists of documentation entries describing protein domains, families and functional sites, as well as associated patterns and profiles to identify them. Profiles and patterns are constructed from manually edited seed alignments. PROSITE is complemented by ProRule, a collection of rules based on profiles and patterns, which increases the discriminatory power of profiles and patterns by providing additional information about functionally and/or structurally critical amino acids."></abbr> <br/>
+            <a href='http://www.expasy.org/prosite/PS50096' class="ext">PS50096 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="PS50096-span-63"
+      class="match prosite-profiles SITE"
+      style="left:  37.485%;
+              width: 1.745%;"
+      title="PS50096 624 - 652" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="PS50096-popup-63" style="display: none;">
+
+        <div class="popup_topl"><span class="prosite-profiles SITE caption_puce"></span>624 - 652</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>PROSITE profiles</b> <abbr class="icon icon-generic" data-icon="i" title="PROSITE consists of documentation entries describing protein domains, families and functional sites, as well as associated patterns and profiles to identify them. Profiles and patterns are constructed from manually edited seed alignments. PROSITE is complemented by ProRule, a collection of rules based on profiles and patterns, which increases the discriminatory power of profiles and patterns by providing additional information about functionally and/or structurally critical amino acids."></abbr> <br/>
+            <a href='http://www.expasy.org/prosite/PS50096' class="ext">PS50096 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="PS50096-span-64"
+      class="match prosite-profiles SITE"
+      style="left:  33.333%;
+              width: 1.805%;"
+      title="PS50096 555 - 584" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="PS50096-popup-64" style="display: none;">
+
+        <div class="popup_topl"><span class="prosite-profiles SITE caption_puce"></span>555 - 584</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>PROSITE profiles</b> <abbr class="icon icon-generic" data-icon="i" title="PROSITE consists of documentation entries describing protein domains, families and functional sites, as well as associated patterns and profiles to identify them. Profiles and patterns are constructed from manually edited seed alignments. PROSITE is complemented by ProRule, a collection of rules based on profiles and patterns, which increases the discriminatory power of profiles and patterns by providing additional information about functionally and/or structurally critical amino acids."></abbr> <br/>
+            <a href='http://www.expasy.org/prosite/PS50096' class="ext">PS50096 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="PS50096-span-65"
+      class="match prosite-profiles SITE"
+      style="left:  62.876%;
+              width: 1.805%;"
+      title="PS50096 1,046 - 1,075" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="PS50096-popup-65" style="display: none;">
+
+        <div class="popup_topl"><span class="prosite-profiles SITE caption_puce"></span>1,046 - 1,075</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>PROSITE profiles</b> <abbr class="icon icon-generic" data-icon="i" title="PROSITE consists of documentation entries describing protein domains, families and functional sites, as well as associated patterns and profiles to identify them. Profiles and patterns are constructed from manually edited seed alignments. PROSITE is complemented by ProRule, a collection of rules based on profiles and patterns, which increases the discriminatory power of profiles and patterns by providing additional information about functionally and/or structurally critical amino acids."></abbr> <br/>
+            <a href='http://www.expasy.org/prosite/PS50096' class="ext">PS50096 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="PS50096-span-66"
+      class="match prosite-profiles SITE"
+      style="left:  20.277%;
+              width: 1.805%;"
+      title="PS50096 338 - 367" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="PS50096-popup-66" style="display: none;">
+
+        <div class="popup_topl"><span class="prosite-profiles SITE caption_puce"></span>338 - 367</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>PROSITE profiles</b> <abbr class="icon icon-generic" data-icon="i" title="PROSITE consists of documentation entries describing protein domains, families and functional sites, as well as associated patterns and profiles to identify them. Profiles and patterns are constructed from manually edited seed alignments. PROSITE is complemented by ProRule, a collection of rules based on profiles and patterns, which increases the discriminatory power of profiles and patterns by providing additional information about functionally and/or structurally critical amino acids."></abbr> <br/>
+            <a href='http://www.expasy.org/prosite/PS50096' class="ext">PS50096 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="PS50096-span-67"
+      class="match prosite-profiles SITE"
+      style="left:  64.38%;
+              width: 1.685%;"
+      title="PS50096 1,071 - 1,098" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="PS50096-popup-67" style="display: none;">
+
+        <div class="popup_topl"><span class="prosite-profiles SITE caption_puce"></span>1,071 - 1,098</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>PROSITE profiles</b> <abbr class="icon icon-generic" data-icon="i" title="PROSITE consists of documentation entries describing protein domains, families and functional sites, as well as associated patterns and profiles to identify them. Profiles and patterns are constructed from manually edited seed alignments. PROSITE is complemented by ProRule, a collection of rules based on profiles and patterns, which increases the discriminatory power of profiles and patterns by providing additional information about functionally and/or structurally critical amino acids."></abbr> <br/>
+            <a href='http://www.expasy.org/prosite/PS50096' class="ext">PS50096 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+            <span class="grade" style="left:0%;" title="0"></span>
+            <span class="grade" style="left:12.034%;" title="200"></span>
+            <span class="grade" style="left:24.067%;" title="400"></span>
+            <span class="grade" style="left:36.101%;" title="600"></span>
+            <span class="grade" style="left:48.135%;" title="800"></span>
+            <span class="grade" style="left:60.168%;" title="1000"></span>
+            <span class="grade" style="left:72.202%;" title="1200"></span>
+            <span class="grade" style="left:84.236%;" title="1400"></span>
+            <span class="grade" style="left:100%;" title="1662"></span>
+
+    </div>
+
+</div>
+                                    </li>
+
+                                    <li id="IPR000048-signatures" class="signature entry-signatures">
+<div class="bot-row-signame">
+    <a href="http://pfam.sanger.ac.uk/family/PF00612" title="PF00612 (IQ)"
+       class="neutral">
+        PF00612
+</a>
+
+                <span>(IQ)</span>
+
+</div>
+<div class="bot-row-line">
+    <div class="matches">
+
+
+
+<span id="PF00612-span-68"
+      class="match pfam SITE"
+      style="left:  81.167%;
+              width: 0.963%;"
+      title="PF00612 1,350 - 1,365" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="PF00612-popup-68" style="display: none;">
+
+        <div class="popup_topl"><span class="pfam SITE caption_puce"></span>1,350 - 1,365</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>Pfam</b> <abbr class="icon icon-generic" data-icon="i" title="Pfam is a collection of protein family alignments which were constructed semi-automatically using hidden Markov models (HMMs). Sequences that were not covered by Pfam were clustered and aligned automatically, and are released as Pfam-B. Pfam families have permanent accession numbers and contain functional annotation and cross-references to other databases, while Pfam-B families are re-generated at each release and are unannotated."></abbr> <br/>
+            <a href='http://pfam.sanger.ac.uk/family/PF00612' class="ext">PF00612 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="PF00612-span-69"
+      class="match pfam SITE"
+      style="left:  63.057%;
+              width: 0.963%;"
+      title="PF00612 1,049 - 1,064" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="PF00612-popup-69" style="display: none;">
+
+        <div class="popup_topl"><span class="pfam SITE caption_puce"></span>1,049 - 1,064</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>Pfam</b> <abbr class="icon icon-generic" data-icon="i" title="Pfam is a collection of protein family alignments which were constructed semi-automatically using hidden Markov models (HMMs). Sequences that were not covered by Pfam were clustered and aligned automatically, and are released as Pfam-B. Pfam families have permanent accession numbers and contain functional annotation and cross-references to other databases, while Pfam-B families are re-generated at each release and are unannotated."></abbr> <br/>
+            <a href='http://pfam.sanger.ac.uk/family/PF00612' class="ext">PF00612 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="PF00612-span-70"
+      class="match pfam SITE"
+      style="left:  28.339%;
+              width: 0.963%;"
+      title="PF00612 472 - 487" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="PF00612-popup-70" style="display: none;">
+
+        <div class="popup_topl"><span class="pfam SITE caption_puce"></span>472 - 487</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>Pfam</b> <abbr class="icon icon-generic" data-icon="i" title="Pfam is a collection of protein family alignments which were constructed semi-automatically using hidden Markov models (HMMs). Sequences that were not covered by Pfam were clustered and aligned automatically, and are released as Pfam-B. Pfam families have permanent accession numbers and contain functional annotation and cross-references to other databases, while Pfam-B families are re-generated at each release and are unannotated."></abbr> <br/>
+            <a href='http://pfam.sanger.ac.uk/family/PF00612' class="ext">PF00612 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="PF00612-span-71"
+      class="match pfam SITE"
+      style="left:  40.313%;
+              width: 1.203%;"
+      title="PF00612 671 - 690" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="PF00612-popup-71" style="display: none;">
+
+        <div class="popup_topl"><span class="pfam SITE caption_puce"></span>671 - 690</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>Pfam</b> <abbr class="icon icon-generic" data-icon="i" title="Pfam is a collection of protein family alignments which were constructed semi-automatically using hidden Markov models (HMMs). Sequences that were not covered by Pfam were clustered and aligned automatically, and are released as Pfam-B. Pfam families have permanent accession numbers and contain functional annotation and cross-references to other databases, while Pfam-B families are re-generated at each release and are unannotated."></abbr> <br/>
+            <a href='http://pfam.sanger.ac.uk/family/PF00612' class="ext">PF00612 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="PF00612-span-72"
+      class="match pfam SITE"
+      style="left:  15.824%;
+              width: 0.963%;"
+      title="PF00612 264 - 279" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="PF00612-popup-72" style="display: none;">
+
+        <div class="popup_topl"><span class="pfam SITE caption_puce"></span>264 - 279</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>Pfam</b> <abbr class="icon icon-generic" data-icon="i" title="Pfam is a collection of protein family alignments which were constructed semi-automatically using hidden Markov models (HMMs). Sequences that were not covered by Pfam were clustered and aligned automatically, and are released as Pfam-B. Pfam families have permanent accession numbers and contain functional annotation and cross-references to other databases, while Pfam-B families are re-generated at each release and are unannotated."></abbr> <br/>
+            <a href='http://pfam.sanger.ac.uk/family/PF00612' class="ext">PF00612 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="PF00612-span-73"
+      class="match pfam SITE"
+      style="left:  82.31%;
+              width: 1.143%;"
+      title="PF00612 1,369 - 1,387" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="PF00612-popup-73" style="display: none;">
+
+        <div class="popup_topl"><span class="pfam SITE caption_puce"></span>1,369 - 1,387</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>Pfam</b> <abbr class="icon icon-generic" data-icon="i" title="Pfam is a collection of protein family alignments which were constructed semi-automatically using hidden Markov models (HMMs). Sequences that were not covered by Pfam were clustered and aligned automatically, and are released as Pfam-B. Pfam families have permanent accession numbers and contain functional annotation and cross-references to other databases, while Pfam-B families are re-generated at each release and are unannotated."></abbr> <br/>
+            <a href='http://pfam.sanger.ac.uk/family/PF00612' class="ext">PF00612 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="PF00612-span-74"
+      class="match pfam SITE"
+      style="left:  64.38%;
+              width: 1.023%;"
+      title="PF00612 1,071 - 1,087" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="PF00612-popup-74" style="display: none;">
+
+        <div class="popup_topl"><span class="pfam SITE caption_puce"></span>1,071 - 1,087</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>Pfam</b> <abbr class="icon icon-generic" data-icon="i" title="Pfam is a collection of protein family alignments which were constructed semi-automatically using hidden Markov models (HMMs). Sequences that were not covered by Pfam were clustered and aligned automatically, and are released as Pfam-B. Pfam families have permanent accession numbers and contain functional annotation and cross-references to other databases, while Pfam-B families are re-generated at each release and are unannotated."></abbr> <br/>
+            <a href='http://pfam.sanger.ac.uk/family/PF00612' class="ext">PF00612 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="PF00612-span-75"
+      class="match pfam SITE"
+      style="left:  60.168%;
+              width: 1.264%;"
+      title="PF00612 1,001 - 1,021" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="PF00612-popup-75" style="display: none;">
+
+        <div class="popup_topl"><span class="pfam SITE caption_puce"></span>1,001 - 1,021</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>Pfam</b> <abbr class="icon icon-generic" data-icon="i" title="Pfam is a collection of protein family alignments which were constructed semi-automatically using hidden Markov models (HMMs). Sequences that were not covered by Pfam were clustered and aligned automatically, and are released as Pfam-B. Pfam families have permanent accession numbers and contain functional annotation and cross-references to other databases, while Pfam-B families are re-generated at each release and are unannotated."></abbr> <br/>
+            <a href='http://pfam.sanger.ac.uk/family/PF00612' class="ext">PF00612 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="PF00612-span-76"
+      class="match pfam SITE"
+      style="left:  41.877%;
+              width: 1.023%;"
+      title="PF00612 697 - 713" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="PF00612-popup-76" style="display: none;">
+
+        <div class="popup_topl"><span class="pfam SITE caption_puce"></span>697 - 713</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>Pfam</b> <abbr class="icon icon-generic" data-icon="i" title="Pfam is a collection of protein family alignments which were constructed semi-automatically using hidden Markov models (HMMs). Sequences that were not covered by Pfam were clustered and aligned automatically, and are released as Pfam-B. Pfam families have permanent accession numbers and contain functional annotation and cross-references to other databases, while Pfam-B families are re-generated at each release and are unannotated."></abbr> <br/>
+            <a href='http://pfam.sanger.ac.uk/family/PF00612' class="ext">PF00612 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="PF00612-span-77"
+      class="match pfam SITE"
+      style="left:  51.564%;
+              width: 1.083%;"
+      title="PF00612 858 - 875" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="PF00612-popup-77" style="display: none;">
+
+        <div class="popup_topl"><span class="pfam SITE caption_puce"></span>858 - 875</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>Pfam</b> <abbr class="icon icon-generic" data-icon="i" title="Pfam is a collection of protein family alignments which were constructed semi-automatically using hidden Markov models (HMMs). Sequences that were not covered by Pfam were clustered and aligned automatically, and are released as Pfam-B. Pfam families have permanent accession numbers and contain functional annotation and cross-references to other databases, while Pfam-B families are re-generated at each release and are unannotated."></abbr> <br/>
+            <a href='http://pfam.sanger.ac.uk/family/PF00612' class="ext">PF00612 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="PF00612-span-78"
+      class="match pfam SITE"
+      style="left:  33.454%;
+              width: 1.143%;"
+      title="PF00612 557 - 575" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="PF00612-popup-78" style="display: none;">
+
+        <div class="popup_topl"><span class="pfam SITE caption_puce"></span>557 - 575</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>Pfam</b> <abbr class="icon icon-generic" data-icon="i" title="Pfam is a collection of protein family alignments which were constructed semi-automatically using hidden Markov models (HMMs). Sequences that were not covered by Pfam were clustered and aligned automatically, and are released as Pfam-B. Pfam families have permanent accession numbers and contain functional annotation and cross-references to other databases, while Pfam-B families are re-generated at each release and are unannotated."></abbr> <br/>
+            <a href='http://pfam.sanger.ac.uk/family/PF00612' class="ext">PF00612 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="PF00612-span-79"
+      class="match pfam SITE"
+      style="left:  48.797%;
+              width: 1.143%;"
+      title="PF00612 812 - 830" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="PF00612-popup-79" style="display: none;">
+
+        <div class="popup_topl"><span class="pfam SITE caption_puce"></span>812 - 830</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>Pfam</b> <abbr class="icon icon-generic" data-icon="i" title="Pfam is a collection of protein family alignments which were constructed semi-automatically using hidden Markov models (HMMs). Sequences that were not covered by Pfam were clustered and aligned automatically, and are released as Pfam-B. Pfam families have permanent accession numbers and contain functional annotation and cross-references to other databases, while Pfam-B families are re-generated at each release and are unannotated."></abbr> <br/>
+            <a href='http://pfam.sanger.ac.uk/family/PF00612' class="ext">PF00612 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="PF00612-span-80"
+      class="match pfam SITE"
+      style="left:  46.209%;
+              width: 1.023%;"
+      title="PF00612 769 - 785" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="PF00612-popup-80" style="display: none;">
+
+        <div class="popup_topl"><span class="pfam SITE caption_puce"></span>769 - 785</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>Pfam</b> <abbr class="icon icon-generic" data-icon="i" title="Pfam is a collection of protein family alignments which were constructed semi-automatically using hidden Markov models (HMMs). Sequences that were not covered by Pfam were clustered and aligned automatically, and are released as Pfam-B. Pfam families have permanent accession numbers and contain functional annotation and cross-references to other databases, while Pfam-B families are re-generated at each release and are unannotated."></abbr> <br/>
+            <a href='http://pfam.sanger.ac.uk/family/PF00612' class="ext">PF00612 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="PF00612-span-81"
+      class="match pfam SITE"
+      style="left:  36.221%;
+              width: 0.963%;"
+      title="PF00612 603 - 618" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="PF00612-popup-81" style="display: none;">
+
+        <div class="popup_topl"><span class="pfam SITE caption_puce"></span>603 - 618</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>Pfam</b> <abbr class="icon icon-generic" data-icon="i" title="Pfam is a collection of protein family alignments which were constructed semi-automatically using hidden Markov models (HMMs). Sequences that were not covered by Pfam were clustered and aligned automatically, and are released as Pfam-B. Pfam families have permanent accession numbers and contain functional annotation and cross-references to other databases, while Pfam-B families are re-generated at each release and are unannotated."></abbr> <br/>
+            <a href='http://pfam.sanger.ac.uk/family/PF00612' class="ext">PF00612 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="PF00612-span-82"
+      class="match pfam SITE"
+      style="left:  34.838%;
+              width: 1.143%;"
+      title="PF00612 580 - 598" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="PF00612-popup-82" style="display: none;">
+
+        <div class="popup_topl"><span class="pfam SITE caption_puce"></span>580 - 598</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>Pfam</b> <abbr class="icon icon-generic" data-icon="i" title="Pfam is a collection of protein family alignments which were constructed semi-automatically using hidden Markov models (HMMs). Sequences that were not covered by Pfam were clustered and aligned automatically, and are released as Pfam-B. Pfam families have permanent accession numbers and contain functional annotation and cross-references to other databases, while Pfam-B families are re-generated at each release and are unannotated."></abbr> <br/>
+            <a href='http://pfam.sanger.ac.uk/family/PF00612' class="ext">PF00612 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="PF00612-span-83"
+      class="match pfam SITE"
+      style="left:  38.929%;
+              width: 1.203%;"
+      title="PF00612 648 - 667" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="PF00612-popup-83" style="display: none;">
+
+        <div class="popup_topl"><span class="pfam SITE caption_puce"></span>648 - 667</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>Pfam</b> <abbr class="icon icon-generic" data-icon="i" title="Pfam is a collection of protein family alignments which were constructed semi-automatically using hidden Markov models (HMMs). Sequences that were not covered by Pfam were clustered and aligned automatically, and are released as Pfam-B. Pfam families have permanent accession numbers and contain functional annotation and cross-references to other databases, while Pfam-B families are re-generated at each release and are unannotated."></abbr> <br/>
+            <a href='http://pfam.sanger.ac.uk/family/PF00612' class="ext">PF00612 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="PF00612-span-84"
+      class="match pfam SITE"
+      style="left:  20.397%;
+              width: 1.143%;"
+      title="PF00612 340 - 358" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="PF00612-popup-84" style="display: none;">
+
+        <div class="popup_topl"><span class="pfam SITE caption_puce"></span>340 - 358</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>Pfam</b> <abbr class="icon icon-generic" data-icon="i" title="Pfam is a collection of protein family alignments which were constructed semi-automatically using hidden Markov models (HMMs). Sequences that were not covered by Pfam were clustered and aligned automatically, and are released as Pfam-B. Pfam families have permanent accession numbers and contain functional annotation and cross-references to other databases, while Pfam-B families are re-generated at each release and are unannotated."></abbr> <br/>
+            <a href='http://pfam.sanger.ac.uk/family/PF00612' class="ext">PF00612 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="PF00612-span-85"
+      class="match pfam SITE"
+      style="left:  32.01%;
+              width: 1.264%;"
+      title="PF00612 533 - 553" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="PF00612-popup-85" style="display: none;">
+
+        <div class="popup_topl"><span class="pfam SITE caption_puce"></span>533 - 553</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>Pfam</b> <abbr class="icon icon-generic" data-icon="i" title="Pfam is a collection of protein family alignments which were constructed semi-automatically using hidden Markov models (HMMs). Sequences that were not covered by Pfam were clustered and aligned automatically, and are released as Pfam-B. Pfam families have permanent accession numbers and contain functional annotation and cross-references to other databases, while Pfam-B families are re-generated at each release and are unannotated."></abbr> <br/>
+            <a href='http://pfam.sanger.ac.uk/family/PF00612' class="ext">PF00612 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="PF00612-span-86"
+      class="match pfam SITE"
+      style="left:  52.888%;
+              width: 0.963%;"
+      title="PF00612 880 - 895" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="PF00612-popup-86" style="display: none;">
+
+        <div class="popup_topl"><span class="pfam SITE caption_puce"></span>880 - 895</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>Pfam</b> <abbr class="icon icon-generic" data-icon="i" title="Pfam is a collection of protein family alignments which were constructed semi-automatically using hidden Markov models (HMMs). Sequences that were not covered by Pfam were clustered and aligned automatically, and are released as Pfam-B. Pfam families have permanent accession numbers and contain functional annotation and cross-references to other databases, while Pfam-B families are re-generated at each release and are unannotated."></abbr> <br/>
+            <a href='http://pfam.sanger.ac.uk/family/PF00612' class="ext">PF00612 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="PF00612-span-87"
+      class="match pfam SITE"
+      style="left:  18.171%;
+              width: 1.203%;"
+      title="PF00612 303 - 322" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="PF00612-popup-87" style="display: none;">
+
+        <div class="popup_topl"><span class="pfam SITE caption_puce"></span>303 - 322</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>Pfam</b> <abbr class="icon icon-generic" data-icon="i" title="Pfam is a collection of protein family alignments which were constructed semi-automatically using hidden Markov models (HMMs). Sequences that were not covered by Pfam were clustered and aligned automatically, and are released as Pfam-B. Pfam families have permanent accession numbers and contain functional annotation and cross-references to other databases, while Pfam-B families are re-generated at each release and are unannotated."></abbr> <br/>
+            <a href='http://pfam.sanger.ac.uk/family/PF00612' class="ext">PF00612 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="PF00612-span-88"
+      class="match pfam SITE"
+      style="left:  58.845%;
+              width: 1.203%;"
+      title="PF00612 979 - 998" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="PF00612-popup-88" style="display: none;">
+
+        <div class="popup_topl"><span class="pfam SITE caption_puce"></span>979 - 998</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>Pfam</b> <abbr class="icon icon-generic" data-icon="i" title="Pfam is a collection of protein family alignments which were constructed semi-automatically using hidden Markov models (HMMs). Sequences that were not covered by Pfam were clustered and aligned automatically, and are released as Pfam-B. Pfam families have permanent accession numbers and contain functional annotation and cross-references to other databases, while Pfam-B families are re-generated at each release and are unannotated."></abbr> <br/>
+            <a href='http://pfam.sanger.ac.uk/family/PF00612' class="ext">PF00612 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+<span id="PF00612-span-89"
+      class="match pfam SITE"
+      style="left:  76.594%;
+              width: 1.083%;"
+      title="PF00612 1,274 - 1,291" >
+</span>
+
+    <script type="text/javascript">
+
+    </script>
+
+    <div id="PF00612-popup-89" style="display: none;">
+
+        <div class="popup_topl"><span class="pfam SITE caption_puce"></span>1,274 - 1,291</div>
+        <div class="popup_botl" style="font-size:88%;">
+            <b>Pfam</b> <abbr class="icon icon-generic" data-icon="i" title="Pfam is a collection of protein family alignments which were constructed semi-automatically using hidden Markov models (HMMs). Sequences that were not covered by Pfam were clustered and aligned automatically, and are released as Pfam-B. Pfam families have permanent accession numbers and contain functional annotation and cross-references to other databases, while Pfam-B families are re-generated at each release and are unannotated."></abbr> <br/>
+            <a href='http://pfam.sanger.ac.uk/family/PF00612' class="ext">PF00612 </a>
+            <span>(IQ)</span>
+        </div>
+    </div>
+
+
+            <span class="grade" style="left:0%;" title="0"></span>
+            <span class="grade" style="left:12.034%;" title="200"></span>
+            <span class="grade" style="left:24.067%;" title="400"></span>
+            <span class="grade" style="left:36.101%;" title="600"></span>
+            <span class="grade" style="left:48.135%;" title="800"></span>
+            <span class="grade" style="left:60.168%;" title="1000"></span>
+            <span class="grade" style="left:72.202%;" title="1200"></span>
+            <span class="grade" style="left:84.236%;" title="1400"></span>
+            <span class="grade" style="left:100%;" title="1662"></span>
+
+    </div>
+
+</div>
+                                    </li>
+                            </ol>
+                            <div class="bot-row-line-bot"></div>
+                        </div>
+                    </li>
+            </ol>
+        </div>
+
+
+
+<h3>GO term prediction</h3>
+
+<div class="prot_go">
+
+    <div class="go_terms">
+        <h4>Biological Process</h4>
+        <div class="go_terms_box">
+
+            <p></p>
+                <p>None predicted.</p>
+        </div>
+
+        <h4>Molecular Function</h4>
+        <div class="go_terms_box">
+
+        <p>
+              <a href="http://www.ebi.ac.uk/QuickGO/GTerm?id=GO:0005488"
+                   class="ext">GO:0005488</a> binding
+                <br/>
+            
+              <a href="http://www.ebi.ac.uk/QuickGO/GTerm?id=GO:0005515"
+                   class="ext">GO:0005515</a> protein binding
+                <br/>
+            </p>
+        </div>
+
+        <h4>Cellular Component</h4>
+        <div class="go_terms_box">
+
+        <p></p>
+                <p>None predicted.</p>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+            // Use hidden DIVs to display popups
+            $('span[id*="span-"]').each(
+                    function(i) {
+                            preparePopup(this.id, 9);
+                    }
+            );
+    });
+</script>
+
+        </div>
+    </div>
+
+
+</div>
+</div>
+</body>
+</html>

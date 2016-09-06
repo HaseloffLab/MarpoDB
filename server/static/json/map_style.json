@@ -1,0 +1,35 @@
+{
+    "center": "Cambridge UK",
+    "size": "510x410",
+    "scale" : 2,
+    "maptype" : "terrain",
+    "zoom" : 1,
+    "style": [
+        {
+            "element": "labels",
+            "visibility" : "off"
+        },
+        {
+            "feature": "water",
+            "element": "geometry",
+            "hue": "0xffffff",
+            "lightness": 100,
+            "saturation": -100
+        },
+        {
+            "feature": "landscape",
+            "element": "geometry",
+            "hue": "0x000000",
+            "lightness": -100,
+            "saturation": -100
+        },
+        {
+        "feature": "administrative",
+        "element": "geometry",
+        "visibility" : "off"
+        }
+    
+    ],
+    "format": "PNG",
+    "key": "AIzaSyC3bpj_TeBv6EJgf3zCRd7I__RjKL-hTyU"
+}
