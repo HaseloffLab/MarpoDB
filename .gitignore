@@ -1,3 +1,4 @@
 **/.DS_Store
 /server/static/interpro/*
 **/*.pyc
+PartsDB.egg-info/*

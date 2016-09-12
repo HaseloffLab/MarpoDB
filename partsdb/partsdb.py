@@ -7,6 +7,7 @@ from tools import prepareLibrary, compRev, getUtrCoordinates
 from sqlalchemy.orm import sessionmaker, mapper
 from sqlalchemy import Table, MetaData, create_engine
 from sqlalchemy.ext.declarative import declarative_base, declared_attr
+
 class PartsDB:
 
 	Session 	= sessionmaker()
