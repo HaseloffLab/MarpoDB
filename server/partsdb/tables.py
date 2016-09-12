@@ -1,5 +1,6 @@
 from sqlalchemy.ext.declarative import declarative_base, declared_attr
 from sqlalchemy import Column, Integer, String, ForeignKey, Text, Float
+from sqlalchemy.orm import relationship
 
 class BaseMixIn(object):
 
@@ -12,6 +13,8 @@ class BaseMixIn(object):
 class PartMixIn(object):
 	seq = Column( Text )
 
+class ExonMixIn(object):
+	coordinates = Column( Text )
 
 Base = declarative_base()
 
@@ -21,13 +24,13 @@ class Locus(Base, BaseMixIn):
 class Promoter(Base,BaseMixIn,PartMixIn):
 	pass
 
-class UTR5(Base,BaseMixIn,PartMixIn):
+class UTR5(Base,BaseMixIn,PartMixIn, ExonMixIn):
 	pass
 
-class CDS(Base,BaseMixIn,PartMixIn):
+class CDS(Base,BaseMixIn,PartMixIn, ExonMixIn):
 	pass
 
-class UTR3(Base,BaseMixIn,PartMixIn):
+class UTR3(Base,BaseMixIn,PartMixIn, ExonMixIn):
 	pass
 
 class Terminator(Base,BaseMixIn,PartMixIn):
@@ -42,6 +45,13 @@ class Gene(Base,BaseMixIn):
 	utr3ID  		= Column( String(30), ForeignKey('utr3.id') )
 	terminatorID  	= Column( String(30), ForeignKey('terminator.id') )
 	locusID  		= Column( String(30), ForeignKey('locus.id') )
+
+	promoter 		= relationship(Promoter, 	enable_typechecks=False)
+	utr5 			= relationship(UTR5, 		enable_typechecks=False)
+	cds 			= relationship(CDS, 		enable_typechecks=False)
+	utr3 			= relationship(UTR3, 		enable_typechecks=False)
+	terminator 		= relationship(Terminator, 	enable_typechecks=False)
+	locus   		= relationship(Locus,		enable_typechecks=False)
 
 class BlastpHit(Base, BaseMixIn):
 	cdsID			= Column( String(30), ForeignKey('cds.id') )
@@ -63,3 +73,9 @@ class PfamHit(Base, BaseMixIn):
 	cVal 			= Column( Float )
 	description 	= Column( Text )
 	coordinates		= Column( Text )
+
+class Sys(Base):
+	__tablename__ 	= 'sys'
+	
+	variable		= Column( Text, primary_key = True )
+	value			= Column( Text )
