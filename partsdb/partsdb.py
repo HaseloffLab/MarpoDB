@@ -101,14 +101,17 @@ class PartsDB:
 
 		for transcriptName, transcript in transcripts.iteritems():
 
-			locus = loci[ transcript["locusName"] ]
+			# locus = loci[ transcript["locusName"] ]
 
 			transStart = min ( [ex[0] for ex in transcript["exons"]] )
 			transStop =  max ( [ex[1] for ex in transcript["exons"]] )
 
+			# print transcriptName, transStart, transStop
 
 			for cdsName, cds in transcript["cdss"].iteritems():
+				
 				n += 1
+				
 				if transcript["direction"] == cds["transLoc"][2]:
 					direction = '+'
 				else:
@@ -119,19 +122,21 @@ class PartsDB:
 				cdsStart = min( [ex[0] for ex in  cds["geneLoc"]] )
 				cdsStop  = max( [ex[1] for ex in  cds["geneLoc"]] )
 
-				sequence = compRev(locus["seq"][cdsStart-1:cdsStop], direction)
+				sequence = compRev(transcript["sequence"][cdsStart-1:cdsStop], direction)
+
+				print transcriptName, cdsName, coordinates
 
 				cds["object"] = self.addPart('cds', coordinates= coordinates, seq = sequence)
 
 				if direction == '+':
 					if not locus["PromoterP"]:
-						sequence = compRev(locus["seq"][:transStart-1], direction)
+						sequence = compRev(transcript["sequence"][:transStart-1], direction)
 
 						promoter = self.addPart('promoter', seq = sequence )
 
 						# promoterID = insertRow('promoter', {'seq' : sequence})
 
-						sequence = compRev(locus["seq"][transStop-1:], direction)
+						sequence = compRev(transcript["sequence"][transStop-1:], direction)
 						
 						terminator = self.addPart('terminator', seq = sequence )
 
@@ -143,11 +148,11 @@ class PartsDB:
 				
 				if direction == '-':
 					if not locus["PromoterN"]:
-						sequence = compRev(locus["seq"][transStop-1:], direction)
+						sequence = compRev(transcript["sequence"][transStop-1:], direction)
 						
 						promoter = self.addPart('promoter', seq = sequence )
 
-						sequence = compRev(locus["seq"][:transStart-1], direction)
+						sequence = compRev(transcript["sequence"][:transStart-1], direction)
 						
 						terminator = self.addPart('terminator', seq = sequence )
 						
@@ -160,7 +165,7 @@ class PartsDB:
 				utrLD = {'+':'utr5', '-':'utr3'}
 				utrRD = {'+':'utr3', '-':'utr5'}
 
-				sequence = compRev(locus["seq"][transStart-1:cdsStart], direction)
+				sequence = compRev(transcript["sequence"][transStart-1:cdsStart], direction)
 				coordinates = getUtrCoordinates(cds["geneLoc"], cdsStart, cdsStop)
 				
 				if direction == '+':
@@ -169,7 +174,7 @@ class PartsDB:
 				else:
 					utr3 = self.addPart('utr3', seq = sequence, coordinates = coordinates )
 
-				sequence = compRev(locus["seq"][cdsStop-1:transStop], direction)
+				sequence = compRev(transcript["sequence"][cdsStop-1:transStop], direction)
 				coordinates = getUtrCoordinates(cds["geneLoc"], cdsStart, cdsStop)
 
 				if direction == '+':
@@ -206,21 +211,20 @@ class PartsDB:
 
 if __name__ == "__main__":
 
-	prefix = '/Users/md/ownCloud/Projects/MarpoDB/ver3/'
+	genomeFileName = 'data/final.scaffolds.fa'
+	transcriptFileName = 'data/trans.fa'
+	proteinFileName = 'data/pep.fa'
+	mapFileName = 'data/map.gff3'
 
-	genomeFileName = prefix + 'data/final.scaffolds.fa'
-	transcriptFileName = prefix + 'Cam1_Br.fasta.transdecoder.complete.mapped.trans'
-	proteinFileName = prefix + 'Cam1_Br.fasta.transdecoder.complete.mapped.pep'
-	mapFileName = prefix + 'output/Cam1_Br_to_Cam1_Merac.splign.gff3'
+	# blastFile = prefix + 'output/blastp.info'
 
-	blastFile = prefix + 'output/blastp.info'
-
-	marpodb = PartsDB('postgresql:///marpodb2', clean = False)
+	marpodb = PartsDB('postgresql:///testdb', clean = True)
 	marpodb.setup(prefix = "mpdb")
-	CDS = marpodb.classes['cds']
-	session = marpodb.Session()
-	saveSequences( session.query(CDS.dbid, CDS.seq).filter().all(), "/Users/md/cdsSeqs.fasta", translate = True )
-	session.close()
-	# marpodb.populate(genomeFileName, transcriptFileName, proteinFileName, mapFileName)
+	# CDS = marpodb.classes['cds']
+	# session = marpodb.Session()
+	# session.close()
+	marpodb.populate(genomeFileName, transcriptFileName, proteinFileName, mapFileName)
 	# marpodb.annotate('BlastpHit', blastFile)
+	session = marpodb.Session()
+	saveSequences( session.query(UTR5).filter().all(), "cdsSeqs.fasta", translate = False )
 

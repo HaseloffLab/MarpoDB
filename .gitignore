@@ -2,3 +2,5 @@
 /server/static/interpro/*
 **/*.pyc
 PartsDB.egg-info/*
+**/test.py
+**/*.pyc

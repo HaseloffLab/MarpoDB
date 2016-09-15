@@ -1,5 +1,6 @@
 from Bio import SeqIO
 from Bio.Seq import Seq
+from compRev import compRev
 
 def prepareLibrary(genomeFileName, transcriptFileName, proteinFileName, mapFileName):
 
@@ -10,6 +11,7 @@ def prepareLibrary(genomeFileName, transcriptFileName, proteinFileName, mapFileN
 	transcripts = {}
 	transcriptName = ''
 	exons = []
+	exonsTranscript = []
 	startTarget = []
 	stopTarget = []
 	for line in mapFile:
@@ -25,6 +27,7 @@ def prepareLibrary(genomeFileName, transcriptFileName, proteinFileName, mapFileN
 				startTarget.append(int( tabs[8].split()[1] ) )
 				stopTarget.append( int( tabs[8].split()[2] ) )
 				exons.append((start,stop))
+				exonsTranscript.append( (int( tabs[8].split()[1] ), int( tabs[8].split()[2] ) )  )
 		
 		elif line =='###\n' and transcriptName:
 			start = min( [e[0] for e in exons] )
@@ -37,12 +40,13 @@ def prepareLibrary(genomeFileName, transcriptFileName, proteinFileName, mapFileN
 			transcripts[transcriptName]["exons"] = []
 			transcripts[transcriptName]["cdss"] = {}
 			transcripts[transcriptName]["exons"] = exons
+			transcripts[transcriptName]["exonsTranscript"] = exonsTranscript
 			transcripts[transcriptName]["stop"] = max(stopTarget)
 			transcripts[transcriptName]["start"] = min(startTarget)
 			transcripts[transcriptName]["direction"] = direction
 			transcripts[transcriptName]["locusName"] = locusName
-
 			exons = []
+			exonsTranscript = []
 			startTarget = []
 			stopTarget = []
 
@@ -56,6 +60,7 @@ def prepareLibrary(genomeFileName, transcriptFileName, proteinFileName, mapFileN
 	transcripts[transcriptName]["exons"] = []
 	transcripts[transcriptName]["cdss"] = {}
 	transcripts[transcriptName]["exons"] = exons
+	transcripts[transcriptName]["exonsTranscript"] = exonsTranscript
 	transcripts[transcriptName]["stop"] = max(stopTarget)
 	transcripts[transcriptName]["start"] = min(startTarget)
 	transcripts[transcriptName]["direction"] = direction
@@ -67,7 +72,7 @@ def prepareLibrary(genomeFileName, transcriptFileName, proteinFileName, mapFileN
 
 	mapFile.close()
 
-	# Get transcript lengths
+	# Get transcript lengths and sequence
 
 	transFile = open(transcriptFileName)
 
@@ -75,8 +80,10 @@ def prepareLibrary(genomeFileName, transcriptFileName, proteinFileName, mapFileN
 
 	for transcriptName, seq in transSeq.iteritems():
 		if transcriptName in transcripts:
-			transcripts[transcriptName]["length"] = len(seq)
-
+			transcripts[transcriptName]["length"] = len(seq.seq)
+			# print str(seq.seq)
+			# transcripts[transcriptName]["seq"] = compRev(str(seq.seq), transcripts[transcriptName]["direction"] )
+			transcripts[transcriptName]["seq"] = compRev(str(seq.seq), '+' )
 	transFile.close()
 
 	# Loading scaffold sequences
@@ -86,7 +93,6 @@ def prepareLibrary(genomeFileName, transcriptFileName, proteinFileName, mapFileN
 	scaffSeq = SeqIO.to_dict(SeqIO.parse(scaffFile, "fasta"))
 
 	scaffFile.close()
-
 
 	# Loading cds locations
 
@@ -113,13 +119,15 @@ def prepareLibrary(genomeFileName, transcriptFileName, proteinFileName, mapFileN
 
 	pepFile.close()
 
-	# Putting all toogether
+	# Managing sequences
 
 	loci = {}
 
 	for transcriptName, transcript in transcripts.iteritems():
 		locusName 	= transcript["locusName"]
 		
+		# Adding loci
+
 		if not locusName in loci:
 
 			loci[locusName] = {}
@@ -138,12 +146,104 @@ def prepareLibrary(genomeFileName, transcriptFileName, proteinFileName, mapFileN
 			loci[locusName]["stopCut"] = stopCut
 
 
+		seq = loci[locusName]["seq"]
 		startCut = loci[locusName]["startCut"]
 		stopCut = loci[locusName]["stopCut"]
+
+
+		# Rewriting exons position relative to a locus sequence
 
 		for i in range( len(transcript["exons"]) ):
 				exon = transcript["exons"][i]
 				transcript["exons"][i] = (exon[0] - startCut + 1, exon[1] - startCut + 1 )
+
+		
+		shift = 0
+		newExons = []
+
+		print 'Old exons', transcriptName, transcript["exons"], transcript["exonsTranscript"]
+		print 'Direction', transcript["direction"]
+		if transcript["direction"] == '+':
+			for exonG, exonT in zip(transcript["exons"], transcript["exonsTranscript"] ):
+				deltaShift = (exonT[1] - exonT[0]) - (exonG[1] - exonG[0])
+
+				print '\tGenome exon:', exonG
+				print '\tTrans exon:', exonT
+				print '\tShift', shift	
+				seq = "".join( [ seq[ : exonG[0] - 1 + shift ], transcript["seq"][ exonT[0] - 1 : exonT[1] ], seq[ exonG[1] + shift : ]  ] )
+
+
+				eGS = exonG[0] + shift
+				eGE = exonG[0] + shift + (exonT[1] - exonT[0])
+
+				newExons.append( (eGS, eGE) )
+
+				shift += deltaShift
+			transcript["exons"] = newExons
+		else:
+			for exonG, exonT in zip(transcript["exons"], transcript["exonsTranscript"] ):
+
+				print '\tGenome exon:', exonG
+				print '\tTrans exon:', exonT
+
+			  	l = len(seq)
+
+				seq = "".join( [ seq[ : exonG[0] - 1 ], compRev(transcript["seq"][ exonT[0] - 1 : exonT[1]  ], '-') , seq[ exonG[1] : ] ] )
+
+				# print exonG[0], len(seq)
+
+				shift = (exonT[1] - exonT[0]) - (exonG[1] - exonG[0])
+				print '\tShift', shift 
+				eGS = l - exonG[0] + shift
+				eGE = l - exonG[1]
+
+				newExons.append( (eGS, eGE) )
+
+			transcript["exons"] = [ (len(seq) - e[0], len(seq) - e[1] ) for e in newExons ]
+		
+		transcript["sequence"] = seq
+		# modifier = 0
+
+		# for exonG, exonT in zip(transcript["exons"], transcript["exonsTranscript"] ):
+
+		# 	newModifier = (exonT[1] - exonT[0]) - (exonG[1] - exonG[0])
+
+		# 	seq = "{0}{1}{2}".format( seq[ :exonG[0] ] , transcript["seq"][exonT[0], exonT[1]], seq[ exonG[1]: ] )
+			
+		# 	exonG[0] += modifier
+		# 	exonG[1]  = exonG[1] + modifier + ( exonT[1] - exonT[0] )
+
+		# 	modifier += newModifier
+
+	# Putting all toogether
+
+	for transcriptName, transcript in transcripts.iteritems():
+		# locusName 	= transcript["locusName"]
+		
+		# if not locusName in loci:
+
+		# 	loci[locusName] = {}
+
+		# 	scaff    	= locusName.split(':')[0]
+
+		# 	start = min( [ex[0] for ex in transcript["exons"]] )
+		# 	stop  = max( [ex[1] for ex in transcript["exons"]] )
+
+		# 	startCut 	= max(0, start-3000 ) + 1
+		# 	stopCut 	= min(stop + 3000, len( scaffSeq[scaff].seq ) ) + 1
+
+		# 	loci[locusName]["seq"] = str(scaffSeq[scaff].seq[startCut-1:stopCut]).upper()
+		# 	loci[locusName]["coordinates"] = "{0}:{1}:{2}".format(locusName.split(':')[0], startCut, stopCut)
+		# 	loci[locusName]["startCut"] = startCut
+		# 	loci[locusName]["stopCut"] = stopCut
+
+
+		# startCut = loci[locusName]["startCut"]
+		# stopCut = loci[locusName]["stopCut"]
+
+		# for i in range( len(transcript["exons"]) ):
+		# 		exon = transcript["exons"][i]
+		# 		transcript["exons"][i] = (exon[0] - startCut + 1, exon[1] - startCut + 1 )
 		
 		for cdsName, cds in transcript["cdss"].iteritems():
 				cdsDir = cds["transLoc"][2]
