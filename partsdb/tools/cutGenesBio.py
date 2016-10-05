@@ -83,6 +83,8 @@ def prepareLibrary(transMapFileName, transFileName, proteinFileName, genomeFileN
 
 	return genes
 
+def 
+
 if __name__ == '__main__':
 	genes = prepareLibrary('/Users/md/marpodb/partsdb/data/map.gff3', '/Users/md/marpodb/partsdb/data/trans.fa', '/Users/md/marpodb/partsdb/data/pep.fa',  '/Users/md/marpodb/partsdb/data/genome.fa')
 

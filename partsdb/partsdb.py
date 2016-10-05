@@ -1,4 +1,4 @@
-from tables import Promoter, UTR5, CDS, UTR3, Terminator, Gene, Locus, Sys, Base, BaseMixIn, PfamHit, BlastpHit
+from tables import PartMixIn, Base, Sys
 from misc import nextIDGenerator
 
 from tools import prepareLibrary, compRev, getUtrCoordinates
@@ -13,19 +13,23 @@ class PartsDB:
 	Session 	= sessionmaker()
 	newParts	= []
 
-	def __init__(self, address, clean = False, classes = { 'promoter' : Promoter, 'utr5' : UTR5,  'cds': CDS, 'utr3' : UTR3, 'terminator' : Terminator, 'gene' : Gene, 'locus' : Locus}, annotationTables = { 'PfamHit' : PfamHit, 'BlastpHit' : BlastpHit }, idGenerator = nextIDGenerator):
+	def __init__(self, address, Base, clean = False, idGenerator = nextIDGenerator):
 		self.engine = create_engine(address, echo = False)
 		self.Session.configure(bind=self.engine)
+		self.Base = Base
 
-		self.classes = classes
-		self.annotationTables = annotationTables
+		self.classes = {}
+
+		for cls in Base.__subclasses__():
+			if issubclass(cls, PartMixIn):
+				self.classes[cls.__tablename__] = cls
 
 		self.idGenerator = idGenerator
 
 		if clean:
-			Base.metadata.drop_all(self.engine)
+			self.Base.metadata.drop_all(self.engine)
 
-		Sys.metadata.create_all(self.engine, checkfirst=True)
+		Base.metadata.create_all(self.engine, checkfirst=True)
 
 	def setup(self, **kwargs):
 		session = self.Session()
@@ -183,13 +187,15 @@ if __name__ == "__main__":
 
 	# blastFile = prefix + 'output/blastp.info'
 
-	marpodb = PartsDB('postgresql:///testdb', clean = True)
+	marpodb = PartsDB('postgresql:///testdb', clean = True, Base = Base)
 	marpodb.setup(prefix = "mpdb")
+	marpodb.addPart('promoter')
+	marpodb.commitParts()
 	# CDS = marpodb.classes['cds']
 	# session = marpodb.Session()
 	# session.close()
-	marpodb.populate(genomeFileName, transcriptFileName, proteinFileName, mapFileName)
+	# marpodb.populate(genomeFileName, transcriptFileName, proteinFileName, mapFileName)
 	# marpodb.annotate('BlastpHit', blastFile)
-	session = marpodb.Session()
-	saveSequences( session.query(UTR5).filter().all(), "cdsSeqs.fasta", translate = False )
+	# session = marpodb.Session()
+	# saveSequences( session.query(UTR5).filter().all(), "cdsSeqs.fasta", translate = False )
 
