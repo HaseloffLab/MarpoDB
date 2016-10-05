@@ -25,19 +25,6 @@ class PartsDB:
 		if clean:
 			Base.metadata.drop_all(self.engine)
 
-		# session = self.Session()
-
-		# for cls in classes:
-		# 	self.classes[cls] = self._partClass( classes[cls], session,  self.idGenerator )
-		# 	classes[cls].metadata.create_all(self.engine, checkfirst=True)
-
-		# self.annotationTables = {}
-		# for cls in annotationTables:
-		# 	self.annotationTables[cls] = self._partClass( annotationTables[cls], session, self.idGenerator )
-		# 	annotationTables[cls].metadata.create_all(self.engine, checkfirst = True)
-
-		# session.close()
-
 		Sys.metadata.create_all(self.engine, checkfirst=True)
 
 	def setup(self, **kwargs):
@@ -56,28 +43,6 @@ class PartsDB:
 		session = self.Session()
 		val = session.query(Sys.value).filter(Sys.variable == key).first()
 		return val[0]
-
-	# def _partClass(self, cls, session, idGenerator):
-
-	# 	class wrapperClass(cls):
-	# 		@declared_attr
-	# 		def __tablename__(clss):
-	# 			return cls.__name__.lower()
-
-	# 		def __init__(self, **kwargs):
-	# 			super(cls, self).__init__(**kwargs)
-
-	# 			nid = idGenerator(cls, session)
-
-	# 			prefix = session.query(Sys.value).filter(Sys.variable == 'prefix').first()[0]
-
-	# 			self.id = '{0}.{1}.{2}'.format(prefix, cls.__tablename__, nid)
-
-	# 	table = wrapperClass.__table__
-
-	# 	mapper(wrapperClass, table, non_primary = True)
-
-	# 	return(wrapperClass)
 
 	def annotate(self, tableName, fileName):
 		session = self.Session()
