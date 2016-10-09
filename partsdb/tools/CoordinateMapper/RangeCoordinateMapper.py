@@ -13,7 +13,7 @@ class RangeCoordinateMapper(CoordinateMapper):
 		self.length = length
 		self.startOffset = startOffset
 		self.endOffset = endOffset
-
+		
 	# start - end in GenBank notation
 	def rc2g(self, start, end, strand):
 		locations = []	

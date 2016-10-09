@@ -1,41 +1,16 @@
-from sqlalchemy.ext.declarative import declarative_base, declared_attr
+from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy import Column, Integer, String, ForeignKey, Text, Float
 from sqlalchemy.orm import relationship
-
-from tools import annotateBlastp
-
-class BaseMixIn(object):
-
-	id 		= Column( Integer, 		primary_key = True)
-	dbid 	= Column( String(30), 	unique		= True)
-
-	@declared_attr
-	def __tablename__(cls):
-		return cls.__name__.lower()
-
-class PartMixIn(object):
-	seq = Column( Text )
-
-class ExonMixIn(object):
-	coordinates = Column( Text )
-
-class AnnotationMixIn(object):
-
-	@declared_attr
-	def targetID(cls):
-		return Column( Integer, ForeignKey('{0}.id'.format(cls.__name__.lower())) )
-
-	@declared_attr
-	def target(cls):
-		return relationship( cls.__targetclass__, enable_typechecks=False )
-
-Base = declarative_base()
+from system.Tables import Base, BaseMixIn, PartMixIn, ExonMixIn, AnnotationMixIn
 
 class Locus(Base, BaseMixIn):
 	coordinates 	= Column( Text )
 
 class Promoter(Base,BaseMixIn,PartMixIn):
-	pass
+	locusID 		= Column( Integer, ForeignKey('locus.id') )
+	locus 			= relationship(Locus, 		enable_typechecks=False)
+
+	locusStrand		= Column( Integer )
 
 class UTR5(Base,BaseMixIn,PartMixIn, ExonMixIn):
 	pass
@@ -47,7 +22,10 @@ class UTR3(Base,BaseMixIn,PartMixIn, ExonMixIn):
 	pass
 
 class Terminator(Base,BaseMixIn,PartMixIn):
-	pass
+	locusID 		= Column( Integer, ForeignKey('locus.id') )
+	locus 			= relationship(Locus, 		enable_typechecks=False)
+
+	locusStrand		= Column( Integer )
 
 class Gene(Base,BaseMixIn):
 	name 			= Column( String(100) )
@@ -65,6 +43,9 @@ class Gene(Base,BaseMixIn):
 	utr3 			= relationship(UTR3, 		enable_typechecks=False)
 	terminator 		= relationship(Terminator, 	enable_typechecks=False)
 	locus   		= relationship(Locus,		enable_typechecks=False)
+
+	def printGene(self):
+		print self.promoterID
 
 class BlastpHit(Base, BaseMixIn, AnnotationMixIn):
 
@@ -96,9 +77,3 @@ class PfamHit(Base, BaseMixIn, AnnotationMixIn):
 	cVal 			= Column( Float )
 	description 	= Column( Text )
 	coordinates		= Column( Text )
-
-class Sys(Base):
-	__tablename__ 	= 'sys'
-	
-	variable		= Column( Text, primary_key = True )
-	value			= Column( Text )
