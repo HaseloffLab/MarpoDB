@@ -100,7 +100,6 @@ def getClassByTablename(tablename):
 
 def getColumnByName(cls, columnName):
 	for c in cls.__table__.columns:
-		# print "{0} : {1}".format(c.name, columnName)
 		if c.name == columnName:
 			return c
 	return None
@@ -127,8 +126,6 @@ def getTopGenes(marpodbSession, StarGene, n):
 
 	geneids = [gene.geneid for gene in StarGene.query.all()]
 	topGeneScores = dict(collections.Counter(geneids).most_common(n))
-
-	print "GENEIDS: ", geneids
 
 	genes = marpodbSession.query(Gene).filter(Gene.id.in_(topGeneScores.keys()) ).all()
 
@@ -161,7 +158,6 @@ def getUserData(StarGene, user, session, marpodbSession):
 def findDataIn(marpodbSession, level, table, queryColumns, equal, returnColumns):
 
 	cls 	= getClassByTablename(table)
-	print "Table: ", table
 	tCls  = cls.__targetclass__
 
 	queryColumns = [ getColumnByName(cls, name) for name in queryColumns ]
@@ -192,8 +188,6 @@ def processQuery(marpodbSession, scope, term, columns, nHits):
 
 	displayColumns = list(displayColumns)
 	dcMap = { v:k for k, v in enumerate(displayColumns) }
-
-	print dcMap
 
 	# Creating a scope map
 	scopeDict = {}
@@ -231,20 +225,19 @@ def processQuery(marpodbSession, scope, term, columns, nHits):
 				fullCols = [''] * len(displayColumns)
 				
 				for col in cols:
-					print col, cols[col]
 					fullCols[dcMap[col]] = cols[col]
 
 				# partCls = getClassByTablename(scLevel)
 				partColumn = getColumnByName(Gene, scLevel+'ID')
 
 				locusDBID = marpodbSession.query(Locus.dbid).filter(Locus.id == Gene.locusID).\
-							filter(partColumn == partID).first()
+							filter(partColumn == partID).first()[0]
 
 				if locusDBID:
 					if not locusDBID in loci:
 						loci[locusDBID] = {"genes": {}}
 
-					geneDBID = marpodbSession.query(Gene.dbid).filter(partColumn == partID).first()
+					geneDBID = marpodbSession.query(Gene.dbid).filter(partColumn == partID).first()[0]
 					if geneDBID:
 						if not geneDBID in loci[locusDBID]["genes"]:
 							loci[locusDBID]["genes"][geneDBID] = {"parts": {} }
@@ -263,21 +256,22 @@ def processQuery(marpodbSession, scope, term, columns, nHits):
 	for locusDBID, locus in loci.iteritems():
 				# [	z for w in [ genes[gene]     ["trans"][x]["cds"]  [y]["hits"]          for x in genes[gene]     ["trans"]           for y in       genes[gene]     ["trans"][x]["cds"]                         ] for z in w]
 		allHits = [ z for w in [ locus["genes"][x]["parts"][y]["hits"] 	       for x in locus["genes"]           for y in       locus["genes"][x]["parts"]                       ] for z in w]
-			
-		print 'ALLHITS: ', allHits
 
 		sortedHits = sortHits(allHits , dcMap[sortCol]+1, nHits)
 		locus["topRow"] = [locusDBID] + sortedHits[0][1:]
 
+		# print locusDBID
+
 		for geneDBID, gene in locus["genes"].iteritems():
-			print gene
+			# print "\t{0}".format(geneDBID)
 						# [z for w in [ genes[gene]["trans"][trans]["cds"][x]["hits"] for x in  genes[gene]["trans"][trans]["cds"]] for z in w ]
-			allHits =     [z for w in [ gene["parts"][x]["hits"] 		   					  for x in  gene                             ] for z in w ]
+			allHits =     [z for w in [ gene["parts"][x]["hits"] 		   					  for x in  gene["parts"]                             ] for z in w ]
 			sortedHits = sortHits(allHits, dcMap[sortCol]+1, nHits)
 			gene["topRow"] =  [geneDBID] + sortedHits[0][1:]
 
 			for partDBID, part in gene["parts"].iteritems():
-				print partDBID, part
+				# print "\t\t{0}, {1}".format(partDBID, len(part["hits"]))
+
 				sortedHits = sortHits( part["hits"], dcMap[sortCol]+1, nHits)
 				part["topRow"] = [partDBID] + sortedHits[0][1:]
 				part["hits"] = sortedHits
@@ -297,7 +291,7 @@ def processQuery(marpodbSession, scope, term, columns, nHits):
 		row = {"rowid": rowid, "pid": "none", "cols": locus["topRow"], "level" : "locus"}
 		table["data"].append(row)
 
-		geneList = sorted( locus.values(), key = lambda gene: gene["topRow"][dcMap[sortCol]+1] )
+		geneList = sorted( locus["genes"].values(), key = lambda gene: gene["topRow"][dcMap[sortCol]+1] )
 
 		for gene in geneList:
 			rowid += 1
@@ -306,7 +300,7 @@ def processQuery(marpodbSession, scope, term, columns, nHits):
 			row = {"rowid": rowid, "pid": locusid, "cols": gene["topRow"], "level" : "gene"}
 			table["data"].append(row)
 
-			partList = sorted( gene.values(), key = lambda part: part["topRow"][dcMap[sortCol]+1] )
+			partList = sorted( gene["parts"].values(), key = lambda part: part["topRow"][dcMap[sortCol]+1] )
 
 			for part in partList:
 				rowid += 1
