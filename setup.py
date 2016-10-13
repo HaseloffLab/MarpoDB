@@ -32,7 +32,6 @@ setup(
 	],
 	keywords='bioinfomratics parts synthetic biology',
 	packages=find_packages(),
-	install_requires=['sqlalchemy'], 
-
-
+	install_requires=['sqlalchemy'],
 )
+

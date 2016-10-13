@@ -1,0 +1,3 @@
+from Annotator import Annotator
+from BlastAnnotator import BlastAnnotator
+from PfamAnnotator import PfamAnnotator
