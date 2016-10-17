@@ -4,3 +4,4 @@
 PartsDB.egg-info/*
 **/test.py
 **/*.pyc
+marpodb/data/*
