@@ -27,11 +27,11 @@ We need to install the following software:
 
 - HMMR (http://eddylab.org/software/hmmer3/3.1b2/Userguide.pdf)
 
-- Splign (NCBI tools - https://www.ncbi.nlm.nih.gov/Web/Newsltr/V14N2/splign.html)
+- Splign (NCBI tools - https://www.ncbi.nlm.nih.gov/Web/Newsltr/V14N2/splign.html. We are using a precompiled binary provided from http://sing.citi.uvigo.es/static/BDBM/ncbi.tar.gz)
 
 - InterproScan (5Gb - Check the requirements in https://github.com/ebi-pf-team/interproscan/wiki)
 
-We provide a script for installing into a src/ directory. In case anything fails, just read the dependencies.sh file and check which step failed.
+We provide a script for installing into a src/ directory. In case anything fails, just read the dependencies.sh file and check which step failed (otherwise you might try step-by-step).
 
 ```bash
 sh dependencies.sh
@@ -42,12 +42,13 @@ sh dependencies.sh
 
 
 
-# Server
+# Server installation
 
-python2
-PostgreSQL
-Flask
-Jinja2
-Biopython
+You should have pip and python2 installed for performing automated installation.
+```bash
+sudo apt-get pip python2 postgresql-9.4
+# or use the appropriate package manager
+pip install -r requirements.txt
 
+```
 
