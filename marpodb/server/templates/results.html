@@ -27,7 +27,12 @@
 			</tr>
 			{% for row in table["data"] %}
 				<tr class="header {{row['level']}}" id="header{{row['rowid']}}" parent-id="header{{row['pid']}}">
-					<td><span class="ident"></span><img src="../static/img/expand.png"/><a href="details?name={{row['cols'][0]}}" target="_blank">{{row["cols"][0]}}</a></td>
+					{% if row["level"] != "hit" %}
+						<td><span class="ident"></span><img src="../static/img/expand.png"/><a href="details?dbid={{row['cols'][0]}}" target="_blank">{{row["cols"][0]}}</a></td>
+					{% else %}
+						<td><span class="ident"></span>{{row['cols'][0]}}</td>
+					{% endif  %}
+
 					{% for col in row["cols"][1:] %}
 						<td class="truncate">{{col|string}}</td>
 					{% endfor %}

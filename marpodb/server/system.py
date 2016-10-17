@@ -11,7 +11,7 @@ import json
 import collections
 
 from tables import *
-
+from partsdb.tools.Exporters import GenBankExporter
 from sqlalchemy import or_
 
 def splitString(s,n):
@@ -438,63 +438,89 @@ def processQuery(marpodbSession, scope, term, columns, nHits):
 	return table
 
 
-def getGeneCoordinates(cur, geneName):
+def getGeneCoordinates(marpodbSession, locusid):
 	
-	# Retrieve transcript coordinates
-	queryString = "SELECT transcript.coordinates, transcript.name FROM transcript WHERE name LIKE \'{0}.seq%\'".format(geneName)
-	cur.execute(queryString)
-	mrnaCoordinates = cur.fetchall()
+	genes = marpodbSession.query(Gene).filter(Gene.locusID == locusid).all()
 
-	geneStart = 1000000
-	geneStop = 0
+	exporter = GenBankExporter(None)
+
+	geneRecords = []
 
 	response = {}
-	response['mrnas'] = {}
-	response['cdss'] = {}
-	response['gene'] = ()
 
-	if mrnaCoordinates:
-		for coordinates in mrnaCoordinates:
-			exonStrings = coordinates[0].split(';')
-			exons = []
-			
-			for exonString in exonStrings:
-				exon = exonString.split(',')
-				start = int(exon[0])
-				stop = int(exon[1])
-				
-				if start < geneStart:
-					geneStart = start
-				if stop > geneStop:
-					geneStop = stop
-				exons.append( (start, stop) )
-			response['mrnas'][coordinates[1]] = sorted(exons, key = lambda x: x[0])
-	else:
-		return response
+	for gene in genes:
+		geneRecords.append( exporter.export(gene, None) )
+	
+	response['len'] = len(geneRecords[0])
+	response['genes'] = {}
+	for record in geneRecords:
+		response['genes'][record.id] = {}
+		for feature in record.features:
+			try:
+				locations = feature.location.parts
+			except:
+				locations = [feature.location]
 
-	response['gene'] = (geneStart, geneStop)
-
-	# Retrieve cds coordinates
-	queryString = "SELECT cds.coordinates, cds.name FROM cds WHERE name LIKE \'{0}.seq%\'".format(geneName)
-	cur.execute(queryString)
-
-	cdsCoordinates = cur.fetchall()
-
-	if cdsCoordinates:
-		for coordinates in cdsCoordinates:
-			cdsStrings = coordinates[0].split(';')
-			cdsParts = []
-
-			for cdsString in cdsStrings:
-				cds = cdsString.split(',')
-				start = int(cds[0])
-				stop = int(cds[1])
-				direction = cds[2]
-
-				cdsParts.append( (start, stop, direction) )
-			response['cdss'][coordinates[1]] = sorted(cdsParts, key = lambda x: x[0])
-
+			coordinates = ";".join([ "{0}:{1}".format(part.start, part.end) for part in locations  ])
+			response['genes'][record.id][feature.type] = coordinates
+	
 	return response
+
+	# # Retrieve transcript coordinates
+	# queryString = "SELECT transcript.coordinates, transcript.name FROM transcript WHERE name LIKE \'{0}.seq%\'".format(geneName)
+	# cur.execute(queryString)
+	# mrnaCoordinates = cur.fetchall()
+
+	# geneStart = 1000000
+	# geneStop = 0
+
+	# response = {}
+	# response['mrnas'] = {}
+	# response['cdss'] = {}
+	# response['gene'] = ()
+
+	# if mrnaCoordinates:
+	# 	for coordinates in mrnaCoordinates:
+	# 		exonStrings = coordinates[0].split(';')
+	# 		exons = []
+			
+	# 		for exonString in exonStrings:
+	# 			exon = exonString.split(',')
+	# 			start = int(exon[0])
+	# 			stop = int(exon[1])
+				
+	# 			if start < geneStart:
+	# 				geneStart = start
+	# 			if stop > geneStop:
+	# 				geneStop = stop
+	# 			exons.append( (start, stop) )
+	# 		response['mrnas'][coordinates[1]] = sorted(exons, key = lambda x: x[0])
+	# else:
+	# 	return response
+
+	# response['gene'] = (geneStart, geneStop)
+
+	# # Retrieve cds coordinates
+	# queryString = "SELECT cds.coordinates, cds.name FROM cds WHERE name LIKE \'{0}.seq%\'".format(geneName)
+	# cur.execute(queryString)
+
+	# cdsCoordinates = cur.fetchall()
+
+	# if cdsCoordinates:
+	# 	for coordinates in cdsCoordinates:
+	# 		cdsStrings = coordinates[0].split(';')
+	# 		cdsParts = []
+
+	# 		for cdsString in cdsStrings:
+	# 			cds = cdsString.split(',')
+	# 			start = int(cds[0])
+	# 			stop = int(cds[1])
+	# 			direction = cds[2]
+
+	# 			cdsParts.append( (start, stop, direction) )
+	# 		response['cdss'][coordinates[1]] = sorted(cdsParts, key = lambda x: x[0])
+
+	# return response
 
 
 def retrieveHits(cur, hitTable, refTable, name):

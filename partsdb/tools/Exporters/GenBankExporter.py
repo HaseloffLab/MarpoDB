@@ -24,21 +24,24 @@ class GenBankExporter(Exporter):
 
 		for partType, part in zip( self.keys, parts):
 			l = len(gene)
-			print partType, isinstance(part, PartMixIn), isinstance(part, ExonMixIn)
 			if isinstance(part, PartMixIn):
 				if isinstance(part, ExonMixIn):
-					print part.coordinates
 					feature = SeqFeature( type = partType, location = self.coordinatesToLocation(part.coordinates)._shift( l ) )
 				else:
 					feature = SeqFeature( type = partType, location = FeatureLocation( l, l + len(part.seq) ) )
-				
-				print feature
 
 				gene.seq += Seq(part.seq, generic_dna)
 				gene.features.append(feature)
-		
-		outputFile = open(outputFileName, 'w')
-		SeqIO.write(gene, outputFile, "gb")
+		if outputFileName:
+			print 'outputFileName IS'
+		else:
+			print 'outputFileName IS NONE'
+
+		if outputFileName:
+			outputFile = open(outputFileName, 'w')
+			SeqIO.write(gene, outputFile, "gb")
+		else:
+			return gene
 
 if __name__ == "__main__":
 	exporter = GenBankExporter(1)

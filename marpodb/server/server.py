@@ -7,7 +7,7 @@ from flask_user import UserMixin, SQLAlchemyAdapter, UserManager, LoginManager
 from flask_login import login_user, login_required, logout_user, current_user, user_logged_in
 
 from user import RegisterForm, LoginForm
-from system import getUserData, generateNewMap, getTopGenes, processQuery
+from system import getUserData, generateNewMap, getTopGenes, processQuery, getGeneCoordinates
 
 import os
 
@@ -111,6 +111,57 @@ def result():
 	if len(table['data']) != 0:
 		return render_template('results.html', table = table, title='Query results')
 
+@app.route('/details')
+def details():
+	dbid = request.args.get('dbid','')
+
+	marpodbSession = marpodb.Session()
+
+	locus = None
+	gene  = None
+	cds   = None
+
+	locus = marpodbSession.query(Locus).filter(Locus.dbid == dbid).first()
+	if not locus:
+		
+		gene = marpodbSession.query(Gene).filter(Gene.dbid == dbid).first()
+		if not gene:
+			cds = marpodbSession.query(CDS).filter(CDS.dbid == dbid).first()
+			if cds:
+				gene  = marpodbSession.query(Gene).filter(Gene.cdsID == cds.id).first()
+				locus = marpodbSession.query(Locus).filter(Locus.id == Gene.locusID).\
+						filter(Gene.cdsID == cds.id).first()
+		else:
+			locus = marpodbSession.query(Locus).filter(Locus.id == gene.locusID).first()
+
+
+	geneCoordinates = getGeneCoordinates(marpodbSession, locus.id)
+
+	return ""
+
+	# if not (geneCoordinates['mrnas'] and geneCoordinates['cdss'] and geneCoordinates['gene']):
+	# 	abort(500)
+
+	# if not cdsName:
+	# 	cdsName = geneCoordinates['cdss'].keys()[0]
+
+	# cdsDetails = getCDSDetails(cur, cdsName)
+
+	# stared = False
+	# if current_user.is_authenticated:
+	# 	if StarGene.query.filter(StarGene.userid == current_user.id, StarGene.geneid == geneid).first():
+	# 		stared = True
+	# else:
+		
+	# 	if not "stars" in session:
+	# 		session["stars"] = ""
+	# 	print "DETAILS STARS: ", session["stars"]
+	#  	print "DETAILS ID: ", str(geneid), session["stars"].find(str(geneid))
+	# 	if session["stars"].find(str(geneid)) > -1:
+	# 		stared = True
+	# 	print "STARRED: ", stared
+	# return render_template('details.html', cdsName = cdsName, geneName = geneName, geneSeq = geneSeq, gene = geneCoordinates['gene'], mrnas = geneCoordinates['mrnas'], cdss = geneCoordinates['cdss'], blastm = cdsDetails['blastm'], blastp = cdsDetails['blastp'], stared = stared, alias = geneAlias)
+
 @app.route('/map')
 def map():
 	if not os.path.isfile('static/img/map.png'):
@@ -136,7 +187,7 @@ def help():
 	return render_template("help.html", title='Help')
 
 if __name__ == '__main__':
-	app.run(debug=True,host='0.0.0.0', port = 8082)
+	app.run(debug=True,host='0.0.0.0', port = 8081)
 
 
 
