@@ -21,15 +21,15 @@ The setup is divided into the following sections:
 
 We need to install the following software:
 
-*TransDecoder (part of the Trinity pipeline by Brian Hass -https://github.com/TransDecoder/TransDecoder/releases)
+- TransDecoder (part of the Trinity pipeline by Brian Hass -https://github.com/TransDecoder/TransDecoder/releases)
 
-*BLAST-2.2.27 (specific version in ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/2.2.27/ - https://www.ncbi.nlm.nih.gov/books/NBK279690/)
+- BLAST-2.2.27 (specific version in ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/2.2.27/ - https://www.ncbi.nlm.nih.gov/books/NBK279690/)
 
-*HMMR (http://eddylab.org/software/hmmer3/3.1b2/Userguide.pdf)
+- HMMR (http://eddylab.org/software/hmmer3/3.1b2/Userguide.pdf)
 
-*Splign (NCBI tools - https://www.ncbi.nlm.nih.gov/Web/Newsltr/V14N2/splign.html)
+- Splign (NCBI tools - https://www.ncbi.nlm.nih.gov/Web/Newsltr/V14N2/splign.html)
 
-*InterproScan (5Gb - Check the requirements in https://github.com/ebi-pf-team/interproscan/wiki)
+- InterproScan (5Gb - Check the requirements in https://github.com/ebi-pf-team/interproscan/wiki)
 
 We provide a script for installing into a src/ directory. In case anything fails, just read the dependencies.sh file and check which step failed.
 
