@@ -181,10 +181,6 @@ mkdir Pfam
 mv Pfam-A.hmm Pfam/
 ```
 
-- nr
-
-
-
 In case anything fails, go to the original source and read the documentation. Errors may be due to new releases or compilation errors but should be straightforward to determine.
 
 ## Data compilation
@@ -192,9 +188,11 @@ In case anything fails, go to the original source and read the documentation. Er
 
 
 
+
 ## Server installation
 
 You should have pip and python2 installed for performing automated installation.
+
 ```bash
 cd $BASE
 sudo apt-get pip python2 postgresql-9.4
@@ -202,4 +200,6 @@ sudo apt-get pip python2 postgresql-9.4
 pip install -r requirements.txt
 
 ```
+
+This is still under construction...
 

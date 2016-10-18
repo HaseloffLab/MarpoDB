@@ -8,8 +8,8 @@ cd $BASE
 mkdir data
 cd data
 DATA=$(pwd)
-cd $BASE
 
+cd $SRC
 ## TransDecoder
 wget https://github.com/TransDecoder/TransDecoder/archive/v3.0.0.tar.gz --no-check-certificate
 tar xvfz v3.0.0.tar.gz
@@ -35,7 +35,7 @@ cd $SRC
 
 ## HMMR
 wget http://eddylab.org/software/hmmer3/3.1b2/hmmer-3.1b2-linux-intel-x86_64.tar.gz
-tar xfvz 
+tar xfvzp hmmer-3.1b2-linux-intel-x86_64.tar.gz
 cd hmmer-3.1b2-linux-intel-x86_64
 HMMR=$(pwd)
 ./configure --prefix=$HMMR
@@ -63,7 +63,7 @@ echo "Unless errors appeared, Splign and compart successfully installed"
 
 ## If splign complains about not being able to find libpcre.so.0 do
 
-#echo "LIBPCRE=$(locate libpcre.so.3 | head -1)		
+#LIBPCRE=$(locate libpcre.so.3 | head -1)		
 #cp $LIBPCRE .										
 #mv libpcre.so.3 libpcre.so.0					
 #export LD_LIBRARY_PATH=$BINS:$LD_LIBRARY_PATH
