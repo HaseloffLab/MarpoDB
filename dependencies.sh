@@ -4,6 +4,11 @@ BASE=$(pwd)
 mkdir src
 cd src
 SRC=$(pwd)
+cd $BASE
+mkdir data
+cd data
+DATA=$(pwd)
+cd $BASE
 
 # Transdecoder
 wget https://github.com/TransDecoder/TransDecoder/archive/v3.0.0.tar.gz --no-check-certificate
@@ -71,3 +76,11 @@ cd interproscan-5.20-59.0-64-bit
 ./interproscan
 
 cd $BASE
+
+mkdir data
+cd data
+wget ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_trembl.fasta.gz
+
+wget ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.fasta.gz
+
+wget ftp://ftp.ebi.ac.uk/pub/databases/Pfam/releases/Pfam30.0/Pfam-A.hmm.gz
