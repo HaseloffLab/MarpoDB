@@ -8,6 +8,7 @@ cd $BASE
 mkdir data
 cd data
 DATA=$(pwd)
+cd $BASE
 
 cd $SRC
 ## TransDecoder
@@ -16,6 +17,7 @@ tar xvfz v3.0.0.tar.gz
 cd TransDecoder-3.0.0
 make
 TRANSDECODER=$(pwd)
+export PATH=$PATH:$TRANSDECODER
 echo "export PATH=$PATH:$TRANSDECODER" >> ~/.bashrc
 echo "Unless errors appeared, TransDecoder successfully installed"
 cd $SRC
@@ -25,10 +27,7 @@ curl ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/2.2.27/ncbi-blast-2.2.2
 tar xvfzp ncbi-blast-2.2.27+-x64-linux.tar.gz 
 cd 
 BLAST=$(pwd)
-./configure --prefix="$BLAST/"
-make
-make install
-export PATH=$PATH$BLAST/bin
+export PATH=$PATH:$BLAST/bin
 echo "export PATH=$PATH:$BLAST/bin" >> ~/.bashrc
 echo "Unless errors appeared, BLAST 2.2.27 successfully installed"
 cd $SRC
@@ -56,10 +55,6 @@ cd ncbi_bins
 BINS=$(pwd)
 export PATH=$PATH:$BINS
 echo "export PATH=$PATH:$BINS" >> ~/.bashrc
-echo "Let's check everything works. Now will try to run splign..."
-sleep 5
-splign -help | head -20
-echo "Unless errors appeared, Splign and compart successfully installed"
 
 ## If splign complains about not being able to find libpcre.so.0 do
 
@@ -68,6 +63,12 @@ echo "Unless errors appeared, Splign and compart successfully installed"
 #mv libpcre.so.3 libpcre.so.0					
 #export LD_LIBRARY_PATH=$BINS:$LD_LIBRARY_PATH
 #echo "export LD_LIBRARY_PATH=$BINS:$LD_LIBRARY_PATH" >> ~/.bashrc
+
+echo "Let's check everything works. Now will try to run splign..."
+sleep 5
+splign -help | head -20
+echo "Unless errors appeared, Splign and compart successfully installed"
+
 
 ## InterproScan 5.20-59.0 (Java 8)
 curl ftp://ftp.ebi.ac.uk/pub/software/unix/iprscan/5/5.20-59.0/interproscan-5.20-59.0-64-bit.tar.gz -o interproscan-5.20-59.0-64-bit.tar.gz
