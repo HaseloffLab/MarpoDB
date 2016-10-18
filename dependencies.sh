@@ -10,7 +10,9 @@ cd data
 DATA=$(pwd)
 cd $BASE
 
+## SOFTWARE
 cd $SRC
+
 ## TransDecoder
 wget https://github.com/TransDecoder/TransDecoder/archive/v3.0.0.tar.gz --no-check-certificate
 tar xvfz v3.0.0.tar.gz
@@ -25,7 +27,7 @@ cd $SRC
 ## BLAST 2.2.27
 curl ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/2.2.27/ncbi-blast-2.2.27+-x64-linux.tar.gz --user anonymous: -o ncbi-blast-2.2.27+-x64-linux.tar.gz
 tar xvfzp ncbi-blast-2.2.27+-x64-linux.tar.gz 
-cd 
+cd ncbi-blast-2.2.27+
 BLAST=$(pwd)
 export PATH=$PATH:$BLAST/bin
 echo "export PATH=$PATH:$BLAST/bin" >> ~/.bashrc
@@ -40,7 +42,7 @@ HMMR=$(pwd)
 ./configure --prefix=$HMMR
 make check
 make install
-export PATH="$PATH:$HMMR/bin"
+export PATH=$PATH:$HMMR/bin
 echo "export PATH=$PATH:$HMMR/bin" >> ~/.bashrc
 echo "Unless errors appeared, HMMR successfully installed"
 cd $SRC
@@ -69,7 +71,7 @@ sleep 5
 splign -help | head -20
 echo "Unless errors appeared, Splign and compart successfully installed"
 
-
+cd $SRC
 ## InterproScan 5.20-59.0 (Java 8)
 curl ftp://ftp.ebi.ac.uk/pub/software/unix/iprscan/5/5.20-59.0/interproscan-5.20-59.0-64-bit.tar.gz -o interproscan-5.20-59.0-64-bit.tar.gz
 curl ftp://ftp.ebi.ac.uk/pub/software/unix/iprscan/5/5.20-59.0/interproscan-5.20-59.0-64-bit.tar.gz.md5 -o interproscan-5.20-59.0-64-bit.tar.gz.md5
@@ -104,8 +106,7 @@ INTERPRO=$(pwd)
 export PATH=$PATH:$INTERPRO
 echo "export PATH=$PATH:$INTERPRO" >> ~/.bashrc
 
-## Databases
-
+## DATABASES
 cd $DATA
 
 ## Uniprot - build your own taxonomy database or just download the whole thing (16Gb, 30Gb decompressed for Trembl and 85Mb for Swissprot)
