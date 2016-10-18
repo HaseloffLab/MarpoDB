@@ -25,7 +25,7 @@ A wrapper script is provided in dependencies.sh, but if anything fails, try the 
 sh dependencies.sh
 ```
 
-* Step-by-step
+### Step-by-step approach
 
 Let's set up the directory structure and environmental path variables:
 ```bash
