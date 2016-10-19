@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+{% block head %}
+	<script src="/static/javascript/Scribl.1.1.5.bp.2.min.js" type="text/javascript"></script>
+	<script>
+		var seq = "{{seq}}";
+		var genes = {}
+
+		{% for genedbid, gene in geneCoordinates.iteritems() %}
+			gene = {}
+
+			{% for type, coordinates in gene.iteritems() %}
+				gene["{{type}}"] = "{{coordinates}}"
+			{% endfor %}
+
+			genes[ "{{genedbid}}" ] = gene;
+		{% endfor %}
+
+	</script>
+
+{% include 'chart2.html' %}
+
+{% endblock %}
+
+
+{% block content %}
+
+<div class="gene-details">
+	<div class = "geneStucture">
+		<div class = "geneView" >
+				<canvas id = "geneViewCanvas" width="740px"></canvas>
+		</div>
+	</div>
+</div>
+
+<script>
+	$(function(){
+		draw("geneViewCanvas");
+	});
+</script>
+
+{% endblock %}

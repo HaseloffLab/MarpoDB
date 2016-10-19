@@ -122,22 +122,27 @@ def details():
 	cds   = None
 
 	locus = marpodbSession.query(Locus).filter(Locus.dbid == dbid).first()
+
 	if not locus:
 		
 		gene = marpodbSession.query(Gene).filter(Gene.dbid == dbid).first()
+		
 		if not gene:
 			cds = marpodbSession.query(CDS).filter(CDS.dbid == dbid).first()
 			if cds:
 				gene  = marpodbSession.query(Gene).filter(Gene.cdsID == cds.id).first()
 				locus = marpodbSession.query(Locus).filter(Locus.id == Gene.locusID).\
 						filter(Gene.cdsID == cds.id).first()
+
 		else:
 			locus = marpodbSession.query(Locus).filter(Locus.id == gene.locusID).first()
+			cdsdbid = marpodbSession.query(CDS.dbid).filter(CDS.id == gene.cdsID).first()[0]
+	else:
+		cdsdbid = marpodbSession.query(CDS.dbid).filter(CDS.id == Gene.cdsID).\
+					filter(Gene.locusID == locus.id).first()[0]
+	response = getGeneCoordinates(marpodbSession, locus.id)
 
-
-	geneCoordinates = getGeneCoordinates(marpodbSession, locus.id)
-
-	return ""
+	return render_template('details2.html', cdsDBID = cdsdbid, geneCoordinates = response['genes'], seq = response['seq'],  title = "Details for {0}".format(cdsdbid))
 
 	# if not (geneCoordinates['mrnas'] and geneCoordinates['cdss'] and geneCoordinates['gene']):
 	# 	abort(500)
