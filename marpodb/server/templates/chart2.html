@@ -5,7 +5,8 @@
 						'utr5'		 : 'rgb(0, 100, 150)',
 						'cds'		 : 'rgb(0, 100, 0)',
 						'utr3'		 : 'rgb(0, 100, 150)'};
-	
+	var features = []
+
 	function draw(canvasName){
 		var canvas = document.getElementById(canvasName);
 
@@ -30,8 +31,6 @@
 		geneView.scale.font.size = 12;
 		n = 0
 
-		
-
 		for( genedbid in genes ){
 			console.log(genedbid);
 			geneTrack = geneView.addTrack().addLane();
@@ -49,47 +48,86 @@
 
 			for( type in genes[genedbid] ){
 
-				
-
-				coordinateStr = genes[genedbid][type];
-				exonStr = coordinateStr.split(";");
-				blocks = []
-
-				minStart = 1000000;
-				maxEnd = -1;
-
-				// console.log(type, exonStr);
-
-				for ( idx in exonStr ){
 					
-					exon = exonStr[idx]
 
-					start  = parseInt(exon.split(':')[0]);
-					end    = parseInt(exon.split(':')[1]);
+						coordinateStr = genes[genedbid][type];
+						exonStr = coordinateStr.split(";");
+						blocks = []
 
-					minStart = Math.min(minStart, start);
-					maxEnd   = Math.max(maxEnd, end);
+						minStart = 1000000;
+						maxEnd = -1;
 
-					blocks.push( new BlockArrow(type, start, end-start, strand, {'borderColor':'black'} ) );
-				}
+						// console.log(type, exonStr);
 
-				for(i=0; i<blocks.length; i++){
-					console.log(blocks[i]);
-					blocks[i].position -= minStart;
-				}
+						for ( idx in exonStr ){
+							
+							exon = exonStr[idx]
 
-				// console.log(minStart, maxEnd)
-				// console.log(blocks)
-				newFeature = geneTrack.addFeature( new Complex(type, minStart, maxEnd - minStart, strand, blocks) );
-				newFeature.setColorGradient(typeColors[type], typeColors[type]);
+							start  = parseInt(exon.split(':')[0]);
+							end    = parseInt(exon.split(':')[1]);
 
+							minStart = Math.min(minStart, start);
+							maxEnd   = Math.max(maxEnd, end);
+
+							blocks.push( new BlockArrow(type, start, end-start, strand, {'borderColor':'black'} ) );
+						}
+
+						for(i=0; i<blocks.length; i++){
+							blocks[i].position -= minStart;
+						}
+
+						console.log(minStart, maxEnd)
+						console.log(blocks)
+						if (strand == '+'){
+							newFeature = geneTrack.addFeature( new Complex(type, minStart, maxEnd - minStart, strand, blocks) ) ;
+						}
+						else{
+							newFeature = geneTrack.addFeature( new Complex(type, seq.length - maxEnd, maxEnd - minStart, strand, blocks) );
+						}
+
+						
+						newFeature.onClick = function(feature){
+							
+						};
+
+
+						newFeature.onMouseover = function(feature){
+
+								
+							for(i=0; i<features.length; i++){
+								if (features[i].uid == feature.parent.uid){
+									features[i].borderWidth = 5;
+								}
+								else{
+									features[i].borderWidth = 0;
+								}
+							}
+
+							
+							geneView.redraw();
+						};
+						
+						newFeature.setColorGradient(typeColors[type], typeColors[type]);
+						
+						features.push(newFeature);
+
+						n+=1;
+					}
 				
-				n+=1;
-			}
+			
 			
 		}
-		canvas.height = geneView.getHeight() + 20;
+
 		console.log(geneView);
+		canvas.height = geneView.getHeight() + 20;
 		geneView.draw();
 	}
+
+	function draworig(){
+		for(i=0; i<features.length; i++){
+			features[i].borderWidth = 0;
+		}
+		geneView.redraw();
+	}
+
 </script>
