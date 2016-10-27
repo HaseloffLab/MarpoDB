@@ -462,7 +462,7 @@ def getGeneCoordinates(marpodbSession, locusid):
 	
 			coordinates = ";".join([ "{0}:{1}:{2}".format(part.start, part.end, part.strand) for part in locations  ])
 
-			response['genes'][record.id][feature.type] = coordinates
+			response['genes'][record.id][feature.id] = coordinates
 		
 		if not 'seq' in response:
 			response['seq'] = record.seq

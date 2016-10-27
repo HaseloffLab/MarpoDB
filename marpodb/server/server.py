@@ -142,6 +142,8 @@ def details():
 					filter(Gene.locusID == locus.id).first()[0]
 	response = getGeneCoordinates(marpodbSession, locus.id)
 
+	print response['genes']
+
 	return render_template('details2.html', cdsDBID = cdsdbid, geneCoordinates = response['genes'], seq = response['seq'],  title = "Details for {0}".format(cdsdbid))
 
 	# if not (geneCoordinates['mrnas'] and geneCoordinates['cdss'] and geneCoordinates['gene']):

@@ -29,9 +29,9 @@ class GenBankExporter(Exporter):
 			l = len(gene)
 			if isinstance(part, PartMixIn):
 				if isinstance(part, ExonMixIn):
-					feature = SeqFeature( type = partType, location = self.coordinatesToLocation(part.coordinates)._shift( l ) )
+					feature = SeqFeature( type = partType, location = self.coordinatesToLocation(part.coordinates)._shift( l ), id=part.dbid )
 				else:
-					feature = SeqFeature( type = partType, location = FeatureLocation( l, l + len(part.seq) ) )
+					feature = SeqFeature( type = partType, location = FeatureLocation( l, l + len(part.seq) ), id=part.dbid )
 
 				if not outputFileName:
 					if hasattr(part, 'locusStrand'):

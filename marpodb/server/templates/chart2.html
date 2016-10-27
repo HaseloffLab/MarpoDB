@@ -12,7 +12,7 @@
 
 		geneView = new Scribl(canvas, 705);
         geneView.glyph.color = "black";
-        geneView.glyph.text.size = 10;
+        geneView.glyph.text.size = 1;
         geneView.glyph.text.font = "courier";
         geneView.glyph.text.align = "left";
    		geneView.glyph.roundness = 10;
@@ -34,23 +34,38 @@
 		for( genedbid in genes ){
 			console.log(genedbid);
 			geneTrack = geneView.addTrack().addLane();
-			console.log('Strand: ', genes[genedbid]['promoter'].split(':')[2])
+			// console.log('Strand: ', genes[genedbid]['promoter'].split(':')[2])
 
-			if (genes[genedbid]['promoter'].split(':')[2] == '1'){
-				strand = '+'
+			strand = ''
+
+			for( dbid in genes[genedbid] ){
+				if (dbid.startsWith('promoter')){
+					if (genes[genedbid][dbid].split(':')[2] == '1'){
+						strand = '+'
+					}
+					else{
+						strand = '-'
+					}
+				}
 			}
-			else{
-				strand = '-'
-			}
+
+			// if (genes[genedbid]['promoter'].split(':')[2] == '1'){
+			// 	strand = '+'
+			// }
+			// else{
+			// 	strand = '-'
+			// }
 
 			console.log('Strand: ', strand)
 
 
-			for( type in genes[genedbid] ){
+			for( dbid in genes[genedbid] ){
 
-					
+						type = dbid.split('.')[1];
 
-						coordinateStr = genes[genedbid][type];
+						console.log(dbid, type)
+
+						coordinateStr = genes[genedbid][dbid];
 						exonStr = coordinateStr.split(";");
 						blocks = []
 
@@ -85,6 +100,7 @@
 							newFeature = geneTrack.addFeature( new Complex(type, seq.length - maxEnd, maxEnd - minStart, strand, blocks) );
 						}
 
+						newFeature.name = dbid;
 						
 						newFeature.onClick = function(feature){
 							
@@ -92,11 +108,10 @@
 
 
 						newFeature.onMouseover = function(feature){
-
-								
 							for(i=0; i<features.length; i++){
 								if (features[i].uid == feature.parent.uid){
 									features[i].borderWidth = 5;
+
 								}
 								else{
 									features[i].borderWidth = 0;
@@ -105,6 +120,11 @@
 
 							
 							geneView.redraw();
+							// me = geneView.myMouseEventHandler;
+							// Copy = new Feature();
+							// Copy.onMouseover = feature.parent.name;
+							// console.log(feature.parent.name);
+							// me.tooltip.fire(Copy);
 						};
 						
 						newFeature.setColorGradient(typeColors[type], typeColors[type]);

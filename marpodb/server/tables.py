@@ -8,10 +8,11 @@ class Locus(Base, BaseMixIn):
 	coordinates 	= Column( Text )
 
 class Promoter(Base,BaseMixIn,PartMixIn):
-	locusID 		= Column( Integer, ForeignKey('locus.id') )
-	locus 			= relationship(Locus, 		enable_typechecks=False)
+	# locusID 		= Column( Integer, ForeignKey('locus.id') )
+	# locus 			= relationship(Locus, 		enable_typechecks=False)
 
-	locusStrand		= Column( Integer )
+	# locusStrand		= Column( Integer )
+	pass
 
 class UTR5(Base,BaseMixIn,PartMixIn, ExonMixIn):
 	pass
@@ -23,10 +24,11 @@ class UTR3(Base,BaseMixIn,PartMixIn, ExonMixIn):
 	pass
 
 class Terminator(Base,BaseMixIn,PartMixIn):
-	locusID 		= Column( Integer, ForeignKey('locus.id') )
-	locus 			= relationship(Locus, 		enable_typechecks=False)
+	# locusID 		= Column( Integer, ForeignKey('locus.id') )
+	# locus 			= relationship(Locus, 		enable_typechecks=False)
 
-	locusStrand		= Column( Integer )
+	# locusStrand		= Column( Integer )
+	pass
 
 class Gene(Base,BaseMixIn):
 	name 			= Column( String(100) )
@@ -37,6 +39,7 @@ class Gene(Base,BaseMixIn):
 	utr3ID  		= Column( Integer, ForeignKey('utr3.id') )
 	terminatorID  	= Column( Integer, ForeignKey('terminator.id') )
 	locusID  		= Column( Integer, ForeignKey('locus.id') )
+	locusStrand     = Column( Integer )
 
 	promoter 		= relationship(Promoter, 	enable_typechecks=False)
 	utr5 			= relationship(UTR5, 		enable_typechecks=False)

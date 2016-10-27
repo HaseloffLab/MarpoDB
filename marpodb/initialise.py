@@ -1,6 +1,6 @@
 from partsdb.partsdb import PartsDB
 from partsdb.tools.Populators import PlantPopulator
-from tables import *
+from server.tables import *
 from partsdb.tools.Exporters import GenBankExporter
 
 from Bio.Seq import Seq
@@ -19,14 +19,3 @@ marpodb.setup(prefix = "mpdb")
 ppl = PlantPopulator(marpodb)
 
 ppl.populate(mapFileName, transcriptFileName, proteinFileName,  genomeFileName)
-# exporter = GenBankExporter(marpodb)
-
-# for gene in marpodb.session.query(Gene).all():
-# 	feature = SeqFeature( location = exporter.coordinatesToLocation(gene.cds.coordinates) )
-# 	seq = feature.extract(Seq(gene.cds.seq, generic_dna)).translate()
-# 	record = SeqRecord( seq = seq, id = gene.cds.dbid )
-# 	records.append(record)
-
-# outputFile = open('CDSs.fa', 'w')
-
-# SeqIO.write(records, outputFile, 'fasta')

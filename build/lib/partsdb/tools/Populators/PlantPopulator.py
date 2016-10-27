@@ -176,6 +176,7 @@ class PlantPopulator(Populator):
 		Locus 		= self.db.classes['locus']
 		Promoter	= self.db.classes['promoter']
 		Terminator	= self.db.classes['terminator']
+		Gene 		= self.db.classes['gene']
 
 		for geneName, gene in genes.iteritems():
 			# start = min( [pos for pos in gene.features[0].location] ) + 1 # +1 GenBank notation
@@ -211,19 +212,29 @@ class PlantPopulator(Populator):
 			# print parts.keys()
 
 			strand = gene.annotations["strand"]
-
-			promoter = session.query(Promoter).filter( Promoter.locusID == locus.id, Promoter.locusStrand == strand ).first()
+			
+			promoter = session.query(Promoter).filter( Promoter.id == Gene.promoterID ).\
+								filter(Gene.locusID == locus.id, Gene.locusStrand == strand).first()
 			if not promoter:
-				promoter = self.db.addPart('promoter', seq = parts['promoter']['seq'], locus = locus, locusStrand = strand )
+				promoter = self.db.addPart('promoter', seq = parts['promoter']['seq'])
+			
+			# promoter = session.query(Promoter).filter( Promoter.locusID == locus.id, Promoter.locusStrand == strand ).first()
+			# if not promoter:
+			# 	promoter = self.db.addPart('promoter', seq = parts['promoter']['seq'], locus = locus, locusStrand = strand )
 
-			terminator = session.query(Terminator).filter( Terminator.locusID == locus.id, Terminator.locusStrand == strand ).first()
+			terminator = session.query(Terminator).filter( Terminator.id == Gene.terminatorID ).\
+								filter(Gene.locusID == locus.id, Gene.locusStrand == strand).first()
 			if not terminator:
-				terminator = self.db.addPart('terminator', seq = parts['terminator']['seq'], locus = locus, locusStrand = strand )
+				terminator = self.db.addPart('terminator', seq = parts['terminator']['seq'])
+			
+			# terminator = session.query(Terminator).filter( Terminator.locusID == locus.id, Terminator.locusStrand == strand ).first()
+			# if not terminator:
+			# 	terminator = self.db.addPart('terminator', seq = parts['terminator']['seq'], locus = locus, locusStrand = strand )
 
 
 			cds  = self.db.addPart('cds', seq = parts['cds']['seq'], coordinates = parts['cds']['coordinates'] )
 			
-			newGene = self.db.addPart('gene', cds = cds, promoter = promoter, terminator = terminator, locus = locus)
+			newGene = self.db.addPart('gene', cds = cds, promoter = promoter, terminator = terminator, locus = locus, locusStrand = strand)
 
 			if 'utr5' in parts:
 				utr5 = self.db.addPart('utr5', seq = parts['utr5']['seq'], coordinates = parts['utr5']['coordinates'] )

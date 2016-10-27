@@ -4,12 +4,13 @@
 	<script>
 		var seq = "{{seq}}";
 		var genes = {}
+		var cdsDBID = "{{cdsDBID}}"
 
 		{% for genedbid, gene in geneCoordinates.iteritems() %}
 			gene = {}
 
-			{% for type, coordinates in gene.iteritems() %}
-				gene["{{type}}"] = "{{coordinates}}"
+			{% for dbid, coordinates in gene.iteritems() %}
+				gene["{{dbid}}"] = "{{coordinates}}"
 			{% endfor %}
 
 			genes[ "{{genedbid}}" ] = gene;
