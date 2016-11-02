@@ -30,7 +30,7 @@ nohup sh dependencies.sh
 
 ### Step-by-step approach
 
-- Let's set up the directory structure and environmental path variables:
+Let's set up the directory structure and environmental path variables:
 ```bash
 #!/bin/bash
 # Ensuring we are in BASH.
@@ -64,7 +64,7 @@ echo ". ~/.ldpaths" >> ~/.bashrc
 
 ### Software:
 
-1. TransDecoder (part of the Trinity pipeline by Brian Hass -https://github.com/TransDecoder/TransDecoder/releases)
+- TransDecoder (part of the Trinity pipeline by Brian Hass -https://github.com/TransDecoder/TransDecoder/releases)
 ```bash
 ## TransDecoder
 cd $SRC
@@ -78,7 +78,7 @@ echo "export PATH=$PATH:$TRANSDECODER" > ~/.paths
 echo "Unless errors appeared, TransDecoder successfully installed"
 ```
 
-2. BLAST-2.2.27 (specific version in ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/2.2.27/ - https://www.ncbi.nlm.nih.gov/books/NBK279690/)
+- BLAST-2.2.27 (specific version in ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/2.2.27/ - https://www.ncbi.nlm.nih.gov/books/NBK279690/)
 ```bash
 ## BLAST 2.2.27
 cd $SRC
@@ -92,7 +92,7 @@ echo "Unless errors appeared, BLAST 2.2.27 successfully installed"
 
 ```
 
-3. HMMR (http://eddylab.org/software/hmmer3/3.1b2/Userguide.pdf)
+- HMMR (http://eddylab.org/software/hmmer3/3.1b2/Userguide.pdf)
 ```bash
 ## HMMR
 cd $SRC
@@ -112,7 +112,7 @@ echo "Unless errors appeared, HMMR successfully installed"
 
 Now we'll download 3rd party databases and put them in the data/ directory
 
-4. Uniprot (TreMBLe and Swissprot - http://www.uniprot.org/downloads)
+- Uniprot (TreMBLe and Swissprot - http://www.uniprot.org/downloads)
 
 You might want to include taxonomy filters for obtaining sequences to a specific taxonomy level for you organism and download only those sequences. To do this go to http://www.uniprot.org/uniprot/#orgViewBy. Then, find you taxonomy level and click. Finally choose "Map to - UniProtKB" on the left side panel. Place the file in the data/Uniprot/ directory and rename it to uniprot.fasta .
 
@@ -133,7 +133,7 @@ mkdir Uniprot
 mv uniprot.fasta Uniprot/
 ```
 
-5. Pfam-A (check most recent release hmm version - http://pfam.xfam.org FTP tab)
+- Pfam-A (check most recent release hmm version - http://pfam.xfam.org FTP tab)
 ```bash
 ## Pfam
 cd $DATA
@@ -143,7 +143,7 @@ mkdir Pfam
 mv Pfam-A.hmm Pfam/
 ```
 
-6. pip (python installer) and setting up virtualenv
+- pip (python installer) and setting up virtualenv
 ```bash
 # pip
 easy_install --user pip
@@ -158,7 +158,7 @@ Activate the virtualenv. This has to be performed in every new session for the s
 source ~/ENV/bin/activate
 ```
 
-7. python libraries
+- python libraries
 ```bash
 # python libraries to ~/ENV virtualenvironment
 cd $BASE
@@ -172,7 +172,7 @@ In case anything fails, go to the original source and read the documentation. Er
 
 These ones have some issues locating system libraries and might generate errors in older distributions. We provide simple "hacks" to get them up an running but in the case you encounter any errors you might want to google the ways around them...
 
-8. PostgreSQL (check most recent release - https://www.postgresql.org/download/ . For this tutorial we'll compile from source)
+- PostgreSQL (check most recent release - https://www.postgresql.org/download/ . For this tutorial we'll compile from source)
 ```bash
 # PostgreSQL 
 cd $SRC
@@ -208,7 +208,7 @@ ALTER ROLE "<user>" with LOGIN;
 \q;
 ```
 
-9. Psycopg python library compilation from source
+- Psycopg python library compilation from source (http://initd.org/psycopg/)
 ```bash
 # psycopg from source
 cd $SRC
@@ -222,7 +222,7 @@ export PYTHONPATH=${PYTHONPATH}:$PYTHONP
 echo "export PYTHONPATH=${PYTHONPATH}:$PYTHONP" > ~/.pypaths
 ```
 
-10. Splign and Compart (NCBI tools - https://www.ncbi.nlm.nih.gov/Web/Newsltr/V14N2/splign.html. We are using a precompiled binary provided from http://sing.citi.uvigo.es/static/BDBM/ncbi.tar.gz)
+- Splign and Compart (NCBI tools - https://www.ncbi.nlm.nih.gov/Web/Newsltr/V14N2/splign.html. We are using a precompiled binary provided from http://sing.citi.uvigo.es/static/BDBM/ncbi.tar.gz)
 ```bash
 cd $SRC
 wget http://sing.citi.uvigo.es/static/BDBM/ncbi.tar.gz
@@ -252,7 +252,7 @@ splign -help | head -20
 echo "Unless errors appeared, Splign and compart successfully installed"
 ```
 
-11. InterproScan (5Gb - Check the requirements in https://github.com/ebi-pf-team/interproscan/wiki)
+- InterproScan (5Gb - Check the requirements in https://github.com/ebi-pf-team/interproscan/wiki)
 The lastest version of InterproScan uses a JAVA 1.8, be sure to select the appropriate InterproScan version so that you won't run into any problems running it.
 
 ```bash
