@@ -4,12 +4,12 @@ An open registry of Marchantia polymorpha genetic parts
 # Description
 MarpoDB is a gene-centric database developed for genetic engineering and synthetic biology. This is the result of dealing with highly fragmented genomic data (from a non-sequenced organism, Marchantia polymorpha) and compiling it into an accessible resource for sequence exploration and retrieval. The database framework, however, can be used with any type of genetic data and can be set up locally.
 
-In brief, we start off from two "raw" sequence files in FASTA format containing genomic contigs/scaffols and transcripts. Using these files we will perform several analyses, such as ORF prediction, BLAST homology search, HMMR protein motif prediction, mapping transcripts to the "genome" and interrelating resulting data for loading it into a database.
+In brief, we start off from two "raw" sequence files in FASTA format containing genomic contigs/scaffolds and transcripts. Using these files we will perform several analyses, such as ORF prediction, BLAST homology search, HMMR protein motif prediction, mapping transcripts to the "genome" and interrelating resulting data for loading it into a database.
 
 Then, we shall access the database by means of web server accessible by your browser.
 
 # Installation
-To install a gene-centric database harboring DNA parts we need to install serveral 3rd party software and databases, libraries for running the web server and application, and finally compile the data before loading into the database. 
+To setup a gene-centric database harboring DNA parts we need to install serveral 3rd party software and databases, libraries for running the web server and application, and finally compile the data before loading into the database. 
 
 Currently, we supply scripts for compiling most libraries for a 64 bit architecture in a linux server, however it may be possible to build the required libraries in a different architecture and perform the corresponding analyses successfully. Also, we are setting up local versions of all the software and libraries, without the need for sudo access since this is the common case for shared servers in academia.
 
@@ -19,8 +19,8 @@ The setup is divided into the following sections:
 
 ## Bioinformatics software and required databases
 
-### Full bundled installation script
-A wrapper script is provided in dependencies.sh, but if anything fails, try the step-by-step approach. Only parameter is database name.
+### Installation scripts
+A wrapper script for installing dependencies is provided in dependencies.sh, but if anything fails, try the step-by-step approach. Only parameter is database name.
 
 ```bash
 # Go to bash first
@@ -50,7 +50,7 @@ echo ". ~/.paths" >> ~/.bashrc
 echo ". ~/.pypaths" >> ~/.bashrc
 echo ". ~/.ldpaths" >> ~/.bashrc
 ```
-Environmental variables. Remember to set them again if installing in more than one session. First go to the root of the MarpoDB directory.
+Environmental variables. Remember to set them again if installing in more than one session. 
 
 ```bash
 # Setting up environmental variables.
@@ -315,13 +315,23 @@ First, point the addSequences.sh script to the appropriate files transcriptome a
 cd $BASE
 nohup sh addSequences.sh [TRANSCRIPTS FILE] [GENOME FILE] [DATABASE NAME] [NUMBER OF THREADS] &
 ```
+Compile InterproScan results into HTML format.
+```bash
+# in process
+```
+Cleanup InterpoScan results HTML files for loading directly into the webapp.
 
-Configure the initialise.sh script to the correct database.
 ```bash
 # in process
 ```
 
+## Load data into the server
 Setup the database tables:
+```bash
+# in process
+```
+
+Configure the initialise.sh script to the correct database.
 ```bash
 # in process
 ```
@@ -330,11 +340,21 @@ Load the data:
 ```bash
 # in process
 ```
-Start the server:
+
+## Start the server
+Start the server. Only be sure that the port is accepting connections and accesible.
 ```bash
 cd $BASE
 cd server
 python server.py
 ```
+
+## App description
+Here we provide a description of how the webapp is tied together, how the javascript is controlling the app behaviour and how the app connects to the database and passes the variables to the frontend.
+
+### PartsDB class
+### Flask and Jinja
+### Javascript
+
 
 Well, that's it... I hope everything worked, otherwise, feel free to contact Bernardo Pollak (bp358[at]cam[dot]ac[dot]uk) or Mihails Delmans (md565[at]cam[dot]ac[dot]uk).
