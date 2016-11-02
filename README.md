@@ -302,8 +302,11 @@ echo "export PATH=$PATH:$INTERPRO" > ~/.paths
 
 ## Data compilation
 
-cd $BASE
+Point the script to the appropriate files.
+
 ```bash
-nohup sh addSequences.sh <TRANSCRIPTS FILE> <GENOME FILE> <DATABASE NAME> <NUMBER OF PROCESSORS> &
+cd $BASE
+nohup sh addSequences.sh [TRANSCRIPTS FILE] [GENOME FILE] [DATABASE NAME] [NUMBER OF PROCESSORS] &
 ```
 
+Well, that's it... I hope everything worked, otherwise, feel free to contact Bernardo Pollak (bp358[at]cam[dot]ac[dot]uk) or Mihails Delmans (md565[at]cam[dot]ac[dot]uk).
