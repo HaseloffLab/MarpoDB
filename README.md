@@ -201,7 +201,7 @@ Now lets try to set up the server and create a psql database with appropriate cr
 ```bash
 ## Lest start postgres and make a database and a user
 initdb -D ~/var/ -U postgres
-pg_ctl -D /disk1/bp358/var/ -l logfile start
+pg_ctl -D ~/var/ -l logfile start
 # Create a database and provide credentials for the user. Change [DATABASE NAME]
 psql -U postgres -v v1=$USER -f psql/credentials.sql -v v2=[DATABASE NAME]
 ```

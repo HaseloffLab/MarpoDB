@@ -1,17 +1,19 @@
 #!/bin/bash
+#
+# USAGE - sh dependencies.sh [DATABASE NAME]
+#
+
 # Ensuring we are in BASH.
 bash
-
-# Setting up environmental variables. Remember to set them again if installing in more than one session and be in the root of the MarpoDB directory. 
-
 $DATABASENAME=$1
 
-# Also if you have already installed everything remember to activate the virtual environment so that the python libraries are referenced correctly: $ source ~/ENV/bin/activate;
-
-BASE=$(pwd)
+# Building directory structure. Go to the root of the MarpoDB directory. 
 mkdir src
 mkdir data
 
+# Setting up environmental variables. Remember to set them again if installing in more than one session and be in the root of the MarpoDB directory. 
+
+BASE=$(pwd)
 cd src
 SRC=$(pwd)
 cd $BASE
@@ -94,8 +96,6 @@ source ~/ENV/bin/activate
 cd $BASE
 pip install -r requirements.txt
 
-
-############
 ## Problematic ones...
 
 # PostgreSQL 
@@ -117,7 +117,7 @@ echo "export LD_LIBRARY_PATH=$POSTGRESQL/lib:$LD_LIBRARY_PATH" > ~/.ldpaths
 
 ## Lest start postgres and make a databaset
 initdb -D ~/var/ -U postgres
-pg_ctl -D /disk1/bp358/var/ -l logfile start
+pg_ctl -D ~/var/ -l logfile start
 # Log into postgres and create DB
 psql -U postgres -v v1=$USER  -v v2=$DATABASENAME -f psql/credentials.sql
 
@@ -195,6 +195,4 @@ echo "export PATH=$PATH:$INTERPRO" > ~/.paths
 
 ## DATA compilation
 cd $BASE
-nohup sh addSequences.sh <TRANSCRIPTS FILE> <GENOME FILE> <DATABASE NAME> <NUMBER OF PROCESSORS> &
-
-
+nohup sh addSequences.sh [TRANSCRIPTS_FILE] [GENOME_FILE] [DATABASE NAME] [NUMBER_OF_THREADS] &

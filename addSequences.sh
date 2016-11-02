@@ -1,5 +1,5 @@
 #!/bin/bash
-# Usage sh addSequences.sh [Transcripts_file] [Genome_file] [dbName] [numThreads]
+# USAGE - sh addSequences.sh [TRANSCRIPTS_FILE] [GENOME_FILE] [DBNAME] [NUM THREADS]
 
 transcriptFile=$1
 genomeFile=$2
