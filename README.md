@@ -229,6 +229,9 @@ cd ncbi_bins
 BINS=$(pwd)
 export PATH=$PATH:$BINS
 echo "export PATH=$PATH:$BINS" > ~/.paths
+echo "Let's check everything works. Now will try to run splign..."
+splign -help | head -20
+echo "Unless errors appeared, Splign and compart successfully installed"
 ```
 If splign complains about not being able to find libpcre.so.0 do:
 
@@ -240,7 +243,7 @@ export LD_LIBRARY_PATH=$BINS:$LD_LIBRARY_PATH
 echo "export LD_LIBRARY_PATH=$BINS:$LD_LIBRARY_PATH" ~/.ldpaths
 ```
 
-Lets check if splign works:
+Lets check if splign works again:
 ```bash
 echo "Let's check everything works. Now will try to run splign..."
 splign -help | head -20
