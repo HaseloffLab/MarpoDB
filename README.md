@@ -171,7 +171,7 @@ pip install -r requirements.txt
 
 In case anything fails, go to the original source and read the documentation. Errors may be due to new releases or compilation errors but should be straightforward to determine.
 
-# Problematic libraries and software
+### Problematic libraries and software
 
 These ones have some issues locating system libraries and might generate errors in older distributions. We provide simple "hacks" to get them up an running but in the case you encounter any errors you might want to google the ways around them...
 
