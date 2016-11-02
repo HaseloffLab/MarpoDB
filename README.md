@@ -35,9 +35,11 @@ Let's set up the directory structure and environmental path variables:
 # Ensuring we are in BASH.
 bash
 
-# Setting up environmental variables. Remember to set them again if installing in more than one session and be in the root of the MarpoDB directory. 
+# Setting up environmental variables. Remember to set them again if installing in more than 
+# one session and be in the root of the MarpoDB directory. 
 
-# Also if you have already installed everything remember to activate the virtual environment so that the python libraries are referenced correctly: $ source ~/ENV/bin/activate;
+# Also if you have already installed everything remember to activate the virtual environment 
+# so that the python libraries are referenced correctly: $ source ~/ENV/bin/activate;
 
 BASE=$(pwd)
 mkdir src
@@ -50,7 +52,8 @@ cd data
 DATA=$(pwd)
 cd $BASE
 
-# Adding new custom paths into different files to avoid touching local .profile and duplicating paths. Only run once.
+# Adding new custom paths into different files to avoid touching local .profile and duplicating paths.
+# Only run once.
 echo "Adding new custom paths into different files to avoid touching local .profile and duplicating paths"
 echo "# Adding new custom paths" >> ~/.bashrc
 echo ". ~/.paths" >> ~/.bashrc
@@ -115,7 +118,8 @@ You might want to include taxonomy filters for obtaining sequences to a specific
 Otherwise just do:
 
 ```bash
-## Uniprot - build your own taxonomy database or just download the whole thing (16Gb, 30Gb decompressed for Trembl and 85Mb for Swissprot)
+## Uniprot - build your own taxonomy database or just download the whole thing 
+# (16Gb, 30Gb decompressed for Trembl and 85Mb for Swissprot)
 cd $DATA
 wget ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_trembl.fasta.gz
 wget ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.fasta.gz
