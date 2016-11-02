@@ -31,35 +31,36 @@ nohup sh dependencies.sh
 ### Step-by-step approach
 
 Let's set up the directory structure and environmental path variables:
+
 ```bash
 #!/bin/bash
 # Ensuring we are in BASH.
 bash
 
-# Setting up environmental variables. Remember to set them again if installing in more than 
-# one session and be in the root of the MarpoDB directory. 
-
-# Also if you have already installed everything remember to activate the virtual environment 
-# so that the python libraries are referenced correctly: $ source ~/ENV/bin/activate;
-
-BASE=$(pwd)
+# Building directory structure. Go to the root of the MarpoDB directory. 
 mkdir src
 mkdir data
 
+# Adding new custom paths into different files to avoid touching local .profile and duplicating paths.
+# Only run once.
+
+echo "Adding new custom paths into different files to avoid touching local .profile and duplicating paths"
+echo "# Adding new custom paths" >> ~/.bashrc
+echo ". ~/.paths" >> ~/.bashrc
+echo ". ~/.pypaths" >> ~/.bashrc
+echo ". ~/.ldpaths" >> ~/.bashrc
+```
+Environmental variables. Remember to set them again if installing in more than one session. First go to the root of the MarpoDB directory.
+
+```bash
+# Setting up environmental variables.
+BASE=$(pwd)
 cd src
 SRC=$(pwd)
 cd $BASE
 cd data
 DATA=$(pwd)
 cd $BASE
-
-# Adding new custom paths into different files to avoid touching local .profile and duplicating paths.
-# Only run once.
-echo "Adding new custom paths into different files to avoid touching local .profile and duplicating paths"
-echo "# Adding new custom paths" >> ~/.bashrc
-echo ". ~/.paths" >> ~/.bashrc
-echo ". ~/.pypaths" >> ~/.bashrc
-echo ". ~/.ldpaths" >> ~/.bashrc
 ```
 
 ### Software:
@@ -152,10 +153,12 @@ echo "export PATH=$PATH:~/.local/bin" > ~/.paths
 pip install virtualenv --user
 virtualenv ~/ENV
 ```
-Activate the virtualenv. This has to be performed in every new session for the system to locate the virtualenv directory ~/ENV
+Activating the virtualenv. This will be included in .bashrc so that every session loads the virtualenv. If this is not desired, then just do $ deactivate or just don't put it into .bashrc and run the $ source ~/ENV/bin/activate every time you log in.
 
 ```bash
 source ~/ENV/bin/activate
+# Inclding it into ~/.bashrc so that next session this is still loaded.
+echo "source ~/ENV/bin/activate" >> ~/.bashrc
 ```
 
 - python libraries
