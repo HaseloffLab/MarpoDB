@@ -4,6 +4,8 @@ bash
 
 # Setting up environmental variables. Remember to set them again if installing in more than one session and be in the root of the MarpoDB directory. 
 
+$DATABASENAME=$1
+
 # Also if you have already installed everything remember to activate the virtual environment so that the python libraries are referenced correctly: $ source ~/ENV/bin/activate;
 
 BASE=$(pwd)
@@ -117,11 +119,7 @@ echo "export LD_LIBRARY_PATH=$POSTGRESQL/lib:$LD_LIBRARY_PATH" > ~/.ldpaths
 initdb -D ~/var/ -U postgres
 pg_ctl -D /disk1/bp358/var/ -l logfile start
 # Log into postgres and create DB
-psql -U postgres
-# CREATE DATABASE test;
-# CREATE ROLE <username>;
-# ALTER ROLE "<username>" with LOGIN;
-## ctrl-D
+psql -U postgres -v v1=$USER  -v v2=$DATABASENAME -f psql/credentials.sql
 
 # psycopg from source
 cd $SRC

@@ -20,12 +20,12 @@ The setup is divided into the following sections:
 ## Bioinformatics software and required databases
 
 ### Full bundled installation script
-A wrapper script is provided in dependencies.sh, but if anything fails, try the step-by-step approach.
+A wrapper script is provided in dependencies.sh, but if anything fails, try the step-by-step approach. Only parameter is database name.
 
 ```bash
 # Go to bash first
 bash
-nohup sh dependencies.sh
+nohup sh dependencies.sh [DATABASE NAME]
 ```
 
 ### Step-by-step approach
@@ -194,23 +194,15 @@ echo "export PATH=$PATH:$POSTGRESQL/bin" > ~/.paths
 export LD_LIBRARY_PATH=$POSTGRESQL/lib:$LD_LIBRARY_PATH
 echo "export LD_LIBRARY_PATH=$POSTGRESQL/lib:$LD_LIBRARY_PATH" > ~/.ldpaths
 ```
-Now lets try to set up the server and create a psql database with appropriate credentials
+Now lets try to set up the server and create a psql database with appropriate credentials. Change [DATABASE NAME] to a desired name.
 
 ```bash
 ## Lest start postgres and make a database and a user
 initdb -D ~/var/ -U postgres
 pg_ctl -D /disk1/bp358/var/ -l logfile start
-# Log into postgres
-psql -U postgres
+# Create a database and provide credentials for the user. Change [DATABASE NAME]
+psql -U postgres -v v1=$USER -f psql/credentials.sql -v v2=[DATABASE NAME]
 ```
-Once logged in to psql, create a database with the name desired for loading the data (will be required afterwards) and a user with priviledge to write on it. Some distributions directly refer the logged user as the "role" required. If that is the case then use that user.
-```SQL
-CREATE DATABASE test;
-CREATE ROLE <user>;
-ALTER ROLE "<user>" with LOGIN;
-\q;
-```
-
 - Psycopg python library compilation from source (http://initd.org/psycopg/)
 ```bash
 # psycopg from source
