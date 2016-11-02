@@ -153,7 +153,9 @@ echo "export PATH=$PATH:~/.local/bin" > ~/.paths
 pip install virtualenv --user
 virtualenv ~/ENV
 ```
-Activating the virtualenv. This will be included in .bashrc so that every session loads the virtualenv. If this is not desired, then just do $ deactivate or just don't put it into .bashrc and run the $ source ~/ENV/bin/activate every time you log in.
+Activating the virtualenv. This will be included in .bashrc so that every session loads the virtualenv. If this is not desired, then just do:
+- `deactivate` or just don't put it into .bashrc and run 
+- `source ~/ENV/bin/activate` every time you log in.
 
 ```bash
 source ~/ENV/bin/activate
