@@ -189,7 +189,7 @@ echo "export LD_LIBRARY_PATH=$POSTGRESQL/lib:$LD_LIBRARY_PATH" > ~/.ldpaths
 Now lets try to set up the server and create a psql database with appropriate credentials
 
 ```bash
-## Lest start postgres and make a databaset
+## Lest start postgres and make a database and a user
 initdb -D ~/var/ -U postgres
 pg_ctl -D /disk1/bp358/var/ -l logfile start
 # Log into postgres
@@ -219,7 +219,6 @@ echo "export PYTHONPATH=${PYTHONPATH}:$PYTHONP" > ~/.pypaths
 
 - Splign and Compart (NCBI tools - https://www.ncbi.nlm.nih.gov/Web/Newsltr/V14N2/splign.html. We are using a precompiled binary provided from http://sing.citi.uvigo.es/static/BDBM/ncbi.tar.gz)
 ```bash
-## Splign and compart
 cd $SRC
 wget http://sing.citi.uvigo.es/static/BDBM/ncbi.tar.gz
 tar xfvzp ncbi.tar.gz
@@ -229,18 +228,21 @@ mv compart ncbi_bins/
 cd ncbi_bins
 BINS=$(pwd)
 export PATH=$PATH:$BINS
-echo "export PATH=$PATH:$BINS" >> ~/.bashrc
+echo "export PATH=$PATH:$BINS" > ~/.paths
+```
+If splign complains about not being able to find libpcre.so.0 do:
 
-## If splign complains about not being able to find libpcre.so.0 do
-
+```bash
 #LIBPCRE=$(locate libpcre.so.3 | head -1)		
 #cp $LIBPCRE .										
 #mv libpcre.so.3 libpcre.so.0					
 #export LD_LIBRARY_PATH=$BINS:$LD_LIBRARY_PATH
-#echo "export LD_LIBRARY_PATH=$BINS:$LD_LIBRARY_PATH" >> ~/.bashrc
+#echo "export LD_LIBRARY_PATH=$BINS:$LD_LIBRARY_PATH" ~/.ldpaths
+```
 
+Lets check if splign works:
+```bash
 echo "Let's check everything works. Now will try to run splign..."
-sleep 5
 splign -help | head -20
 echo "Unless errors appeared, Splign and compart successfully installed"
 ```
@@ -258,22 +260,30 @@ md5sum -c interproscan-5.20-59.0-64-bit.tar.gz.md5
 sleep 5
 tar xvzfp interproscan-5.20-59.0-64-bit.tar.gz
 cd interproscan-5.20-59.0-64-bit
+```
 
+If this fails because you have other version of Java, try:
+
+```bash
 ## InterproScan 5.16-55.0 (Java 6/7)
-#wget ftp://ftp.ebi.ac.uk/pub/software/unix/iprscan/5/5.16-55.0/interproscan-5.16-55.0-64-bit.tar.gz
-#wget ftp://ftp.ebi.ac.uk/pub/software/unix/iprscan/5/5.16-55.0/interproscan-5.16-55.0-64-bit.tar.gz.md5
-#md5sum -c interproscan-5.16-55.0-64-bit.tar.gz.md5
-#tar xvfzp interproscan-5.16-55.0-64-bit.tar.gz
-#cd interproscan-5.16-55.0-64-bit
+cd $SRC
+wget ftp://ftp.ebi.ac.uk/pub/software/unix/iprscan/5/5.16-55.0/interproscan-5.16-55.0-64-bit.tar.gz
+wget ftp://ftp.ebi.ac.uk/pub/software/unix/iprscan/5/5.16-55.0/interproscan-5.16-55.0-64-bit.tar.gz.md5
+md5sum -c interproscan-5.16-55.0-64-bit.tar.gz.md5
+tar xvfzp interproscan-5.16-55.0-64-bit.tar.gz
+cd interproscan-5.16-55.0-64
+```
 
+Now, decide if you want Panther models included, since they take quite a lot of space (15Gb)
+
+```bash
 ## Decide if you want to include Panther models, which requires an additional 15Gb file
-
-#cd data
-#wget ftp://ftp.ebi.ac.uk/pub/software/unix/iprscan/5/data/panther-data-10.0.tar.gz
-#wget ftp://ftp.ebi.ac.uk/pub/software/unix/iprscan/5/data/panther-data-10.0.tar.gz.md5
-#md5sum -c panther-data-10.0.tar.gz.md5
+cd data
+wget ftp://ftp.ebi.ac.uk/pub/software/unix/iprscan/5/data/panther-data-10.0.tar.gz
+wget ftp://ftp.ebi.ac.uk/pub/software/unix/iprscan/5/data/panther-data-10.0.tar.gz.md5
+md5sum -c panther-data-10.0.tar.gz.md5
 ## This must say OK, otherwise download again
-#tar xfvzp panther-data-10.0.tar.gz
+tar xfvzp panther-data-10.0.tar.gz
 ```
 
 Look-up service... This is provided by InterPro as a web service in EBI if you can access or want to have a local look-up table, you'll need 96Gb! otherwise you might want to disable it...
@@ -287,26 +297,13 @@ echo "Now let's check if InterproScan works"
 ./interproscan.sh
 INTERPRO=$(pwd)
 export PATH=$PATH:$INTERPRO
-echo "export PATH=$PATH:$INTERPRO" >> ~/.bashrc
+echo "export PATH=$PATH:$INTERPRO" > ~/.paths
 ```
 
 ## Data compilation
 
-
-
-
-
-## Server installation
-
-You should have pip and python2 installed for performing automated installation.
-
-```bash
 cd $BASE
-sudo apt-get pip python2 postgresql-9.4
-# or use the appropriate package manager
-pip install -r requirements.txt
-
+```bash
+nohup sh addSequences.sh <TRANSCRIPTS FILE> <GENOME FILE> <DATABASE NAME> <NUMBER OF PROCESSORS> &
 ```
-
-This is still under construction...
 
