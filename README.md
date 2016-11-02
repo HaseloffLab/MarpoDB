@@ -30,7 +30,7 @@ nohup sh dependencies.sh
 
 ### Step-by-step approach
 
-0. Let's set up the directory structure and environmental path variables:
+- Let's set up the directory structure and environmental path variables:
 ```bash
 #!/bin/bash
 # Ensuring we are in BASH.
