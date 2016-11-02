@@ -295,7 +295,7 @@ Look-up service... This is provided by InterPro as a web service in EBI if you c
 
 https://github.com/ebi-pf-team/interproscan/wiki/HowToDownload
 
-Now let's check if interproscan works
+Now let's check if interproscan works.
 
 ```bash
 echo "Now let's check if InterproScan works"
@@ -305,13 +305,36 @@ export PATH=$PATH:$INTERPRO
 echo "export PATH=$PATH:$INTERPRO" > ~/.paths
 ```
 
+Finally, you'll need to change some parameters in the interproscan.properties file to enable/disable the look-up table service and threads, etc...
+
 ## Data compilation
 
-Point the script to the appropriate files.
+First, point the addSequences.sh script to the appropriate files transcriptome and genome files, include a DATABASE name and the number of threads that the script can use.
 
 ```bash
 cd $BASE
-nohup sh addSequences.sh [TRANSCRIPTS FILE] [GENOME FILE] [DATABASE NAME] [NUMBER OF PROCESSORS] &
+nohup sh addSequences.sh [TRANSCRIPTS FILE] [GENOME FILE] [DATABASE NAME] [NUMBER OF THREADS] &
+```
+
+Configure the initialise.sh script to the correct database.
+```bash
+# in process
+```
+
+Setup the database tables:
+```bash
+# in process
+```
+
+Load the data:
+```bash
+# in process
+```
+Start the server:
+```bash
+cd $BASE
+cd server
+python server.py
 ```
 
 Well, that's it... I hope everything worked, otherwise, feel free to contact Bernardo Pollak (bp358[at]cam[dot]ac[dot]uk) or Mihails Delmans (md565[at]cam[dot]ac[dot]uk).
