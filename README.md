@@ -325,7 +325,7 @@ Cleanup InterpoScan results HTML files for loading directly into the webapp.
 # in process
 ```
 
-## Load data into the server
+## Load data into the database
 Setup the database tables:
 ```bash
 # in process
