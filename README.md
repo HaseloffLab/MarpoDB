@@ -238,7 +238,7 @@ echo "Unless errors appeared, Splign and compart successfully installed"
 If splign complains about not being able to find libpcre.so.0 do:
 
 ```bash
-LIBPCRE=$(locate libpcre.so.3 | head -1)		
+LIBPCRE=$(locate libpcre.so. | head -1)		
 cp $LIBPCRE .										
 mv libpcre.so.3 libpcre.so.0					
 export LD_LIBRARY_PATH=$BINS:$LD_LIBRARY_PATH
