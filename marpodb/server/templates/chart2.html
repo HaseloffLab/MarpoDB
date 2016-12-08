@@ -5,6 +5,7 @@
 						'utr5'		 : 'rgb(0, 100, 150)',
 						'cds'		 : 'rgb(0, 100, 0)',
 						'utr3'		 : 'rgb(0, 100, 150)'};
+
 	var features = []
 
 	function draw(canvasName){
@@ -34,46 +35,29 @@
 		for( genedbid in genes ){
 			console.log(genedbid);
 			geneTrack = geneView.addTrack().addLane();
-			// console.log('Strand: ', genes[genedbid]['promoter'].split(':')[2])
 
-			strand = ''
+			console.log('Strand: ', genes[genedbid]['strand'])
 
-			for( dbid in genes[genedbid] ){
-				if (dbid.startsWith('promoter')){
-					if (genes[genedbid][dbid].split(':')[2] == '1'){
-						strand = '+'
-					}
-					else{
-						strand = '-'
-					}
-				}
+			if (genes[genedbid]['strand'] == 1){
+				strand = '+'
+			}
+			else{
+				strand = '-'
 			}
 
-			// if (genes[genedbid]['promoter'].split(':')[2] == '1'){
-			// 	strand = '+'
-			// }
-			// else{
-			// 	strand = '-'
-			// }
-
-			console.log('Strand: ', strand)
-
-
-			for( dbid in genes[genedbid] ){
+			for( dbid in genes[genedbid]["parts"] ){
 
 						type = dbid.split('.')[1];
 
-						console.log(dbid, type)
 
-						coordinateStr = genes[genedbid][dbid];
+						coordinateStr = genes[genedbid]["parts"][dbid];
 						exonStr = coordinateStr.split(";");
 						blocks = []
 
 						minStart = 1000000;
 						maxEnd = -1;
 
-						// console.log(type, exonStr);
-
+				
 						for ( idx in exonStr ){
 							
 							exon = exonStr[idx]
@@ -91,8 +75,6 @@
 							blocks[i].position -= minStart;
 						}
 
-						console.log(minStart, maxEnd)
-						console.log(blocks)
 						if (strand == '+'){
 							newFeature = geneTrack.addFeature( new Complex(type, minStart, maxEnd - minStart, strand, blocks) ) ;
 						}
@@ -100,16 +82,33 @@
 							newFeature = geneTrack.addFeature( new Complex(type, seq.length - maxEnd, maxEnd - minStart, strand, blocks) );
 						}
 
-						newFeature.name = dbid;
-						
-						newFeature.onClick = function(feature){
-							
-						};
+						newFeature.dbid = dbid;
+						newFeature.partType = type;
+
+						if (type == 'cds'){
+							onClick = function(feature){
+								if (feature.parent.dbid == cdsDBID){
+									highlight_seq(feature.parent, highlightColors[feature.parent.partType]);
+								}
+								else{
+									window.location = '/details?dbid=' + feature.parent.dbid;
+								}
+							};
+						}
+						else{
+							onClick = function(feature){
+								highlight_seq(feature.parent, highlightColors[feature.parent.partType]);
+							};
+						}
+
+						newFeature.onClick = onClick;
 
 
 						newFeature.onMouseover = function(feature){
+
+
 							for(i=0; i<features.length; i++){
-								if (features[i].uid == feature.parent.uid){
+								if (features[i].uid == feature.parent.uid || features[i].dbid == cdsDBID){
 									features[i].borderWidth = 5;
 
 								}
@@ -120,11 +119,6 @@
 
 							
 							geneView.redraw();
-							// me = geneView.myMouseEventHandler;
-							// Copy = new Feature();
-							// Copy.onMouseover = feature.parent.name;
-							// console.log(feature.parent.name);
-							// me.tooltip.fire(Copy);
 						};
 						
 						newFeature.setColorGradient(typeColors[type], typeColors[type]);
@@ -141,11 +135,18 @@
 		console.log(geneView);
 		canvas.height = geneView.getHeight() + 20;
 		geneView.draw();
+		draworig();
 	}
 
 	function draworig(){
 		for(i=0; i<features.length; i++){
-			features[i].borderWidth = 0;
+
+			if (features[i].dbid == cdsDBID){
+				features[i].borderWidth = 5;
+			}
+			else{
+				features[i].borderWidth = 0;
+			}
 		}
 		geneView.redraw();
 	}

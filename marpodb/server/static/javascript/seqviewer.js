@@ -1,3 +1,11 @@
+var highlightColors = {
+					"promoter" : "#FFFF00",
+					"cds"	   : "#00E100",
+					"utr5"      : "#0096FF",
+					"utr3"		: "#0096FF",
+					"terminator": "#FF0000"	
+};
+
 function seqviewer(sequence, element) {
 		// var Sequence = require("sequence-viewer");
 		seqViewer = new Sequence(sequence);
@@ -10,10 +18,10 @@ function seqviewer(sequence, element) {
 		});
 			  
 		var legend = [
-			{name: "Promoter", color: "#FFFF00", underscore: false},
-			{name: "Gene", color: "#00E100", underscore: false},
-			{name: "mRNA", color: "#FF0000", underscore: false},
-			{name: "ORF",color: "#0096FF",underscore: false}
+			{name: "Promoter", color: highlightColors["promoter"], underscore: false},
+			{name: "CDS", color: highlightColors["cds"], underscore: false},
+			{name: "UTRs", color: highlightColors["utr5"], underscore: false},
+			{name: "Terminator",color: highlightColors["terminator"],underscore: false}
 		];
 
 		seqViewer.addLegend(legend);		
@@ -38,7 +46,7 @@ function highlight_seq(element, color){
 		}
 		else{
 			end = element.position + element.length;
-			elStart = end-(element.subFeatures[i].position+element.subFeatures[i].length)-1;
+			elStart = end-(element.subFeatures[i].position+element.subFeatures[i].length);
 			elEnd = end-element.subFeatures[i].position;
 		}
 

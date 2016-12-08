@@ -21,10 +21,15 @@ class GenBankExporter(Exporter):
 		self.keys = ['promoter' , 'utr5', 'cds', 'utr3', 'terminator']
 		parts = [  getattr(gene, key) for key in self.keys ]
 		
+		strand = gene.locusStrand
+
 		if outputFileName:
 			gene = SeqRecord(id = str(gene.dbid).replace('.',''), name = str(gene.name), seq = '' )
 		else:
 			gene = SeqRecord(id = gene.dbid, name = str(gene.name), seq = '' )
+
+		gene.annotations = {'strand' : strand}
+
 		for partType, part in zip( self.keys, parts):
 			l = len(gene)
 			if isinstance(part, PartMixIn):
@@ -32,10 +37,6 @@ class GenBankExporter(Exporter):
 					feature = SeqFeature( type = partType, location = self.coordinatesToLocation(part.coordinates)._shift( l ), id=part.dbid )
 				else:
 					feature = SeqFeature( type = partType, location = FeatureLocation( l, l + len(part.seq) ), id=part.dbid )
-
-				if not outputFileName:
-					if hasattr(part, 'locusStrand'):
-						feature.strand = part.locusStrand
 
 				gene.seq += Seq(part.seq, generic_dna)
 				gene.features.append(feature)

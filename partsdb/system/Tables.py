@@ -16,7 +16,6 @@ class BaseMixIn(object):
 class PartMixIn(object):
 	seq = Column( Text )
 
-
 class ExonMixIn(object):
 	coordinates = Column( Text )
 

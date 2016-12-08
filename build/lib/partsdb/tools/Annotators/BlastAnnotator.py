@@ -40,7 +40,7 @@ class BlastAnnotator(Annotator):
 		inFile.close()
 
 		for hitName, hit in hits.iteritems():
-			print hitName
+			# print hitName
 			cdsID = hitName.split('_')[0]
 			uniID = hitName.split('_')[1]
 

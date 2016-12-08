@@ -1,5 +1,5 @@
 from partsdb.partsdb import PartsDB
-from tables import *
+from server.tables import *
 
 marpodb = PartsDB('postgresql:///testdb', Base = Base)
 

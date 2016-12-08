@@ -119,19 +119,18 @@ class PlantPopulator(Populator):
 
 					gene.features.append(cdsFeature)
 
-					gene.annotations["strand"] = pepStrand
 
 					# Annotating UTRs
 					if gene.annotations["startOffset"] + 1 <= pepStart - 1:
-						location = rcm.rc2g(gene.annotations["startOffset"] + 1, pepStart - 1, pepStrand)
-						utrType  = 'utr5' if pepStrand == 1 else 'utr3'
+						location = rcm.rc2g(gene.annotations["startOffset"] + 1, pepStart - 1, cdsFeature.location.strand)
+						utrType  = 'utr5' if cdsFeature.location.strand == 1 else 'utr3'
 						utrRFeature = SeqFeature(type = utrType, location = location)
 					else:
 						utrRFeature = None
 
 					if pepEnd + 1 <= len(exons) + gene.annotations["startOffset"]:
-						location = rcm.rc2g(pepEnd + 1, len(exons) + gene.annotations["startOffset"], pepStrand)
-						utrType  = 'utr5' if pepStrand == -1 else 'utr3'
+						location = rcm.rc2g(pepEnd + 1, len(exons) + gene.annotations["startOffset"], cdsFeature.location.strand)
+						utrType  = 'utr5' if cdsFeature.location.strand == -1 else 'utr3'
 						utrLFeature = SeqFeature(type = utrType, location = location)
 					else:
 						utrL = None
@@ -198,8 +197,14 @@ class PlantPopulator(Populator):
 
 			parts = {}
 
+			strand = 0
+
 			for feature in gene.features:
 				if feature:
+
+					if feature.type == 'cds':
+						strand = feature.location.strand
+
 					if feature.location.strand == 1:
 						location = feature.location._shift( -feature.location.start )
 						seq = str(gene.seq[ feature.location.start : feature.location.end ])
@@ -210,8 +215,6 @@ class PlantPopulator(Populator):
 					parts[ feature.type ] = { "seq" : seq, "coordinates" : self._locationToCoordinates(location) }
 				# print feature.type, location, seq
 			# print parts.keys()
-
-			strand = gene.annotations["strand"]
 			
 			promoter = session.query(Promoter).filter( Promoter.id == Gene.promoterID ).\
 								filter(Gene.locusID == locus.id, Gene.locusStrand == strand).first()
@@ -242,6 +245,6 @@ class PlantPopulator(Populator):
 			if 'utr3' in parts:
 				utr3 = self.db.addPart('utr3', seq = parts['utr3']['seq'], coordinates = parts['utr3']['coordinates'] )
 				newGene.utr3 = utr3
-			
+			print newGene.id
 
 		self.db.commit()	

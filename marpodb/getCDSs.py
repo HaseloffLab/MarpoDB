@@ -1,5 +1,5 @@
 from partsdb.partsdb import PartsDB
-from tables import *
+from server.tables import *
 
 from Bio.Seq import Seq
 from Bio.Alphabet import generic_dna

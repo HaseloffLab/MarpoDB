@@ -227,7 +227,7 @@ def processQuery(marpodbSession, scope, term, columns, nHits):
 				for col in cols:
 					fullCols[dcMap[col]] = cols[col]
 
-				# partCls = getClassByTablename(scLevel)
+				
 				partColumn = getColumnByName(Gene, scLevel+'ID')
 
 				locusDBID = marpodbSession.query(Locus.dbid).filter(Locus.id == Gene.locusID).\
@@ -451,7 +451,7 @@ def getGeneCoordinates(marpodbSession, locusid):
 
 	for gene in genes:
 		record =  exporter.export(gene, None)
-		response['genes'][record.id] = {}
+		response['genes'][record.id] = {'strand' : gene.locusStrand, 'features' : {}}
 
 		for feature in record.features:
 			try:
@@ -460,12 +460,16 @@ def getGeneCoordinates(marpodbSession, locusid):
 				locations = [feature.location]
 
 	
-			coordinates = ";".join([ "{0}:{1}:{2}".format(part.start, part.end, part.strand) for part in locations  ])
+			coordinates = ";".join([ "{0}:{1}".format(part.start, part.end) for part in locations  ])
 
-			response['genes'][record.id][feature.id] = coordinates
+			response['genes'][record.id]['features'][feature.id] = coordinates
 		
 		if not 'seq' in response:
-			response['seq'] = record.seq
+			print 'Sequence of ', record.id
+			if response['genes'][record.id]['strand'] == 1:
+				response['seq'] = record.seq
+			else:
+				response['seq'] = record.seq.reverse_complement()
 	
 	return response
 

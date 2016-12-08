@@ -110,7 +110,8 @@ def result():
 
 	if len(table['data']) != 0:
 		return render_template('results.html', table = table, title='Query results')
-
+	else:
+		return "ERROR: no data"
 @app.route('/details')
 def details():
 	dbid = request.args.get('dbid','')
@@ -133,6 +134,7 @@ def details():
 				gene  = marpodbSession.query(Gene).filter(Gene.cdsID == cds.id).first()
 				locus = marpodbSession.query(Locus).filter(Locus.id == Gene.locusID).\
 						filter(Gene.cdsID == cds.id).first()
+				cdsdbid = cds.dbid
 
 		else:
 			locus = marpodbSession.query(Locus).filter(Locus.id == gene.locusID).first()
