@@ -103,8 +103,8 @@ class PlantPopulator(Populator):
 
 					gene = gene[cutStart:cutEnd]
 					gene.annotations = transcript.annotations
-					gene.annotations["Locus"] = "{0}:{1}-{2}".format( gene.annotations["Locus"], cutStart, cutEnd )
-
+					gene.annotations["LocusCoordinates"] = "{0}:{1}-{2}".format( gene.annotations["Locus"], cutStart, cutEnd )
+		
 					# Annotating CDS
 					exons = gene.features[0]
 					# print transcriptName
@@ -117,23 +117,26 @@ class PlantPopulator(Populator):
 						continue
 					cdsFeature = SeqFeature(type = 'cds', location = location )
 
+					print "Pep: ", pepStart, pepEnd, pepStrand
+					print "Location: ", location
+
 					gene.features.append(cdsFeature)
 
 
-					# Annotating UTRs
-					if gene.annotations["startOffset"] + 1 <= pepStart - 1:
-						location = rcm.rc2g(gene.annotations["startOffset"] + 1, pepStart - 1, cdsFeature.location.strand)
-						utrType  = 'utr5' if cdsFeature.location.strand == 1 else 'utr3'
-						utrRFeature = SeqFeature(type = utrType, location = location)
-					else:
-						utrRFeature = None
+					# Annotating UTRs - OLD
+					# if gene.annotations["startOffset"] + 1 <= pepStart - 1:
+					# 	location = rcm.rc2g(gene.annotations["startOffset"] + 1, pepStart - 1, cdsFeature.location.strand)
+					# 	utrType  = 'utr5' if cdsFeature.location.strand == 1 else 'utr3'
+					# 	utrRFeature = SeqFeature(type = utrType, location = location)
+					# else:
+					# 	utrRFeature = None
 
-					if pepEnd + 1 <= len(exons) + gene.annotations["startOffset"]:
-						location = rcm.rc2g(pepEnd + 1, len(exons) + gene.annotations["startOffset"], cdsFeature.location.strand)
-						utrType  = 'utr5' if cdsFeature.location.strand == -1 else 'utr3'
-						utrLFeature = SeqFeature(type = utrType, location = location)
-					else:
-						utrL = None
+					# if pepEnd + 1 <= len(exons) + gene.annotations["startOffset"]:
+					# 	location = rcm.rc2g(pepEnd + 1, len(exons) + gene.annotations["startOffset"], cdsFeature.location.strand)
+					# 	utrType  = 'utr5' if cdsFeature.location.strand == -1 else 'utr3'
+					# 	utrLFeature = SeqFeature(type = utrType, location = location)
+					# else:
+					# 	utrL = None
 
 					# utrLFeature = SeqFeature(type = 'utrL', location = location)
 
@@ -143,6 +146,27 @@ class PlantPopulator(Populator):
 					# else:
 					# 	utrRFeature.type = 'utr3'
 					# 	utrLFeature.type = 'utr5'
+
+					# gene.features.append(utrRFeature)
+					# gene.features.append(utrLFeature)
+
+					# Annotating UTRs - NEW
+
+					if pepStart > 1:
+						location = rcm.rc2g( 1, pepStart-1, pepStrand )
+						utrType = 'utr5' if pepStrand == 1 else 'utr3'
+						utrLFeature = SeqFeature( type = utrType, location = location )
+					else:
+						utrLFeature = None
+
+
+					if pepEnd < len(exons):
+						location = rcm.rc2g( pepEnd+1, len(exons), pepStrand )
+						utrType = 'utr3' if pepStrand == 1 else 'utr5'
+						utrRFeature = SeqFeature( type = utrType, location = location )
+					else:
+						utrRFeature = None
+
 
 					gene.features.append(utrRFeature)
 					gene.features.append(utrLFeature)
@@ -186,7 +210,7 @@ class PlantPopulator(Populator):
 
 			# locusCoordinates = "{0}:{1}-{2}".format( gene.annotations["Locus"], cutStart, cutStop )
 
-			locusCoordinates = gene.annotations["Locus"]
+			locusCoordinates = gene.annotations["LocusCoordinates"]
 
 			locus =  session.query( Locus ).filter( Locus.coordinates == locusCoordinates ).first()
 			if not locus:
