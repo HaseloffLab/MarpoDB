@@ -22,29 +22,50 @@ Here we provide a list of required dependencies and give an overview of each sec
 ## Bioinformatics software and required databases
 
 TransDecoder
+
 BLAST-2.2.27
+
 HMMR
+
 Uniprot
+
 Pfam-A
+
 pip python installer and virtualenv
+
 PostgreSQL
+
 Psycopg python library from source
+
 Splign and Compart
+
 InterproScan
 
+
 python libraries
+
 -biopython
+
 -Flask
+
 -Flask-Login
+
 -Flask-Mail
+
 -Flask-Session
+
 -Flask-SQLAlchemy
+
 -Flask-User
+
 -Flask-WTF
+
 -Jinja2
--psycopg2
+
 -pillow
+
 -requests
+
 -bcbio-gff
 
 ## Data compilation
