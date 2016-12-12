@@ -3,3 +3,5 @@
 **/*.pyc
 marpodb/data
 marpodb/temp
+server/templates/.interpros
+
