@@ -26,8 +26,8 @@ for line in open(sys.argv[1]):
 			queries[qId]['length'] = 0
 			queries[qId]['covered'] = 0
 			queries[qId]['identified'] = 0
-			queries[qId]['scaff'] = tabs[2]
-			queries[qId]['target'] = tabs[1]
+			queries[qId]['scaff'] = tabs[2].split('|')[1]
+			queries[qId]['target'] = tabs[1].split('|')[1]
 			queries[qId]['code'] = ''
 
 		if queries[qId]['qStrand'] == qStrand:
