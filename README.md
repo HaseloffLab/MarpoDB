@@ -31,7 +31,6 @@ Here we provide a list of required dependencies and give an overview of each sec
 - Psycopg python library from source
 - Splign and Compart
 - InterproScan
-
 - python libraries
   + biopython
   + Flask
