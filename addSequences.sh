@@ -1,5 +1,5 @@
 #!/bin/bash
-# USAGE - sh addSequences.sh [TRANSCRIPTS_FILE] [GENOME_FILE] [DBNAME] [NUM THREADS]
+# Usage sh addSequences.sh [Transcripts_file] [Genome_file] [dbName] [numThreads]
 
 transcriptFile=$1
 genomeFile=$2
@@ -11,8 +11,6 @@ pfamHMM=data/Pfam/Pfam-A.hmm
 
 coverageTh=0.99
 identityTh=0.99
-
-
 
 prefix=${transcriptFile##*/}
 gprefix=${genomeFile##*/}
@@ -58,28 +56,34 @@ python scripts/prepareFASTAforSplign.py data/splign_temp/transcripts.fa > data/s
 
 splign -mklds data/splign_temp/fa_seq
 
-makeblastdb -in data/splign_temp/fa_seq/genome.fa -dbtype nucl
-
-makeblastdb -in data/splign_temp/fa_seq/transcripts.fa -dbtype nucl
+#makeblastdb -in data/splign_temp/fa_seq/genome.fa -dbtype nucl
+formatdb -i data/splign_temp/fa_seq/genome.fa -p F -o T
+#makeblastdb -in data/splign_temp/fa_seq/transcripts.fa -dbtype nucl
+formatdb -i data/splign_temp/fa_seq/transcripts.fa -p F -o T
 
 compart -qdb data/splign_temp/fa_seq/transcripts.fa -sdb data/splign_temp/fa_seq/genome.fa > data/splign_temp/transcripts.compartments
 
-python scripts/fixCompartmentNames.py data/splign_temp/fa_seq/genome.fa data/splign_temp/fa_seq/transcripts.fa data/splign_temp/transcripts.compartments > data/splign_temp/transcripts.compartments.fixed
+#python scripts/fixCompartmentNames.py data/splign_temp/fa_seq/genome.fa data/splign_temp/fa_seq/transcripts.fa data/splign_temp/transcripts.compartments > data/splign_temp/transcripts.compartments.fixed
 
-splign -ldsdir data/splign_temp/fa_seq -comps data/splign_temp/transcripts.compartments.fixed > ${outputDir}/${prefix}_${gprefix}.splign
+#splign -ldsdir data/splign_temp/fa_seq -comps data/splign_temp/transcripts.compartments.fixed > ${outputDir}/${prefix}_${gprefix}.splign
+
+splign -ldsdir data/splign_temp/fa_seq -comps data/splign_temp/transcripts.compartments > ${outputDir}/${prefix}_${gprefix}.splign
+
 
 # rm -rf data/splign_temp
 
-python scripts/formatSplign.py ${outputDir}/${prefix}_${gprefix}.splign > ${outputDir}/${prefix}_${gprefix}.splign.gff3 ${coverageTh} ${identityTh}
+python scripts/formatSplign.py ${outputDir}/${prefix}_${gprefix}.splign ${coverageTh} ${identityTh} > ${outputDir}/${prefix}_${gprefix}.splign.gff3 
+
+# Here we need to change a parameter in filterFastaByMap for it to work.
 
 python scripts/filterFastaByMap.py  ${outputDir}/${prefix}.transdecoder.complete.pep ${outputDir}/${prefix}_${gprefix}.splign.gff3 >  ${outputDir}/${prefix}.transdecoder.complete.mapped.pep
 
 python scripts/filterFastaByMap.py  ${outputDir}/${prefix}.transdecoder.complete.trans ${outputDir}/${prefix}_${gprefix}.splign.gff3 >  ${outputDir}/${prefix}.transdecoder.complete.mapped.trans
 
-python scripts/filterPfamByMap.py ${outputDir}/${prefix}.Pfam.domtblout ${outputDir}/${prefix}_${gprefix}.splign.gff3 > ${outputDir}/${prefix}.Pfam.mapped.domtblout
+#python scripts/filterPfamByMap.py ${outputDir}/${prefix}.Pfam.domtblout ${outputDir}/${prefix}_${gprefix}.splign.gff3 > ${outputDir}/${prefix}.Pfam.mapped.domtblout
 
 # Step 3: Loading data into DB 
 
-python scripts/cutGenes.py ${outputDir}/${prefix}_${gprefix}.splign.gff3  ${outputDir}/${prefix}.transdecoder.complete.mapped.trans ${genomeFile}  ${outputDir}/${prefix}.transdecoder.complete.mapped.pep ${dbName} > ${outputDir}/log.txt
+#python scripts/cutGenes.py ${outputDir}/${prefix}_${gprefix}.splign.gff3  ${outputDir}/${prefix}.transdecoder.complete.mapped.trans ${genomeFile}  ${outputDir}/${prefix}.transdecoder.complete.mapped.pep ${dbName} > ${outputDir}/log.txt
 
-rm genome.fa.*
+#rm genome.fa.*
