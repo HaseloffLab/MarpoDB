@@ -33,18 +33,18 @@ Here we provide a list of required dependencies and give an overview of each sec
 - InterproScan
 
 - python libraries
-..+ biopython
-..+ Flask
-..+ Flask-Login
-..+ Flask-Mail
-..+ Flask-Session
-..+ Flask-SQLAlchemy
-..+ Flask-User
-..+ Flask-WTF
-..+ Jinja2
-..+ pillow
-..+ requests
-..+ bcbio-gff
+  + biopython
+  + Flask
+  + Flask-Login
+  + Flask-Mail
+  + Flask-Session
+  + Flask-SQLAlchemy
+  + Flask-User
+  + Flask-WTF
+  + Jinja2
+  + pillow
+  + requests
+  + bcbio-gff
 
 ## Data compilation
 We have a developed a set of scripts to compile your transcriptome and genome data to a gene-centric database:
