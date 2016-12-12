@@ -133,16 +133,11 @@ export PYTHONPATH=${PYTHONPATH}:$PYTHONP
 echo "export PYTHONPATH=${PYTHONPATH}:$PYTHONP" > ~/.pypaths
 
 ## Splign and compart
-cd $SRC
-wget http://sing.citi.uvigo.es/static/BDBM/ncbi.tar.gz
-tar xfvzp ncbi.tar.gz
+curl ftp://ftp.ncbi.nlm.nih.gov/genomes/TOOLS/splign/linux-i64/splign.tar.gz --user anonymous: -o splign.tar.gz
 mkdir ncbi_bins
-mv splign ncbi_bins/
-mv compart ncbi_bins/
+mv splign.tar.gz ncbi_bins
 cd ncbi_bins
-BINS=$(pwd)
-export PATH=$PATH:$BINS
-echo "export PATH=$PATH:$BINS" > ~/.paths
+tar xfvzp splign.tar.gz
 
 ## If splign complains about not being able to find libpcre.so.0 do
 

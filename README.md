@@ -8,353 +8,52 @@ In brief, we start off from two "raw" sequence files in FASTA format containing 
 
 Then, we shall access the database by means of web server accessible by your browser.
 
-# Installation
-To setup a gene-centric database harboring DNA parts we need to install serveral 3rd party software and databases, libraries for running the web server and application, and finally compile the data before loading into the database. 
+# Overview
+To setup a gene-centric database harboring DNA parts we need to install serveral 3rd party software and databases, libraries for running the web server and application, and finally compile and load the data with annotations to the database. 
+
+Full installation instructions can be found in our Wiki (https://github.com/HaseloffLab/MarpoDB/wiki)
 
 Currently, we supply scripts for compiling most libraries for a 64 bit architecture in a linux server, however it may be possible to build the required libraries in a different architecture and perform the corresponding analyses successfully. Also, we are setting up local versions of all the software and libraries, without the need for sudo access since this is the common case for shared servers in academia.
 
-We supply several scripts to split and automate (as much as possible) the setup process.
+We supply several scripts to split and automate (as much as possible) the setup process. Also, we have packaged most of the dependencies in a virtual environment and defined local variables for the installation. 
 
-The setup is divided into the following sections:
+Here we provide a list of required dependencies and give an overview of each section.
 
 ## Bioinformatics software and required databases
 
-### Installation scripts
-A wrapper script for installing dependencies is provided in dependencies.sh, but if anything fails, try the step-by-step approach. Only parameter is database name.
+TransDecoder
+BLAST-2.2.27
+HMMR
+Uniprot
+Pfam-A
+pip python installer and virtualenv
+PostgreSQL
+Psycopg python library from source
+Splign and Compart
+InterproScan
 
-```bash
-# Go to bash first
-bash
-nohup sh dependencies.sh [DATABASE NAME]
-```
-
-### Step-by-step approach
-
-Let's set up the directory structure and environmental path variables:
-
-```bash
-#!/bin/bash
-# Ensuring we are in BASH.
-bash
-
-# Building directory structure. Go to the root of the MarpoDB directory. 
-mkdir src
-mkdir data
-
-# Adding new custom paths into different files to avoid touching local .profile and duplicating paths.
-# Only run once.
-
-echo "Adding new custom paths into different files to avoid touching local .profile and duplicating paths"
-echo "# Adding new custom paths" >> ~/.bashrc
-echo ". ~/.paths" >> ~/.bashrc
-echo ". ~/.pypaths" >> ~/.bashrc
-echo ". ~/.ldpaths" >> ~/.bashrc
-```
-Environmental variables. Remember to set them again if installing in more than one session. 
-
-```bash
-# Setting up environmental variables.
-BASE=$(pwd)
-cd src
-SRC=$(pwd)
-cd $BASE
-cd data
-DATA=$(pwd)
-cd $BASE
-```
-
-### Software:
-
-#### TransDecoder (part of the Trinity pipeline by Brian Hass -https://github.com/TransDecoder/TransDecoder/releases)
-```bash
-## TransDecoder
-cd $SRC
-wget https://github.com/TransDecoder/TransDecoder/archive/v2.1.0.tar.gz --no-check-certificate
-tar xvfz v2.1.0.tar.gz
-cd TransDecoder-2.1.0
-make
-TRANSDECODER=$(pwd)
-export PATH=$PATH:$TRANSDECODER
-echo "export PATH=$PATH:$TRANSDECODER" > ~/.paths
-echo "Unless errors appeared, TransDecoder successfully installed"
-```
-
-#### BLAST-2.2.27 (specific version in ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/2.2.27/ - https://www.ncbi.nlm.nih.gov/books/NBK279690/)
-```bash
-## BLAST 2.2.27
-cd $SRC
-curl ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/2.2.27/ncbi-blast-2.2.27+-x64-linux.tar.gz --user anonymous: -o ncbi-blast-2.2.27+-x64-linux.tar.gz
-tar xvfzp ncbi-blast-2.2.27+-x64-linux.tar.gz 
-cd ncbi-blast-2.2.27+
-BLAST=$(pwd)
-export PATH=$BLAST/bin:$PATH
-echo "export PATH=$BLAST/bin:$PATH" > ~/.paths
-echo "Unless errors appeared, BLAST 2.2.27 successfully installed"
-
-```
-
-#### HMMR (http://eddylab.org/software/hmmer3/3.1b2/Userguide.pdf)
-```bash
-## HMMR
-cd $SRC
-wget http://eddylab.org/software/hmmer3/3.1b2/hmmer-3.1b2-linux-intel-x86_64.tar.gz
-tar xfvzp hmmer-3.1b2-linux-intel-x86_64.tar.gz
-cd hmmer-3.1b2-linux-intel-x86_64
-HMMR=$(pwd)
-./configure --prefix=$HMMR
-make check
-make install
-export PATH=$PATH:$HMMR/bin
-echo "export PATH=$PATH:$HMMR/bin" > ~/.paths
-echo "Unless errors appeared, HMMR successfully installed"
-```
-
-### Databases:
-
-Now we'll download 3rd party databases and put them in the data/ directory
-
-#### Uniprot (TreMBLe and Swissprot - http://www.uniprot.org/downloads)
-
-You might want to include taxonomy filters for obtaining sequences to a specific taxonomy level for you organism and download only those sequences. To do this go to http://www.uniprot.org/uniprot/#orgViewBy. Then, find you taxonomy level and click. Finally choose "Map to - UniProtKB" on the left side panel. Place the file in the data/Uniprot/ directory and rename it to uniprot.fasta .
-
-Otherwise just do:
-
-```bash
-## Uniprot - build your own taxonomy database or just download the whole thing 
-# (16Gb, 30Gb decompressed for Trembl and 85Mb for Swissprot)
-cd $DATA
-wget ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_trembl.fasta.gz
-wget ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.fasta.gz
-gunzip -dv uniprot_trembl.fasta.gz
-gunzip -dv uniprot_sprot.fasta.gz
-cat uniprot_sprot.fasta >> uniprot_trembl.fasta
-mv uniprot_trembl.fasta uniprot.fasta
-rm uniprot_sprot.fasta
-mkdir Uniprot
-mv uniprot.fasta Uniprot/
-```
-
-#### Pfam-A (check most recent release hmm version - http://pfam.xfam.org FTP tab)
-```bash
-## Pfam
-cd $DATA
-wget ftp://ftp.ebi.ac.uk/pub/databases/Pfam/releases/Pfam30.0/Pfam-A.hmm.gz
-gunzip -dv Pfam-A.hmm.gz
-mkdir Pfam
-mv Pfam-A.hmm Pfam/
-```
-
-#### pip (python installer) and setting up virtualenv
-```bash
-# pip
-easy_install --user pip
-export PATH=$PATH:~/.local/bin
-echo "export PATH=$PATH:~/.local/bin" > ~/.paths
-pip install virtualenv --user
-virtualenv ~/ENV
-```
-Activating the virtualenv. This will be included in .bashrc so that every session loads the virtualenv. If this is not desired, then just do:
-- `deactivate` or just don't put it into .bashrc and run 
-- `source ~/ENV/bin/activate` every time you log in.
-
-```bash
-source ~/ENV/bin/activate
-# Inclding it into ~/.bashrc so that next session this is still loaded.
-echo "source ~/ENV/bin/activate" >> ~/.bashrc
-```
-
-#### python libraries
-```bash
-# python libraries to ~/ENV virtualenvironment
-cd $BASE
-pip install -r requirements.txt
-
-```
-
-In case anything fails, go to the original source and read the documentation. Errors may be due to new releases or compilation errors but should be straightforward to determine.
-
-### Problematic libraries and software
-
-These ones have some issues locating system libraries and might generate errors in older distributions. We provide simple "hacks" to get them up an running but in the case you encounter any errors you might want to google the ways around them...
-
-#### PostgreSQL (check most recent release - https://www.postgresql.org/download/ . For this tutorial we'll compile from source)
-```bash
-# PostgreSQL 
-cd $SRC
-wget https://ftp.postgresql.org/pub/source/v9.6.0/postgresql-9.6.0.tar.gz --no-check-certificate
-wget https://ftp.postgresql.org/pub/source/v9.6.0/postgresql-9.6.0.tar.gz.md5 --no-check-certificate
-md5sum -c postgresql-9.6.0.tar.gz.md5 
-## This must say OK, otherwise download again
-tar zvfxp postgresql-9.6.0.tar.gz
-cd postgresql-9.6.0
-POSTGRESQL=$(pwd)
-./configure --prefix=$POSTGRESQL
-make
-make install
-export PATH=$PATH:$POSTGRESQL/bin
-echo "export PATH=$PATH:$POSTGRESQL/bin" > ~/.paths 
-export LD_LIBRARY_PATH=$POSTGRESQL/lib:$LD_LIBRARY_PATH
-echo "export LD_LIBRARY_PATH=$POSTGRESQL/lib:$LD_LIBRARY_PATH" > ~/.ldpaths
-```
-Now lets try to set up the server and create a psql database with appropriate credentials. Change [DATABASE NAME] to a desired name.
-
-```bash
-## Lest start postgres and make a database and a user
-initdb -D ~/var/ -U postgres
-pg_ctl -D ~/var/ -l logfile start
-# Create a database and provide credentials for the user. Change [DATABASE NAME]
-psql -U postgres -v v1=$USER -f psql/credentials.sql -v v2=[DATABASE NAME]
-```
-#### Psycopg python library compilation from source (http://initd.org/psycopg/)
-```bash
-# psycopg from source
-cd $SRC
-wget http://initd.org/psycopg/tarballs/PSYCOPG-2-6/psycopg2-2.6.2.tar.gz
-tar xvfzp psycopg2-2.6.2.tar.gz 
-cd psycopg2-2.6.2
-python setup.py build_ext --pg-config $POSTGRESQL/bin/pg_config  --build-lib $POSTGRESQL/lib build && python setup.py install --user
-cd build
-PYTHONP=$(pwd)
-export PYTHONPATH=${PYTHONPATH}:$PYTHONP
-echo "export PYTHONPATH=${PYTHONPATH}:$PYTHONP" > ~/.pypaths
-```
-
-#### Splign and Compart (NCBI tools - https://www.ncbi.nlm.nih.gov/Web/Newsltr/V14N2/splign.html. We are using a precompiled binary provided from http://sing.citi.uvigo.es/static/BDBM/ncbi.tar.gz)
-```bash
-cd $SRC
-wget http://sing.citi.uvigo.es/static/BDBM/ncbi.tar.gz
-tar xfvzp ncbi.tar.gz
-mkdir ncbi_bins
-mv splign ncbi_bins/
-mv compart ncbi_bins/
-cd ncbi_bins
-BINS=$(pwd)
-export PATH=$PATH:$BINS
-echo "export PATH=$PATH:$BINS" > ~/.paths
-echo "Let's check everything works. Now will try to run splign..."
-splign -help | head -20
-echo "Unless errors appeared, Splign and compart successfully installed"
-```
-If splign complains about not being able to find libpcre.so.0 do:
-
-```bash
-LIBPCRE=$(locate libpcre.so. | head -1)		
-cp $LIBPCRE .										
-mv libpcre.so.3 libpcre.so.0					
-export LD_LIBRARY_PATH=$BINS:$LD_LIBRARY_PATH
-echo "export LD_LIBRARY_PATH=$BINS:$LD_LIBRARY_PATH" ~/.ldpaths
-```
-
-Lets check if splign works again:
-```bash
-echo "Let's check everything works. Now will try to run splign..."
-splign -help | head -20
-echo "Unless errors appeared, Splign and compart successfully installed"
-```
-
-#### InterproScan (5Gb - Check the requirements in https://github.com/ebi-pf-team/interproscan/wiki)
-The lastest version of InterproScan uses a JAVA 1.8, be sure to select the appropriate InterproScan version so that you won't run into any problems running it.
-
-```bash
-## InterproScan 5.20-59.0 (Java 8)
-cd $SRC
-curl ftp://ftp.ebi.ac.uk/pub/software/unix/iprscan/5/5.20-59.0/interproscan-5.20-59.0-64-bit.tar.gz -o interproscan-5.20-59.0-64-bit.tar.gz
-curl ftp://ftp.ebi.ac.uk/pub/software/unix/iprscan/5/5.20-59.0/interproscan-5.20-59.0-64-bit.tar.gz.md5 -o interproscan-5.20-59.0-64-bit.tar.gz.md5
-md5sum -c interproscan-5.20-59.0-64-bit.tar.gz.md5
-## Must say OK, otherwise download again
-sleep 5
-tar xvzfp interproscan-5.20-59.0-64-bit.tar.gz
-cd interproscan-5.20-59.0-64-bit
-```
-
-If this fails because you have other version of Java, try:
-
-```bash
-## InterproScan 5.16-55.0 (Java 6/7)
-cd $SRC
-wget ftp://ftp.ebi.ac.uk/pub/software/unix/iprscan/5/5.16-55.0/interproscan-5.16-55.0-64-bit.tar.gz
-wget ftp://ftp.ebi.ac.uk/pub/software/unix/iprscan/5/5.16-55.0/interproscan-5.16-55.0-64-bit.tar.gz.md5
-md5sum -c interproscan-5.16-55.0-64-bit.tar.gz.md5
-tar xvfzp interproscan-5.16-55.0-64-bit.tar.gz
-cd interproscan-5.16-55.0-64
-```
-
-Now, decide if you want Panther models included, since they take quite a lot of space (15Gb)
-
-```bash
-## Decide if you want to include Panther models, which requires an additional 15Gb file
-cd data
-wget ftp://ftp.ebi.ac.uk/pub/software/unix/iprscan/5/data/panther-data-10.0.tar.gz
-wget ftp://ftp.ebi.ac.uk/pub/software/unix/iprscan/5/data/panther-data-10.0.tar.gz.md5
-md5sum -c panther-data-10.0.tar.gz.md5
-## This must say OK, otherwise download again
-tar xfvzp panther-data-10.0.tar.gz
-```
-
-Look-up service... This is provided by InterPro as a web service in EBI if you can access or want to have a local look-up table, you'll need 96Gb! otherwise you might want to disable it...
-
-https://github.com/ebi-pf-team/interproscan/wiki/HowToDownload
-
-Now let's check if interproscan works.
-
-```bash
-echo "Now let's check if InterproScan works"
-./interproscan.sh
-INTERPRO=$(pwd)
-export PATH=$PATH:$INTERPRO
-echo "export PATH=$PATH:$INTERPRO" > ~/.paths
-```
-
-Finally, you'll need to change some parameters in the interproscan.properties file to enable/disable the look-up table service and threads, etc...
+python libraries
+-biopython
+-Flask
+-Flask-Login
+-Flask-Mail
+-Flask-Session
+-Flask-SQLAlchemy
+-Flask-User
+-Flask-WTF
+-Jinja2
+-psycopg2
+-pillow
+-requests
+-bcbio-gff
 
 ## Data compilation
+We have a developed a set of scripts to compile your transcriptome and genome data to a gene-centric database:
+First, we will generate ORFs for your transcripts using predicted annotations to support predictions, then map those ORF containing transcripts to the genome (whether is finished or fragmented) and obtain genomic loci for that transcript. Afterwards, we will generate part oriented gene definitions for a promoter region (arbitrarily defined as 3 Kbs upstrem of the TSS of the transcript), 5'UTR, exons, introns and 3'UTR. Finally we will load the genomic region with all gene definitions to the database and generate IDs for each entry.
 
-First, point the addSequences.sh script to the appropriate files transcriptome and genome files, include a DATABASE name and the number of threads that the script can use.
+After loading the database, we will retrieve and perform several analyses (BLAST and all InterproScan comprised analyses) for each entry to provide annotations and load them to the database.
 
-```bash
-cd $BASE
-nohup sh addSequences.sh [TRANSCRIPTS FILE] [GENOME FILE] [DATABASE NAME] [NUMBER OF THREADS] &
-```
-Compile InterproScan results into HTML format.
-```bash
-# in process
-```
-Cleanup InterpoScan results HTML files for loading directly into the webapp.
-
-```bash
-# in process
-```
-
-## Load data into the database
-Setup the database tables:
-```bash
-# in process
-```
-
-Configure the initialise.sh script to the correct database.
-```bash
-# in process
-```
-
-Load the data:
-```bash
-# in process
-```
-
-## Start the server
-Start the server. Only be sure that the port is accepting connections and accesible.
-```bash
-cd $BASE
-cd server
-python server.py
-```
-
-## App description
-Here we provide a description of how the webapp is tied together, how the javascript is controlling the app behaviour and how the app connects to the database and passes the variables to the frontend.
-
-### PartsDB class
-### Flask and Jinja
-### Javascript
+## Server
 
 
 Well, that's it... I hope everything worked, otherwise, feel free to contact Bernardo Pollak (bp358[at]cam[dot]ac[dot]uk) or Mihails Delmans (md565[at]cam[dot]ac[dot]uk).

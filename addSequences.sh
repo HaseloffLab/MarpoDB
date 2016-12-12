@@ -24,7 +24,7 @@ mkdir ${outputDir}
 
 # Step 1: CDS prediction using Transdecoder
 
-Transdecoder.LongOrfs -t ${transcriptFile}
+TransDecoder.LongOrfs -t ${transcriptFile}
 
 makeblastdb -in ${uniprotFasta} -dbtype 'prot'
 
