@@ -5,6 +5,7 @@
 
 # Ensuring we are in BASH.
 bash
+cd ..
 $DATABASENAME=$1
 
 # Building directory structure. Go to the root of the MarpoDB directory. 
@@ -188,6 +189,4 @@ INTERPRO=$(pwd)
 export PATH=$PATH:$INTERPRO
 echo "export PATH=$PATH:$INTERPRO" > ~/.paths
 
-## DATA compilation
-cd $BASE
-nohup sh addSequences.sh [TRANSCRIPTS_FILE] [GENOME_FILE] [DATABASE NAME] [NUMBER_OF_THREADS] &
+cd install
