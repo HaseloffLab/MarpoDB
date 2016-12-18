@@ -7,7 +7,7 @@ mapped = []
 
 for line in mapFile:
 	if line.startswith('### '):
-		transName = line.split()[1].split('|')[1]
+		transName = line.split()[1].split('|')[0]
 		if not transName in mapped:
 			mapped.append(transName)
 
