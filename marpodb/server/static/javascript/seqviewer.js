@@ -41,7 +41,7 @@ function highlight_seq(element, color){
 	for (var i = 0; i < element.subFeatures.length; i++){
 		if (element.strand == '+'){
 			pos = element.position;
-			elStart = pos+element.subFeatures[i].position-1;
+			elStart = pos+element.subFeatures[i].position;
 			elEnd = pos+element.subFeatures[i].position+element.subFeatures[i].length;
 		}
 		else{

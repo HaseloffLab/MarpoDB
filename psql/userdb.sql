@@ -14,6 +14,6 @@ CREATE TABLE "user"(
 CREATE TABLE "star_gene"(
 	id serial,
 	userid int REFERENCES "user",
-	geneid int,
+	cdsdbid text,
 	PRIMARY KEY(id)
 );

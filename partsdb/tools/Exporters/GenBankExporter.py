@@ -17,7 +17,7 @@ class GenBankExporter(Exporter):
 		else:
 			return None
 
-	def export(self, gene, outputFileName):
+	def export(self, gene, outputFileName=None):
 		self.keys = ['promoter' , 'utr5', 'cds', 'utr3', 'terminator']
 		parts = [  getattr(gene, key) for key in self.keys ]
 		

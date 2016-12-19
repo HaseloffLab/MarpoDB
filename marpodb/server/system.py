@@ -110,48 +110,45 @@ def sortHits(hits, column, nHits):
 	sortedHits = sorted( hits, key = lambda x: x[column] )
 	return sortedHits[0:nHits+1]
 
-def getGeneHomolog(marpodbSession, geneDBID):
+def getGeneHomolog(marpodbSession, cdsDBID):
 	hits = marpodbSession.query(BlastpHit).\
 			filter(BlastpHit.targetID == CDS.id).\
-			filter(CDS.id == Gene.cdsID).\
-			filter(Gene.dbid == geneDBID ).all()
+			filter(CDS.dbid == cdsDBID).all()
 
 	if hits:
 		hits.sort(key= lambda x: x.eVal)
 		return hits[0].proteinName
 	else:
-		return geneid
+		return cdsDBID
 
 def getTopGenes(marpodbSession, StarGene, n):
 
-	geneids = [gene.geneid for gene in StarGene.query.all()]
-	topGeneScores = dict(collections.Counter(geneids).most_common(n))
+	cdsids = [star.cdsdbid for star in StarGene.query.all()]
+	topCDSScores = dict(collections.Counter(cdsids).most_common(n))
 
-	genes = marpodbSession.query(Gene).filter(Gene.id.in_(topGeneScores.keys()) ).all()
+	# genes = marpodbSession.query(CDS).filter(CDS.dbid.in_(topCDSScores.keys()) ).all()
 
-	geneDBIDs = {gene.id : gene.dbid for gene in genes  }
+	# geneDBIDs = {gene.id : gene.dbid for gene in genes  }
 
-	topGenes = [ ( geneDBIDs[geneid], getGeneHomolog(marpodbSession, geneDBIDs[geneid]), topGeneScores[geneid] ) for geneid in topGeneScores.keys() ]
+	topCDS = [ (cdsdbid, getGeneHomolog(marpodbSession, cdsdbid), topCDSScores[cdsdbid] ) for cdsdbid in topCDSScores.keys() ]
 		
-	return sorted(topGenes, key = lambda x: x[2], reverse=True)
+	return sorted(topCDS, key = lambda x: x[2], reverse=True)
 
 def getUserData(StarGene, user, session, marpodbSession):
 	userData={}
 
 	if user.is_authenticated:
-		geneIds = [ star.geneid for star in StarGene.query.filter(StarGene.userid == user.id)]
+		cdsIds = [ star.cdsdbid for star in StarGene.query.filter(StarGene.userid == user.id)]
 	else:
 		if not "stars" in session:
 			session["stars"] = ""
-		geneIds = [i for i in session["stars"].split(':') if i]
+		cdsIds = [i for i in session["stars"].split(':') if i]
 		
 	userData['starGenes'] = []
 
-	for geneid in geneIds:
-		geneDBID = marpodbSession.query(Gene.dbid).filter(Gene.id == geneid).first()
-		if geneDBID:
-			homolog = getGeneHomolog(marpodbSession, geneDBID)
-			userData['starGenes'].append( (geneDBID, homolog ) )
+	for cdsid in cdsIds:
+		homolog = getGeneHomolog(marpodbSession, cdsid)
+		userData['starGenes'].append( (cdsid, homolog ) )
 
 	return userData
 
@@ -474,46 +471,75 @@ def getGeneCoordinates(marpodbSession, locusid):
 	return response
 
 
-def retrieveHits(cur, hitTable, refTable, name):
-	returnTable = {'windowSize':0, 'target':[], 'rows':{}}
+# def retrieveHits(cur, hitTable, refTable, name):
+# 	returnTable = {'windowSize':0, 'target':[], 'rows':{}}
 
-	queryString = "SELECT {0}.coordinates, {0}.qLen, {0}.tLen, {0}.protein_name, {0}.gene_name, {0}.origin, {0}.e_val FROM {0} JOIN {1} ON ({0}.{1}_id = {1}.id) WHERE {1}.name = \'{2}\'".format(hitTable, refTable, name)
+# 	queryString = "SELECT {0}.coordinates, {0}.qLen, {0}.tLen, {0}.protein_name, {0}.gene_name, {0}.origin, {0}.e_val FROM {0} JOIN {1} ON ({0}.{1}_id = {1}.id) WHERE {1}.name = \'{2}\'".format(hitTable, refTable, name)
 	
-	print queryString
+# 	print queryString
 
-	cur.execute(queryString)
-	hits = cur.fetchall()
+# 	cur.execute(queryString)
+# 	hits = cur.fetchall()
 	
-	if hits:
-		coordinates = [ [ int(x[0].split(',')[0].split(':')[0]), int(x[0].split(',')[0].split(':')[1]), int(x[0].split(',')[1].split(':')[0]), int(x[0].split(',')[1].split(':')[1]) ] for x in hits ]
+# 	if hits:
+# 		coordinates = [ [ int(x[0].split(',')[0].split(':')[0]), int(x[0].split(',')[0].split(':')[1]), int(x[0].split(',')[1].split(':')[0]), int(x[0].split(',')[1].split(':')[1]) ] for x in hits ]
 			
-		xMax = max( [c[0] - c[2] for c in coordinates] )
-		xMax = max( [xMax, 0] )
+# 		xMax = max( [c[0] - c[2] for c in coordinates] )
+# 		xMax = max( [xMax, 0] )
 
-		for x,c in zip (hits, coordinates):
-			print (x[1] - c[1]) - ( x[2] - c[3] ), x[1], c[1], x[2], c[3]
+# 		for x,c in zip (hits, coordinates):
+# 			print (x[1] - c[1]) - ( x[2] - c[3] ), x[1], c[1], x[2], c[3]
 
-		yMax = max( [(x[1] - c[1]) - ( x[2] - c[2] - (c[1] - c[0]) ) for x,c in zip (hits, coordinates)] )
-		yMax = max( [yMax, 0] )
+# 		yMax = max( [(x[1] - c[1]) - ( x[2] - c[2] - (c[1] - c[0]) ) for x,c in zip (hits, coordinates)] )
+# 		yMax = max( [yMax, 0] )
 
-		print xMax, yMax
+# 		print xMax, yMax
 
-		returnTable['windowSize'] = xMax + hits[0][2] + yMax 
-		returnTable['target'] = [xMax, hits[0][2]]
+# 		returnTable['windowSize'] = xMax + hits[0][2] + yMax 
+# 		returnTable['target'] = [xMax, hits[0][2]]
 
-		returnTable['rows'] = [ {'name' : x[3], 'origin': x[5], 'e_val': x[6], 'query': [ c[2] - c[0] + xMax, x[1] ], 'hit' : [ c[0], c[1] ]} for x,c in zip(hits, coordinates) ]
+# 		returnTable['rows'] = [ {'name' : x[3], 'origin': x[5], 'e_val': x[6], 'query': [ c[2] - c[0] + xMax, x[1] ], 'hit' : [ c[0], c[1] ]} for x,c in zip(hits, coordinates) ]
 
-	returnTable['rows'] = sorted(returnTable['rows'], key = lambda x: float( x['e_val'] ))
+# 	returnTable['rows'] = sorted(returnTable['rows'], key = lambda x: float( x['e_val'] ))
+
+# 	return returnTable
+
+def getBlastpHits(marpodbSession, cdsDBID):
+	returnTable = {'rows' : [], 'maxLen' : -1}
+	hits = marpodbSession.query(BlastpHit).filter(BlastpHit.targetID==CDS.id).filter(CDS.dbid == cdsDBID).all()
+
+	if hits:
+		for hit in hits:
+			coordinateString = hit.coordinates
+			tabs = coordinateString.split(';')[:-1]
+			print tabs
+			coordinates = [  [int(tab.split(',')[0].split(':')[0]), int(tab.split(',')[0].split(':')[1]),\
+											int(tab.split(',')[1].split(':')[0]), int(tab.split(',')[1].split(':')[1]),\
+												float(tab.split(',')[2])] for tab in tabs ]
+			returnTable["maxLen"] = max(returnTable["maxLen"], hit.tLen)
+			
+			row = {}
+			row['uniID'] = hit.uniID
+			row['tLen'] = hit.tLen
+			row['qLen'] = hit.qLen
+			row['proteinName'] = hit.proteinName
+			row['origin'] = hit.origin
+			row['eVal'] = hit.eVal
+			row['coordinates'] = coordinates
+
+			returnTable['rows'].append(row)
+
+		returnTable['maxLen'] = max(returnTable["maxLen"], hits[0].qLen)
+	
+	returnTable['rows'].sort(key =lambda x: x['eVal'])
 
 	return returnTable
 
-def getCDSDetails(cur, cdsName):
 
-	transName = cdsName.split('|')[0]
+def getCDSDetails(marpodbSession, cdsDBID):
+
 	response = {}
-
-	response['blastm'] = retrieveHits(cur, 'blastm_hit', 'transcript', transName)
-	response['blastp'] = retrieveHits(cur, 'blastp_hit', 'cds', cdsName)
+	response['blastp'] = getBlastpHits(marpodbSession, cdsDBID)
 
 	return response
 

@@ -5,7 +5,7 @@ function showTooltip(elem, msg) {
 
 function fallbackMessage(action) {
     var actionMsg = '';
-    var actionKey = (action === 'cut' ? 'X' : 'C');
+    var actionKey = (action == 'cut' ? 'X' : 'C');
     if (/iPhone|iPad/i.test(navigator.userAgent)) {
         actionMsg = 'No support :(';
     } else if (/Mac/i.test(navigator.userAgent)) {
