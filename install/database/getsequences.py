@@ -1,3 +1,4 @@
+import sys
 from partsdb.partsdb import PartsDB
 from server.tables import *
 
@@ -8,7 +9,7 @@ from Bio.SeqRecord import SeqRecord
 from partsdb.tools.Exporters import GenBankExporter
 from Bio import SeqIO
 
-marpodb = PartsDB('postgresql:///testdb', Base = Base)
+marpodb = PartsDB('postgresql:///'+sys.argv[1], Base = Base)
 
 records = []
 

@@ -1,3 +1,4 @@
+import sys
 from partsdb.partsdb import PartsDB
 from partsdb.tools.Populators import PlantPopulator
 from server.tables import *
@@ -8,12 +9,12 @@ from Bio.Alphabet import generic_dna
 from Bio.SeqFeature import SeqFeature
 
 genomeFileName = 'data/genome.fa'
-transcriptFileName = 'data/trans.fa'
-proteinFileName = 'data/pep.fa'
-mapFileName = 'data/map.gff3'
+transcriptFileName = 'data/mapped/trans.fa'
+proteinFileName = 'data/mapped/pep.fa'
+mapFileName = 'data/mapped/map.gff3'
 
 
-marpodb = PartsDB('postgresql:///testdb', clean = True, Base = Base)
+marpodb = PartsDB('postgresql:///'+sys.argv[1], clean = True, Base = Base)
 marpodb.setup(prefix = "mpdb")
 
 ppl = PlantPopulator(marpodb)
