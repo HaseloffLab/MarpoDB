@@ -189,11 +189,11 @@ def details():
 			stared = True
 
 	if stared:
-		title = 'Details for {0} <img src="static/img/star.png" onclick="starGene()" id="star_img"/>'.format(cdsdbid)
+		titleEx = '<img src="static/img/star.png" onclick="starGene()" id="star_img"/>'
 	else:
-		title = 'Details for {0} <img src="static/img/star_na.png" onclick="starGene()" id="star_img"/>'.format(cdsdbid)
+		titleEx = '<img src="static/img/star_na.png" onclick="starGene()" id="star_img"/>'
 
-	return render_template('details2.html', cdsDBID = cdsdbid, geneCoordinates = response['genes'], seq = response['seq'],  title = title, blastp=annotation['blastp'], stared = stared )
+	return render_template('details.html', cdsDBID = cdsdbid, geneCoordinates = response['genes'], seq = response['seq'],  title = "Details for {0}".format(cdsdbid), titleEx = titleEx, blastp=annotation['blastp'], stared = stared )
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -288,11 +288,4 @@ def help():
 
 if __name__ == '__main__':
 	app.run(debug=True,host='0.0.0.0', port = 8081)
-
-
-
-
-
-
-
 

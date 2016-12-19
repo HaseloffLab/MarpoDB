@@ -10,8 +10,7 @@
 		<link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
 
 		<link href="/static/stylesheets/styles.css" media="all" rel="stylesheet" type="text/css" />
-
-				
+	
 		{% if title %}
 	    	<title>MarpoDB - {{ title }}</title>
 	    {% else %}
@@ -75,7 +74,7 @@
 						<div id="container" class="container">
 
 								{% if title %}
-									<h1 class="title"><a href="/#">MarpoDB</a> - {{title | safe}}</h1>
+									<h1 class="title"><a href="/#">MarpoDB</a> - {{title}} {{titleEx | safe}}</h1>
 								{% endif %}
 				
 								{% block content %}

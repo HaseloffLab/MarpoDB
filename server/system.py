@@ -75,22 +75,6 @@ def generateNewMap(User):
 		mapImage = mapImage.crop(box)
 		mapImage.save("server/static/img/map.png","PNG")
 
-
-def compositeName(name):
-
-	cdsName = ""
-	transName = ""
-
-	barsplit = name.split('|')
-	if len(barsplit) == 2:
-		cdsName = barsplit[1]
-
-	dotSplit = barsplit[0].split('.')
-	if len(dotSplit) == 2:
-		transName = dotSplit[1]
-
-	return [dotSplit[0], transName, cdsName]
-
 def getClassByTablename(tablename):
 	for c in Base._decl_class_registry.values():
 		if hasattr(c, '__tablename__') and c.__tablename__ == tablename:
@@ -103,7 +87,6 @@ def getColumnByName(cls, columnName):
 		if c.name == columnName:
 			return c
 	return None
-
 
 
 def sortHits(hits, column, nHits):
@@ -125,10 +108,6 @@ def getTopGenes(marpodbSession, StarGene, n):
 
 	cdsids = [star.cdsdbid for star in StarGene.query.all()]
 	topCDSScores = dict(collections.Counter(cdsids).most_common(n))
-
-	# genes = marpodbSession.query(CDS).filter(CDS.dbid.in_(topCDSScores.keys()) ).all()
-
-	# geneDBIDs = {gene.id : gene.dbid for gene in genes  }
 
 	topCDS = [ (cdsdbid, getGeneHomolog(marpodbSession, cdsdbid), topCDSScores[cdsdbid] ) for cdsdbid in topCDSScores.keys() ]
 		
@@ -378,60 +357,6 @@ def processQuery(marpodbSession, scope, term, columns, nHits):
 					row = {"rowid": rowid, "pid": cdsid, "cols": hit, "level" : "hit"}
 					table["data"].append(row)
 
-
-	# for gene in genes:
-	# 	rowid = rowid + 1
-	# 	geneid = rowid
-
-	# 	row = {'rowid': rowid, 'cols': []}
-		
-	# 	allHits = genes[gene]["hits"] + [z for w in [ genes[gene]["trans"][x]["hits"] for x in genes[gene]["trans"] ] for z in w] + [z for w in [ genes[gene]["trans"][x]["cds"][y]["hits"] for x in genes[gene]["trans"] for y in genes[gene]["trans"][x]["cds"] ] for z in w]
-		
-	# 	sortedHits = sortHits(allHits , dcMap[sortCol]+1, nHits)
-
-	# 	row['cols'] = [gene] + sortedHits[0][1:]
-	# 	table['data'].append(row)
-
-	# 	for hit in sortHits(genes[gene]["hits"], dcMap[sortCol]+1, nHits):
-	# 		rowid = rowid + 1
-	# 		row = {'rowid': rowid, 'pid': geneid, 'cols': []}
-	# 		row['cols'] =  hit
-	# 		table['data'].append(row)
-
-	# 	for trans in genes[gene]["trans"]:
-	# 		rowid = rowid + 1
-	# 		transid = rowid
-
-	# 		row = {'rowid': rowid, 'pid': geneid, 'cols': []}
-
-	# 		allHits = genes[gene]["trans"][trans]["hits"] + [z for w in [ genes[gene]["trans"][trans]["cds"][x]["hits"] for x in  genes[gene]["trans"][trans]["cds"]] for z in w ]
-	# 		sortedHits = sortHits(allHits, dcMap[sortCol]+1, nHits)
-
-	# 		row['cols'] = [trans] + sortedHits[0][1:]
-	# 		table['data'].append(row)
-
-	# 		for hit in sortHits(genes[gene]["trans"][trans]["hits"], dcMap[sortCol]+1, nHits):
-	# 			rowid = rowid + 1
-	# 			row = {'rowid': rowid, 'pid': transid, 'cols': []}
-	# 			row['cols'] =  hit
-	# 			table['data'].append(row)
-
-	# 		for cds in genes[gene]["trans"][trans]["cds"]:
-	# 			rowid = rowid + 1
-	# 			cdsid = rowid
-	# 			row = {'rowid': rowid, 'pid': transid, 'cols': []}
-
-	# 			sortedHits = sortHits(genes[gene]["trans"][trans]["cds"][cds]["hits"], dcMap[sortCol]+1, nHits)
-
-	# 			row['cols'] = [cds] + sortedHits[0][1:]
-	# 			table['data'].append(row)
-
-	# 			for hit in sortedHits:
-	# 				rowid = rowid + 1
-	# 				row = {'rowid': rowid, 'pid': cdsid, 'cols': []}
-	# 				row['cols'] =  hit
-	# 				table['data'].append(row)
-
 	return table
 
 
@@ -469,40 +394,6 @@ def getGeneCoordinates(marpodbSession, locusid):
 				response['seq'] = record.seq.reverse_complement()
 	
 	return response
-
-
-# def retrieveHits(cur, hitTable, refTable, name):
-# 	returnTable = {'windowSize':0, 'target':[], 'rows':{}}
-
-# 	queryString = "SELECT {0}.coordinates, {0}.qLen, {0}.tLen, {0}.protein_name, {0}.gene_name, {0}.origin, {0}.e_val FROM {0} JOIN {1} ON ({0}.{1}_id = {1}.id) WHERE {1}.name = \'{2}\'".format(hitTable, refTable, name)
-	
-# 	print queryString
-
-# 	cur.execute(queryString)
-# 	hits = cur.fetchall()
-	
-# 	if hits:
-# 		coordinates = [ [ int(x[0].split(',')[0].split(':')[0]), int(x[0].split(',')[0].split(':')[1]), int(x[0].split(',')[1].split(':')[0]), int(x[0].split(',')[1].split(':')[1]) ] for x in hits ]
-			
-# 		xMax = max( [c[0] - c[2] for c in coordinates] )
-# 		xMax = max( [xMax, 0] )
-
-# 		for x,c in zip (hits, coordinates):
-# 			print (x[1] - c[1]) - ( x[2] - c[3] ), x[1], c[1], x[2], c[3]
-
-# 		yMax = max( [(x[1] - c[1]) - ( x[2] - c[2] - (c[1] - c[0]) ) for x,c in zip (hits, coordinates)] )
-# 		yMax = max( [yMax, 0] )
-
-# 		print xMax, yMax
-
-# 		returnTable['windowSize'] = xMax + hits[0][2] + yMax 
-# 		returnTable['target'] = [xMax, hits[0][2]]
-
-# 		returnTable['rows'] = [ {'name' : x[3], 'origin': x[5], 'e_val': x[6], 'query': [ c[2] - c[0] + xMax, x[1] ], 'hit' : [ c[0], c[1] ]} for x,c in zip(hits, coordinates) ]
-
-# 	returnTable['rows'] = sorted(returnTable['rows'], key = lambda x: float( x['e_val'] ))
-
-# 	return returnTable
 
 def getBlastpHits(marpodbSession, cdsDBID):
 	returnTable = {'rows' : [], 'maxLen' : -1}
