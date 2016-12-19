@@ -1,7 +1,10 @@
 **/.DS_Store
+marpodb/temp
+build
+dist
 /server/static/interpro/*
 **/*.pyc
-marpodb/data
-marpodb/temp
-server/templates/.interpros
-
+PartsDB.egg-info/*
+**/test.py
+**/*.pyc
+/marpodb/data/*

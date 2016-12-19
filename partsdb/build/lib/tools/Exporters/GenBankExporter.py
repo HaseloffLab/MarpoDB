@@ -1,0 +1,44 @@
+from Exporter import Exporter
+from sqlalchemy.inspection import inspect
+from Bio.SeqFeature import SeqFeature, CompoundLocation, FeatureLocation
+from Bio import SeqIO
+from Bio.Seq import Seq
+from Bio.SeqRecord import SeqRecord
+from system.Tables import PartMixIn, ExonMixIn
+from Bio.Alphabet import generic_dna
+class GenBankExporter(Exporter):
+
+	def coordinatesToLocation(self, coordinates):
+		locationParts = [ FeatureLocation(int(p[0]), int(p[1]), int(p[2]) ) for p in [ s.split(',') for s in coordinates.split(';')] ]
+		if len(locationParts) == 1:
+			return locationParts[0]
+		elif len(locationParts) > 1:
+			return CompoundLocation(locationParts)
+		else:
+			return None
+
+	def export(self, gene, outputFileName):
+		self.keys = ['promoter' , 'utr5', 'cds', 'utr3', 'terminator']
+		parts = [  getattr(gene, key) for key in self.keys ]
+		gene = SeqRecord(id = str(gene.dbid).replace('.',''), name = str(gene.name), seq = '' )
+
+		for partType, part in zip( self.keys, parts):
+			l = len(gene)
+			print partType, isinstance(part, PartMixIn), isinstance(part, ExonMixIn)
+			if isinstance(part, PartMixIn):
+				if isinstance(part, ExonMixIn):
+					print part.coordinates
+					feature = SeqFeature( type = partType, location = self.coordinatesToLocation(part.coordinates)._shift( l ) )
+				else:
+					feature = SeqFeature( type = partType, location = FeatureLocation( l, l + len(part.seq) ) )
+				
+				print feature
+
+				gene.seq += Seq(part.seq, generic_dna)
+				gene.features.append(feature)
+		
+		outputFile = open(outputFileName, 'w')
+		SeqIO.write(gene, outputFile, "gb")
+
+if __name__ == "__main__":
+	exporter = GenBankExporter(1)
