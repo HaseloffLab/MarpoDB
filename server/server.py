@@ -114,7 +114,8 @@ def result():
 	if len(table['data']) != 0:
 		return render_template('results.html', table = table, title='Query results')
 	else:
-		return "ERROR: no data"
+		flash("No entries found")
+		return redirect(url_for('index'))
 
 @app.route('/export/cds')
 def exportCds():
