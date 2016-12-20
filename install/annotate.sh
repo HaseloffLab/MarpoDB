@@ -26,6 +26,15 @@ hmmpress data/Pfam/Pfam-A.hmm
 
 hmmscan --cpu ${numThreads} --domtblout ${tempDir}/Pfam.domtblout --cut_ga data/Pfam/Pfam-A.hmm temp/sequences.fa
 
+# InterproScan
+cat ${tempDir}/sequences.fa | sed 's/*//g' > ${tempDir}/sequences_clean.fa
+interproscan.sh -d ${tempDir}/interpro -f gff3 html -goterms -pa -i ${tempDir}/sequences_clean.fa
+
+cd interpro
+tar xvfz sequences_clean.fa.html.tar.gz
+ls *.html > list
+while read line; do ruby ../../scripts/parseInterpro.rb $line > "../../server/templates/.interpros/"$line; done < list
+
 mkdir data/filtered
 cp temp/Pfam.domtblout data/filtered/Pfam.domtblout
 cp temp/blastOut.filtered.outfmt6 data/filtered/blastp_filtered.outfmt6
