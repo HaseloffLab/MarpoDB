@@ -1,6 +1,6 @@
 import sys
 from partsdb.partsdb import PartsDB
-from server.tables import *
+from tables import *
 
 from Bio.Seq import Seq
 from Bio.Alphabet import generic_dna

@@ -1,7 +1,7 @@
 import sys
 from partsdb.partsdb import PartsDB
 from partsdb.tools.Populators import PlantPopulator
-from server.tables import *
+from tables import *
 from partsdb.tools.Exporters import GenBankExporter
 
 from Bio.Seq import Seq
