@@ -1,5 +1,5 @@
 #!/bin/bash
-# Usage sh addSequences.sh [numThreads] [Coverage_threshold] [Identity_threshold]
+# Usage sh annotate.sh [numThreads] [Coverage_threshold] [Identity_threshold]
 #
 # We suggest to use a minimum coverage_threshold of 20 and a minimum identity_threshold of 35.
 #

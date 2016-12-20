@@ -4,9 +4,12 @@ cd ..
 
 DBname=$1
 echo "Loading sequences into database"
-python install/database/initialise.py ${DBname}
+python server/initialise.py ${DBname}
 
 echo "Getting sequences from database for annotation"
-python install/database/getsequences.py ${DBname}
+python server/getsequences.py ${DBname}
+
+mkdir temp
+mv CDSs.fa temp/sequences.fa
 
 cd install

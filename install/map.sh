@@ -1,5 +1,5 @@
 #!/bin/bash
-# Usage sh addSequences.sh [numThreads]
+# Usage sh map.sh [numThreads]
 cd ..
 
 transcriptFile=data/transcripts.fa

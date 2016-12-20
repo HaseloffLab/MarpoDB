@@ -116,7 +116,7 @@ echo "export PATH=$PATH:$POSTGRESQL/bin" > ~/.paths
 export LD_LIBRARY_PATH=$POSTGRESQL/lib:$LD_LIBRARY_PATH
 echo "export LD_LIBRARY_PATH=$POSTGRESQL/lib:$LD_LIBRARY_PATH" > ~/.ldpaths
 
-## Lest start postgres and make a databaset
+## Lest start postgres and make a database
 initdb -D ~/var/ -U postgres
 pg_ctl -D ~/var/ -l logfile start
 # Log into postgres and create DB
