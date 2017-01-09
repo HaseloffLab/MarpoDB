@@ -92,7 +92,7 @@ echo "export PATH=$PATH:~/.local/bin" > ~/.paths
 pip install virtualenv --user
 virtualenv ~/ENV
 source ~/ENV/bin/activate
-
+echo "source ~/ENV/bin/activate" >> ~/.bashrc
 # python libraries to ~/ENV virtualenvironment
 cd $BASE
 pip install -r requirements.txt
@@ -116,7 +116,7 @@ echo "export PATH=$PATH:$POSTGRESQL/bin" > ~/.paths
 export LD_LIBRARY_PATH=$POSTGRESQL/lib:$LD_LIBRARY_PATH
 echo "export LD_LIBRARY_PATH=$POSTGRESQL/lib:$LD_LIBRARY_PATH" > ~/.ldpaths
 
-## Lest start postgres and make a databaset
+## Lest start postgres and make a database
 initdb -D ~/var/ -U postgres
 pg_ctl -D ~/var/ -l logfile start
 # Log into postgres and create DB
@@ -133,18 +133,27 @@ PYTHONP=$(pwd)
 export PYTHONPATH=${PYTHONPATH}:$PYTHONP
 echo "export PYTHONPATH=${PYTHONPATH}:$PYTHONP" > ~/.pypaths
 
+# PartsDB
+cd $SRC
+git clone https://github.com/HaseloffLab/PartsDB
+cd PartsDB
+pip install .
+
 ## Splign and compart
 curl ftp://ftp.ncbi.nlm.nih.gov/genomes/TOOLS/splign/linux-i64/splign.tar.gz --user anonymous: -o splign.tar.gz
 mkdir ncbi_bins
 mv splign.tar.gz ncbi_bins
 cd ncbi_bins
 tar xfvzp splign.tar.gz
+BINS=$(pwd)
+echo "export PATH=$PATH:$BINS" > ~/.paths 
 
 ## If splign complains about not being able to find libpcre.so.0 do
 
-#LIBPCRE=$(locate libpcre.so.* | head -1)		
-#cp $LIBPCRE .										
-#mv libpcre.so.3 libpcre.so.0					
+#LIBPCRE=$(locate libpcre.so | head -1)		
+#cp $LIBPCRE .
+#LIBPCRE=$(ls libpcre.*)
+#mv $LIBPCRE libpcre.so.0	
 #export LD_LIBRARY_PATH=$BINS:$LD_LIBRARY_PATH
 #echo "export LD_LIBRARY_PATH=$BINS:$LD_LIBRARY_PATH" > ~/.ldpaths
 

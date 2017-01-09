@@ -1,6 +1,6 @@
 function starGene(){
 	var request = new XMLHttpRequest();
-	request.open("GET", "/" + "user_stargene?genename="+geneName, true);
+	request.open("GET", "/" + "stargene?cdsdbid="+cdsDBID, true);
 	request.send();
 	var imagesrc = document.getElementById("star_img").src;
 	if (imagesrc.indexOf('_na') == -1){

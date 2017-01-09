@@ -1,7 +1,4 @@
 **/.DS_Store
 /server/static/interpro/*
 **/*.pyc
-marpodb/data
-marpodb/temp
-server/templates/.interpros
-
+**/test.py

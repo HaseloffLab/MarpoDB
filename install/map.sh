@@ -1,11 +1,10 @@
 #!/bin/bash
-# Usage sh addSequences.sh [Transcripts_file] [Genome_file] [dbName] [numThreads]
+# Usage sh map.sh [numThreads]
 cd ..
 
-transcriptFile=$1
-genomeFile=$2
-dbName=$3
-numThreads=$4
+transcriptFile=data/transcripts.fa
+genomeFile=data/genome.fa
+numThreads=$1
 
 uniprotFasta=data/Uniprot/uniprot.fasta
 pfamHMM=data/Pfam/Pfam-A.hmm
@@ -74,6 +73,7 @@ python scripts/filterFastaByMap.py  ${outputDir}/${prefix}.transdecoder.complete
 
 mkdir data/mapped
 
+cp ${genomeFile} data/mapped/genome.fa
 cp ${outputDir}/${prefix}.transdecoder.complete.mapped.pep data/mapped/pep.fa
 cp ${outputDir}/${prefix}.transdecoder.complete.mapped.trans data/mapped/trans.fa
 cp ${outputDir}/${prefix}_${gprefix}.splign.gff3 data/mapped/map.gff3

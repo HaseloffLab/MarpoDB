@@ -5,17 +5,16 @@
 	"id"			: "MarpoID",
 	"name"			: "Name",
 	"acc"			: "Pfam ACC",
-	"e_val"			: "e-value",
-	"descr" 		: "Pfam description",
-	"protein_name"	: "Protein name",
-	"gene_name"		: "Gene name",
+	"eVal"			: "e-value",
+	"description" 	: "Pfam description",
+	"proteinName"	: "Protein name",
+	"geneName"		: "Gene name",
 	"origin"		: "Organism"
 }%}
 
 {% set hitLabels = {
-	"pfam_hit"		: "Pfam",
-	"blastp_hit"	: "Protein BLAST",
-	"blastm_hit"	: "mRNA BLAST",
+	"pfamHit"		: "Pfam",
+	"blastpHit"	    : "Protein BLAST",
 	"cds"			: "CDS"
 }%}
 	
@@ -26,8 +25,22 @@
 					<th class="tdheader"> {{headerLabels[item]}} </th>
 				{% endfor %}
 			</tr>
-				
-			{% for row in table["data"]%}
+			{% for row in table["data"] %}
+				<tr class="header {{row['level']}}" id="header{{row['rowid']}}" parent-id="header{{row['pid']}}">
+					{% if row["level"] != "hit" %}
+						<td><span class="ident"></span><img src="../static/img/expand.png"/><a href="details?dbid={{row['cols'][0]}}" target="_blank">{{row["cols"][0]}}</a></td>
+					{% else %}
+						<td><span class="ident"></span>{{row['cols'][0]}}</td>
+					{% endif  %}
+
+					{% for col in row["cols"][1:] %}
+						<td class="truncate">{{col|string}}</td>
+					{% endfor %}
+				</tr>
+
+			{% endfor %}
+			
+<!-- 			{% for row in table["data"]%}
 				<tr class="header {{row['level']}}" id="header{{row['rowid']}}" parent-id="header{{row['pid']}}">
 					{% if row["level"] == "hit" %}
 							<td><span class="ident"></span>{{hitLabels[row["cols"][0] ]}}</td>
@@ -39,7 +52,7 @@
 						<td class="truncate">{{col|string}}</td>
 					{% endfor %}
 				</tr>
-			{% endfor %}
+			{% endfor %} -->
 					
 			
 			

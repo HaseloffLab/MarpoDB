@@ -408,8 +408,8 @@ th, td {
 }
 
 .hit,
-.trans,
-.cds{
+.gene,
+.part{
 	display: none;
 }
 
@@ -418,12 +418,12 @@ th, td {
 	display: inline-block;
 }
 
-.trans .ident{
+.gene .ident{
 	width: 20px;
 	display: inline-block;
 }
 
-.cds .ident{
+.part .ident{
 	width: 40px;
 	display: inline-block;
 }
