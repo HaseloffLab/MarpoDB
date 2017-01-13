@@ -1,4 +1,4 @@
- Filtering blast file (arg1) by identity (arg2)
+#Filtering blast file (arg1) by identity (arg2)
 
 import sys
 
