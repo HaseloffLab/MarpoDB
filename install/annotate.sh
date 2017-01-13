@@ -19,7 +19,7 @@ python scripts/filterBlastByCl.py ${tempDir}/blastOut.outfmt6 ${cov} ${id} > ${t
 
 python scripts/addBlastInfo.py ${tempDir}/blastOut.filtered.outfmt6 data/Uniprot/uniprot.info > ${tempDir}/blastp.info
 
-## Might want to parametrise taxonomy!!!
+# Remember to use the appropiate annotation database, filtered by taxonomy if performed earlier with the Uniprot database
 wget "http://www.uniprot.org/uniprot/?sort=score&desc=&compress=no&query=taxonomy:%22Viridiplantae%20[33090]%22%20AND%20existence:%22evidence%20at%20protein%20level%22%20OR%20existence:%22evidence%20at%20transcript%20level%22&fil=&format=tab&force=yes&columns=id,protein%20names,genes(PREFERRED),genes(ALTERNATIVE),genes(OLN),organism" -O uniprot.info
 
 hmmpress data/Pfam/Pfam-A.hmm
@@ -37,6 +37,6 @@ while read line; do ruby ../../scripts/parseInterpro.rb $line > "../../server/te
 
 mkdir data/filtered
 cp temp/Pfam.domtblout data/filtered/Pfam.domtblout
-cp temp/blastOut.filtered.outfmt6 data/filtered/blastp_filtered.outfmt6
+cp temp/blastp.info data/filtered/blastp_filtered.outfmt6
 
 cd install

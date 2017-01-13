@@ -1,4 +1,4 @@
- Filtering blast file (arg1) by identity (arg2)
+# Filtering BLAST table file (arg1) by coverage & identity (arg2 & arg3)
 
 import sys
 

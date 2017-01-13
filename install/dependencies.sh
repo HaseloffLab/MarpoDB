@@ -67,14 +67,10 @@ echo "Unless errors appeared, HMMR successfully installed"
 ## DATABASES
 
 ## Uniprot - build your own taxonomy database or just download the whole thing (16Gb, 30Gb decompressed for Trembl and 85Mb for Swissprot)
+## Here we will use a taxonomy filter for "Viridiplantae [33090]"
 cd $DATA
-wget ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_trembl.fasta.gz
-wget ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.fasta.gz
-gunzip -dv uniprot_trembl.fasta.gz
-gunzip -dv uniprot_sprot.fasta.gz
-cat uniprot_sprot.fasta >> uniprot_trembl.fasta
-mv uniprot_trembl.fasta uniprot.fasta
-rm uniprot_sprot.fasta
+wget "http://www.uniprot.org/uniprot/?sort=score&desc=&compress=yes&query=taxonomy:%22Viridiplantae%20[33090]%22&fil=&format=fasta&force=yes" -O uniprot.fasta.gz 
+gunzip uniprot.fasta.gz
 mkdir Uniprot
 mv uniprot.fasta Uniprot/
 
