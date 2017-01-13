@@ -35,13 +35,13 @@ function draw(canvasName){
     geneView.glyph.text.size = 1;
     geneView.glyph.text.font = "courier";
     geneView.glyph.text.align = "left";
-		geneView.glyph.roundness = 10;
+	geneView.glyph.roundness = 10;
     geneView.laneSizes = parseInt(20);
 	// geneView.laneBuffer = 1;
 	// geneView.laneBuffer = 10;
 	geneView.scale.font.size = 12;
-	geneView.tick.major.size = Math.ceil(seq.length / 1000) * 500;
-	geneView.tick.minor.size = Math.ceil(seq.length / 1000) * 100;
+	geneView.tick.major.size = Math.ceil(seq.length / 1000) * 1000;
+	geneView.tick.minor.size = 1000;
 	geneView.scale.max = Math.ceil(seq.length/geneView.tick.major.size) * geneView.tick.major.size;
 	geneView.scale.min = 50;
 	geneView.tick.auto = false;
@@ -49,9 +49,9 @@ function draw(canvasName){
 	geneView.scale.font.size = 12;
 	geneView.scale.font.color = "black";
 	geneView.scale.font.size = 12;
-	n = 0
 
 	for( genedbid in genes ){
+
 		console.log(genedbid);
 		geneTrack = geneView.addTrack().addLane();
 
@@ -144,10 +144,13 @@ function draw(canvasName){
 					
 					features.push(newFeature);
 
-					n+=1;
+					
 				}
 			
-		
+		// n+=1;
+		// if (n == 4){
+		// 	break;
+		// }
 		
 	}
 
