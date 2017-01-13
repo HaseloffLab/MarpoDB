@@ -18,10 +18,10 @@ exporter = GenBankExporter(marpodb)
 for gene in marpodb.session.query(Gene).all():
 	feature = SeqFeature( location = exporter.coordinatesToLocation(gene.cds.coordinates) )
 	seq = feature.extract(Seq(gene.cds.seq, generic_dna)).translate()
-	if not (seq[0] == 'M' and seq.find('*') == len(seq) - 1):
+	if not (seq[0] == 'M' and seq.find('*') == len(seq)-1):
 		print gene.cds.dbid, seq
 	else:
-		record = SeqRecord( seq = seq, id = gene.cds.dbid )
+		record = SeqRecord( seq = seq, id = gene.cds.dbid, description='Extracted from '+sys.argv[1] )
 		records.append(record)
 
 outputFile = open('CDSs.fa', 'w')
