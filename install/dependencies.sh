@@ -67,12 +67,15 @@ echo "Unless errors appeared, HMMR successfully installed"
 ## DATABASES
 
 ## Uniprot - build your own taxonomy database or just download the whole thing (16Gb, 30Gb decompressed for Trembl and 85Mb for Swissprot)
-## Here we will use a taxonomy filter for "Viridiplantae [33090]"
+## Here we will use a taxonomy filter for "Viridiplantae [33090]" for both the sequence database and the annotations file for that database
 cd $DATA
+mkdir Uniprot
+cd Uniprot
 wget "http://www.uniprot.org/uniprot/?sort=score&desc=&compress=yes&query=taxonomy:%22Viridiplantae%20[33090]%22&fil=&format=fasta&force=yes" -O uniprot.fasta.gz 
 gunzip uniprot.fasta.gz
-mkdir Uniprot
-mv uniprot.fasta Uniprot/
+
+# Remember to use the appropiate annotation database, filtered by taxonomy.
+wget "http://www.uniprot.org/uniprot/?sort=score&desc=&compress=no&query=taxonomy:%22Viridiplantae%20[33090]%22%20AND%20existence:%22evidence%20at%20protein%20level%22%20OR%20existence:%22evidence%20at%20transcript%20level%22&fil=&format=tab&force=yes&columns=id,protein%20names,genes(PREFERRED),genes(ALTERNATIVE),genes(OLN),organism" -O uniprot.info
 
 ## Pfam
 cd $DATA
