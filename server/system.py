@@ -183,14 +183,18 @@ def processQuery(marpodbSession, scope, term, columns, nHits):
 		else:
 			scopeDict[scLevel][scTable].append(scColumn)
 
-
 	# Processing queries
 	loci = {}
 	for scLevel in scopeDict:
 		for scTable in scopeDict[scLevel]:
-			
+
 			scColumns = scopeDict[scLevel][scTable]
+
+			print scTable, scColumns
+
 			newData = findDataIn(marpodbSession, scLevel, scTable, scColumns, term, columns[scTable])
+
+			print newData
 
 			for hit in newData:
 
