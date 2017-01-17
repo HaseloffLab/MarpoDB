@@ -135,6 +135,8 @@ git clone https://github.com/HaseloffLab/PartsDB
 cd PartsDB
 pip install .
 
+### COMPLICATED ONES
+
 ## Splign and compart
 curl ftp://ftp.ncbi.nlm.nih.gov/genomes/TOOLS/splign/linux-i64/splign.tar.gz --user anonymous: -o splign.tar.gz
 mkdir ncbi_bins
