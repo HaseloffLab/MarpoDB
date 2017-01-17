@@ -171,8 +171,10 @@ def details():
 			locus = marpodbSession.query(Locus).filter(Locus.id == gene.locusID).first()
 			cdsdbid = marpodbSession.query(CDS.dbid).filter(CDS.id == gene.cdsID).first()[0]
 	else:
-		cdsdbid = marpodbSession.query(CDS.dbid).filter(CDS.id == Gene.cdsID).\
-					filter(Gene.locusID == locus.id).first()[0]
+		cds = marpodbSession.query(CDS).filter(CDS.id == Gene.cdsID).\
+					filter(Gene.locusID == locus.id).first()
+		cdsdbid = cds.dbid
+
 	response = getGeneCoordinates(marpodbSession, locus.id)
 
 	annotation = getCDSDetails(marpodbSession, cdsdbid)
@@ -186,7 +188,7 @@ def details():
 	else:
 		if not "stars" in session:
 			session["stars"] = ""
-		if session["stars"].find(str(gene.id)) > -1:
+		if session["stars"].find(str(cds.id)) > -1:
 			stared = True
 
 	if stared:

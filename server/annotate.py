@@ -4,5 +4,5 @@ from tables import *
 
 marpodb = PartsDB('postgresql:///'+sys.argv[1], Base = Base)
 
-marpodb.annotate('blastphit', fileName = 'data/filtered/blastp_filtered.outfmt6')
-marpodb.annotate('pfamhit', fileName = 'data/filtered/Pfam.domtblout')
+#marpodb.annotate('blastphit', fileName = 'data/blastp.info')
+marpodb.annotate('pfamhit', fileName = 'data/Pfam.domtblout')
