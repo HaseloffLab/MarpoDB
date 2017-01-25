@@ -58,6 +58,14 @@ def user_data():
 
 marpodb = PartsDB('postgresql:///testdb', Base = Base)
 
+@app.errorhandler(404)
+def error404(e):
+    return render_template('error.html', title="Error 404", message="Sorry, the page is not found"), 404
+
+@app.errorhandler(500)
+def error404(e):
+    return render_template('error.html', title="Error 404", message="Sorry, its seems as if our server encountered an internal error. Please let us know if this happens again"), 404
+
 @app.route('/')
 def index():
 	return redirect(url_for('query'))
@@ -159,31 +167,36 @@ def details():
 		
 		gene = marpodbSession.query(Gene).filter(Gene.dbid == dbid).first()
 		
+		# if CDS
 		if not gene:
 			cds = marpodbSession.query(CDS).filter(CDS.dbid == dbid).first()
 			if cds:
-				gene  = marpodbSession.query(Gene).filter(Gene.cdsID == cds.id).first()
+			# 	gene  = marpodbSession.query(Gene).filter(Gene.cdsID == cds.id).first()
 				locus = marpodbSession.query(Locus).filter(Locus.id == Gene.locusID).\
 						filter(Gene.cdsID == cds.id).first()
-				cdsdbid = cds.dbid
-
+		# if Gene
 		else:
 			locus = marpodbSession.query(Locus).filter(Locus.id == gene.locusID).first()
-			cdsdbid = marpodbSession.query(CDS.dbid).filter(CDS.id == gene.cdsID).first()[0]
+			cds = marpodbSession.query(CDS).filter(CDS.id == gene.cdsID).first()
 	else:
+		# if Locus:
 		cds = marpodbSession.query(CDS).filter(CDS.id == Gene.cdsID).\
 					filter(Gene.locusID == locus.id).first()
-		cdsdbid = cds.dbid
+
+	if not cds:
+		abort(404)
+
+	print "Debug: ", cds.dbid
 
 	response = getGeneCoordinates(marpodbSession, locus.id)
 
-	annotation = getCDSDetails(marpodbSession, cdsdbid)
+	annotation = getCDSDetails(marpodbSession, cds.dbid)
 	
 	marpodbSession.close()
 
 	stared = False
 	if current_user.is_authenticated:
-		if StarGene.query.filter(StarGene.userid == current_user.id, StarGene.cdsdbid == cdsdbid).first():
+		if StarGene.query.filter(StarGene.userid == current_user.id, StarGene.cdsdbid == cds.dbid).first():
 			stared = True
 	else:
 		if not "stars" in session:
@@ -196,7 +209,7 @@ def details():
 	else:
 		titleEx = '<img src="static/img/star_na.png" onclick="starGene()" id="star_img"/>'
 
-	return render_template('details.html', cdsDBID = cdsdbid, geneCoordinates = response['genes'], seq = response['seq'],  title = "Details for {0}".format(cdsdbid), titleEx = titleEx, blastp=annotation['blastp'], stared = stared )
+	return render_template('details.html', cdsDBID = cds.dbid, geneCoordinates = response['genes'], seq = response['seq'],  title = "Details for {0}".format(cds.dbid), titleEx = titleEx, blastp=annotation['blastp'], stared = stared )
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
