@@ -12,6 +12,9 @@ from user import RegisterForm, LoginForm
 from system import getUserData, generateNewMap, getTopGenes, processQuery, getGeneCoordinates, getCDSDetails
 
 import os
+import sys
+
+dbName = sys.argv[1]
 
 app = Flask(__name__)
 app.secret_key = 'HJKDGSA&^D%HJKN.zczxcoasdk2194uru'
@@ -56,7 +59,7 @@ def user_data():
 
 	return dict(user_data = userData)
 
-marpodb = PartsDB('postgresql:///testdb', Base = Base)
+marpodb = PartsDB('postgresql:///' + dbName, Base = Base)
 
 @app.errorhandler(404)
 def error404(e):

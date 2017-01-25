@@ -145,7 +145,7 @@ def findDataIn(marpodbSession, level, table, queryColumns, equal, returnColumns)
 
 	targets = query.\
 				filter(tCls.id == cls.targetID).\
-				filter( or_( qC.like(equal) for qC in queryColumns ) ).all()
+				filter( or_( qC.ilike('%'+equal+'%') for qC in queryColumns ) ).all()
 	if targets:
 		return [  (levelID, levelDBID, cols) for levelID, levelDBID, cols in zip( [t[0] for t in targets], [t[1] for t in targets], [ {rc.name: x for rc, x in zip(returnColumns, t[2:]) } for t in targets ] )  ]
 	else:
