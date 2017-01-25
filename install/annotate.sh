@@ -26,6 +26,7 @@ hmmpress data/Pfam/Pfam-A.hmm
 hmmscan --cpu ${numThreads} --domtblout ${tempDir}/Pfam.domtblout --cut_ga data/Pfam/Pfam-A.hmm temp/sequences.fa
 
 # InterproScan
+mkdir ${tempDir}/interpro
 cat ${tempDir}/sequences.fa | sed 's/*//g' > ${tempDir}/sequences_clean.fa
 interproscan.sh -d ${tempDir}/interpro -f gff3 html -goterms -pa -i ${tempDir}/sequences_clean.fa
 

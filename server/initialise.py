@@ -8,10 +8,10 @@ from Bio.Seq import Seq
 from Bio.Alphabet import generic_dna
 from Bio.SeqFeature import SeqFeature
 
-genomeFileName = 'data/genome.fa'
-transcriptFileName = 'data/trans.fa'
-proteinFileName = 'data/pep.fa'
-mapFileName = 'data/map.gff3'
+genomeFileName = 'data/mapped/genome.fa'
+transcriptFileName = 'data/mapped/trans.fa'
+proteinFileName = 'data/mapped/pep.fa'
+mapFileName = 'data/mapped/map.gff3'
 
 
 marpodb = PartsDB('postgresql:///'+sys.argv[1], clean = True, Base = Base)

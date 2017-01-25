@@ -179,7 +179,7 @@ cd interproscan-5.20-59.0-64-bit
 #wget ftp://ftp.ebi.ac.uk/pub/software/unix/iprscan/5/5.16-55.0/interproscan-5.16-55.0-64-bit.tar.gz.md5
 #md5sum -c interproscan-5.16-55.0-64-bit.tar.gz.md5
 #tar xvfzp interproscan-5.16-55.0-64-bit.tar.gz
-#cd interproscan-5.16-55.0-64
+#cd interproscan-5.16-55.0
 
 ## Decide if you want to include Panther models, which requires an additional 15Gb file
 
