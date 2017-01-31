@@ -6,11 +6,13 @@
 	<!-- CLIPBOARD -->
 	<script src="/static/javascript/clipboard.min.js" type="text/javascript"></script>
 	<script src="/static/javascript/clipboard_tooltip.js"></script>
+	<!-- RECODER -->
+	<script src="/static/javascript/recode.js"></script>
 {% endblock %}
 {% block content %}
 
 	<div class="gene-details">
-		<h2>Selected sequence is a {{seq_type}} from <a href="/details?name={{cdsName}}">{{cdsName}}</a></h2>
+		<h2>Selected sequence is a {{seqType}} from <a href="/details?dbid={{dbid}}">{{dbid}}</a></h2>
 		<h3 style="text-align: justify">This tool will detect BsaI and SapI restriction sites and will recode them to allow this part to be used for BsaI type IIS cloning. Only promoters and coding sequences can be recoded into the <a href="http://onlinelibrary.wiley.com/doi/10.1111/nph.13532/abstract">Common Syntax standard</a>.</h3><br />
 		<p>{{BsaI|length}} BsaI and {{SapI|length}} SapI restriction site(s) were found.</p>
 		
@@ -20,16 +22,25 @@
 			<div id="seqView" class="seqView"></div>
 			<div id="clipboard" class="clipboard">
 			
-				<button id="download_gb_btn" class="button right" onclick="export_GB('{{cdsName}}','{{seq_type}}')">Genbank file</button>
-				<button id="recode_btn" class="button right" onclick="recode('{{seq}}','{{newseq}}', '{{seq_type}}')">Recode</button>
+				<button id="download_gb_btn" class="button right" onclick="export_GB('{{dbid}}','{{seqType}}')">Genbank file</button>
+				<button id="recode_btn" class="button right" onclick="recode('{{seq}}','{{newseq}}', '{{seqType}}')">Recode</button>
 				
-				{% if seq_type == "cds" %}
+				{% if seqType == "cds" %}
 					<select id="selector" class="right" name="Fusion" type="text" onchange="change_overhangs(value);">
 						<option value="N">N-terminal fusion</option>
 						<option value="None" selected>No fusion</option>
 						<option value="C">C-terminal fusion</option>
 					</select>
+				{% elif seqType =="promoter" %}
+					<select id="selector" class="right" name="Promoter Type" type="text" onchange="go_recode('{{dbid}}', value)">
+						<option value="promoter" selected = "selected">Bare Promoter</option>
+						<option value="promoter5">Promoter + 5'UTR</option>
+					</select>
 				{% else %}
+					<select id="selector" class="right" name="Promoter Type" type="text" onchange="go_recode('{{dbid}}', value)">
+						<option value="promoter">Bare Promoter</option>
+						<option value="promoter5" selected = "selected" >Promoter + 5'UTR</option>
+					</select>
 				{% endif %}
 				
 			</div>	

@@ -9,10 +9,16 @@ from flask_user import UserMixin, SQLAlchemyAdapter, UserManager, LoginManager
 from flask_login import login_user, login_required, logout_user, current_user, user_logged_in
 
 from user import RegisterForm, LoginForm
-from system import getUserData, generateNewMap, getTopGenes, processQuery, getGeneCoordinates, getCDSDetails
+from system import getUserData, generateNewMap, getTopGenes, processQuery, getGeneCoordinates, getCDSDetails, parseBlastResult, recfind
+
+from Bio.Seq import Seq
+from Bio.SeqRecord import SeqRecord
+from Bio.SeqFeature import SeqFeature, FeatureLocation, CompoundLocation
+from Bio.Alphabet import IUPAC
 
 import os
 import sys
+import subprocess
 
 dbName = sys.argv[1]
 
@@ -67,7 +73,7 @@ def error404(e):
 
 @app.errorhandler(500)
 def error404(e):
-    return render_template('error.html', title="Error 404", message="Sorry, its seems as if our server encountered an internal error. Please let us know if this happens again"), 404
+    return render_template('error.html', title="Error 500", message="Sorry, its seems as if our server encountered an internal error. Please let us know if this happens again"), 404
 
 @app.route('/')
 def index():
@@ -128,35 +134,12 @@ def result():
 		flash("No entries found")
 		return redirect(url_for('index'))
 
-@app.route('/export/cds')
-def exportCds():
-	dbid = request.args.get('dbid','')
-
-	if not dbid:
-		return ('', 204)
-
-	marpodbSession = marpodb.Session()
-	exporter = GenBankExporter(marpodb)
-
-	gene = marpodbSession.query(Gene).filter(Gene.cdsID == CDS.id).filter(CDS.dbid == dbid).first()
-		
-	print "LOG"
-
-	if not gene:
-		return ('', 204)
-
-	print "ID:", gene.dbid
-
-	record = exporter.export(gene)
-
-	response = make_response(record.format("gb"))
-	response.headers["Content-Type"] = "application/octet-stream"
-	response.headers["Content-Disposition"] = "attachement; filename={0}".format(dbid+'.gb')
-	return response
-
 @app.route('/details')
 def details():
 	dbid = request.args.get('dbid','')
+
+	if not dbid:
+		abort(404)
 
 	marpodbSession = marpodb.Session()
 
@@ -174,7 +157,7 @@ def details():
 		if not gene:
 			cds = marpodbSession.query(CDS).filter(CDS.dbid == dbid).first()
 			if cds:
-			# 	gene  = marpodbSession.query(Gene).filter(Gene.cdsID == cds.id).first()
+				gene  = marpodbSession.query(Gene).filter(Gene.cdsID == cds.id).first()
 				locus = marpodbSession.query(Locus).filter(Locus.id == Gene.locusID).\
 						filter(Gene.cdsID == cds.id).first()
 		# if Gene
@@ -183,6 +166,7 @@ def details():
 			cds = marpodbSession.query(CDS).filter(CDS.id == gene.cdsID).first()
 	else:
 		# if Locus:
+		gene = marpodbSession.query(Gene).filter(Gene.locusID == locus.id).first()
 		cds = marpodbSession.query(CDS).filter(CDS.id == Gene.cdsID).\
 					filter(Gene.locusID == locus.id).first()
 
@@ -212,7 +196,198 @@ def details():
 	else:
 		titleEx = '<img src="static/img/star_na.png" onclick="starGene()" id="star_img"/>'
 
-	return render_template('details.html', cdsDBID = cds.dbid, geneCoordinates = response['genes'], seq = response['seq'],  title = "Details for {0}".format(cds.dbid), titleEx = titleEx, blastp=annotation['blastp'], stared = stared )
+	return render_template('details.html', geneDBID = gene.dbid, cdsDBID = cds.dbid, geneCoordinates = response['genes'], seq = response['seq'],  title = "Details for {0}".format(gene.dbid), titleEx = titleEx, blastp=annotation['blastp'], stared = stared )
+
+@app.route('/blast', methods=['GET', 'POST'])
+def blast():
+	
+	if request.method == 'POST':
+		query = request.form["query"]
+		evalue = request.form["evalue"]
+		program = request.form["program"]
+		matrix = request.form["matrix"]
+		perc = request.form["perc"]
+		
+		if query !="":
+			return redirect(url_for('blast_result', query=query, evalue=evalue, program=program,matrix=matrix, perc=perc))
+		else:
+			flash('Empty query')
+	
+	return render_template('blast.html', title='BLAST to MarpoDB')
+
+@app.route('/blast_result')
+def blast_result():
+	query = request.args.get('query','')
+	evalue = request.args.get('evalue','')
+	program = request.args.get('program','')
+	matrix = request.args.get('matrix','')
+	perc = request.args.get('perc','')
+
+	if not (query and evalue and program and matrix and perc):
+		abort(500)
+
+	# Validate fasta PENDING!
+	
+	if (program.startswith('blastn') or program == 'tblastx'):
+		route = 'blast/MarpoDB_Genes'
+		idType = 'Gene'
+	else:
+		route = 'blast/MarpoDB_Proteins'
+		idType = 'CDS'
+
+	if (program.startswith('blastn') ):
+		cmd = subprocess.Popen( program.split() + ['-db', route, '-evalue', evalue,'-num_alignments', '10', '-num_threads', '1', '-outfmt', '15', '-perc_identity' , perc], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+	else:	
+		cmd = subprocess.Popen( program.split() + ['-db', route, '-evalue', evalue,'-num_alignments', '10', '-num_threads', '1', '-outfmt', '15', '-matrix', matrix], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+	
+	out,error = cmd.communicate(query)
+
+	# print "CMD output: ", out
+	# print "CMD error:", error
+	
+	session = marpodb.Session()
+	results = parseBlastResult(out, session)
+	session.close()
+
+	return render_template('blast_result.html', title='BLAST result', result = results, idType = idType )
+
+@app.route('/export/cds')
+def exportCds():
+	dbid = request.args.get('dbid','')
+
+	if not dbid:
+		return ('', 204)
+
+	marpodbSession = marpodb.Session()
+	exporter = GenBankExporter(marpodb)
+
+	gene = marpodbSession.query(Gene).filter(Gene.cdsID == CDS.id).filter(CDS.dbid == dbid).first()
+		
+	print "LOG"
+
+	if not gene:
+		return ('', 204)
+
+	print "ID:", gene.dbid
+
+	record = exporter.export(gene)
+
+	response = make_response(record.format("gb"))
+	response.headers["Content-Type"] = "application/octet-stream"
+	response.headers["Content-Disposition"] = "attachement; filename={0}".format(dbid+'.gb')
+	return response
+
+@app.route('/recode')
+def recode():
+	dbid 	= request.args.get('dbid', '')
+	seqType = request.args.get('seqType', '')
+
+	if not dbid:
+		abort(404)
+
+	session = marpodb.Session()
+	gene = session.query(Gene).filter(Gene.dbid == dbid).first()
+
+	if not gene:
+		abort(404)
+
+	print seqType
+
+	if seqType == 'cds':
+		seq = gene.cds.seq
+
+	elif seqType == 'promoter':
+		seq = gene.promoter.seq
+
+	elif seqType == "promoter5":
+		seq = gene.promoter.seq
+		if gene.utr5:
+			seq += gene.utr5.seq
+	else:
+		abort(404)
+
+	print "Seq: ", gene.promoter.seq
+
+	seq = Seq(seq)
+
+	BsaI_F = "GGTCTC"
+	BsaI_F_replace = ["GGaCTC","GGTCcC","GGTaTC"]
+	BsaI_R = "GAGACC"
+	BsaI_R_replace = ["GAaACC","GAGAtC" ,"GAGgCC"]
+	SapI_F = "GCTCTTC"
+	SapI_F_replace = ["GCcCTTC","GCTCgTC","GCTgTTC"]
+	SapI_R = "GAAGAGC"
+	SapI_R_replace = ["GAgGAGC","GAAGgGC","GAAaAGC"]
+	BsaI_sitesF = []
+	BsaI_sitesR = []
+	SapI_sitesF = []
+	SapI_sitesR = []
+	
+	BsaI_sitesF = BsaI_sitesF + recfind(BsaI_F, seq)
+	BsaI_sitesR = BsaI_sitesR + recfind(BsaI_R, seq)
+	SapI_sitesF = SapI_sitesF + recfind(SapI_F, seq)
+	SapI_sitesR = SapI_sitesR + recfind(SapI_R, seq)
+
+	orgseq = seq
+	for site in BsaI_sitesF:
+		for i in range(3):
+			if (site % 3 == i):
+				seq = seq[:site] + BsaI_F_replace[i] + seq[site + 6:]
+	
+	for site in BsaI_sitesR:
+		for i in range(3):
+			if (site % 3 == i):
+				seq = seq[:site] + BsaI_R_replace[i] + seq[site + 6:]
+	
+	for site in SapI_sitesF:
+		for i in range(3):
+			if (site % 3 == i):
+				seq = seq[:site] + SapI_F_replace[i] + seq[site + 7:]
+				
+	for site in SapI_sitesR:
+		for i in range(3):
+			if (site % 3 == i):
+				seq = seq[:site] + SapI_R_replace[i] + seq[site + 7:]
+					
+	BsaI_sites = BsaI_sitesF+BsaI_sitesR
+	SapI_sites = SapI_sitesF+SapI_sitesR
+
+	return render_template('recode.html', dbid = dbid, seq = orgseq, seqType = seqType, BsaI = BsaI_sites, SapI=SapI_sites, newseq=seq, title='Recode sequence')
+
+@app.route('/export/recode')
+def exportrecode():
+	name = request.args.get('geneName','')
+	seq = request.args.get('seq','')
+	seq_type = request.args.get('type','')
+	
+	if not name:
+		return ('', 204)
+
+	record = SeqRecord( Seq( seq, IUPAC.unambiguous_dna ), name = name, description = "Generated by MarpoDB", id="M. polymorpha")
+	
+	strand = 1;
+	location = FeatureLocation(11, len(seq)-11, strand = strand);
+	record.features.append( SeqFeature( location = location, strand = strand, type=seq_type, id="Part" ) )
+	
+	location = FeatureLocation(0, 6, strand = strand);
+	record.features.append( SeqFeature( location = location, strand = strand, type="BsaI_F", id="BsaI") )
+	
+	location = FeatureLocation(7, 11, strand = strand);
+	record.features.append( SeqFeature( location = location, strand = strand, type="misc_recomb", id="Front" ) )
+
+	strand = -1;
+	location = FeatureLocation(len(seq)-6, len(seq), strand = strand);
+	record.features.append( SeqFeature( location = location, strand = strand, type="BsaI_R", id="BsaI" ) )
+	
+
+	location = FeatureLocation(len(seq)-11, len(seq)-7, strand = strand);
+	record.features.append( SeqFeature( location = location, strand = strand, type="misc_recomb", id="Front" ) )
+
+
+	response = make_response(record.format("gb"))
+	response.headers["Content-Type"] = "application/octet-stream"
+	response.headers["Content-Disposition"] = "attachement; filename={0}".format(name+'.gb')
+	return response
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -267,7 +442,7 @@ def starGene():
 			if not "stars" in session:
 					session["stars"] = ""
 			if cdsdbid in session["stars"]:
-				session["stars"].replace(":{0}:".format(cdsdbid), "")
+				session["stars"] = session["stars"].replace(":{0}:".format(cdsdbid), "")
 			else:
 				session["stars"] += ":{0}:".format(cdsdbid)
 		return "OK", 200, {'Content-Type': 'text/plain'}

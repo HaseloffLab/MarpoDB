@@ -1,8 +1,15 @@
-var typeColors = {	'promoter'   : 'rgb(100, 100, 0)',
-						'terminator' : 'rgb(100, 0, 0)',
-						'utr5'		 : 'rgb(0, 100, 150)',
-						'cds'		 : 'rgb(0, 100, 0)',
-						'utr3'		 : 'rgb(0, 100, 150)'
+var typeColors = {	'promoter'   : 'rgb(50, 50, 0)',
+						'terminator' : 'rgb(50, 0, 0)',
+						'utr5'		 : 'rgb(0, 50, 75)',
+						'cds'		 : 'rgb(0, 50, 0)',
+						'utr3'		 : 'rgb(0, 50, 75)'
+};
+
+var typeColorsSelected = {	'promoter'   : 'rgb(255, 255, 0)',
+							'terminator' : 'rgb(255, 0, 0)',
+							'utr5'		 : 'rgb(0, 200, 250)',
+							'cds'		 : 'rgb(0, 200, 0)',
+							'utr3'		 : 'rgb(0, 200, 250)'
 };
 
 var features = []
@@ -18,10 +25,10 @@ function seqviewer(sequence, element) {
 		});
 			  
 		var legend = [
-			{name: "Promoter", color: typeColors["promoter"], underscore: false},
-			{name: "CDS", color: typeColors["cds"], underscore: false},
-			{name: "UTRs", color: typeColors["utr5"], underscore: false},
-			{name: "Terminator",color: typeColors["terminator"],underscore: false}
+			{name: "Promoter", color: typeColorsSelected["promoter"], underscore: false},
+			{name: "CDS", color: typeColorsSelected["cds"], underscore: false},
+			{name: "UTRs", color: typeColorsSelected["utr5"], underscore: false},
+			{name: "Terminator",color: typeColorsSelected["terminator"],underscore: false}
 		];
 
 		seqViewer.addLegend(legend);		
@@ -54,7 +61,6 @@ function draw(canvasName){
 
 		console.log(genedbid);
 		geneTrack = geneView.addTrack().addLane();
-
 		console.log('Strand: ', genes[genedbid]['strand'])
 
 		if (genes[genedbid]['strand'] == 1){
@@ -63,6 +69,8 @@ function draw(canvasName){
 		else{
 			strand = '-'
 		}
+
+		geneTrack.dbid = genedbid;
 
 		for( dbid in genes[genedbid]["parts"] ){
 
@@ -106,17 +114,40 @@ function draw(canvasName){
 
 					if (type == 'cds'){
 						onClick = function(feature){
+							selectedDBID = feature.parent.dbid;
+							document.getElementById("recode_btn").disabled = false;
 							if (feature.parent.dbid == cdsDBID){
-								highlight_seq(feature.parent, typeColors[feature.parent.partType]);
+								highlight_seq(feature.parent, typeColorsSelected[feature.parent.partType]);
+								seqType = 'cds';
 							}
 							else{
 								window.location = '/details?dbid=' + feature.parent.dbid;
 							}
 						};
 					}
+					else if (type == 'promoter'){
+						onClick = function(feature){
+							selectedDBID = feature.parent.dbid;
+							document.getElementById("recode_btn").disabled = false;
+							if(feature.lane.dbid == geneDBID){
+								highlight_seq(feature.parent, typeColorsSelected[feature.parent.partType]);
+								seqType = 'promoter5';
+							}
+							else{
+								window.location = '/details?dbid=' + feature.lane.dbid;
+							}
+						};
+					}
 					else{
 						onClick = function(feature){
-							highlight_seq(feature.parent, typeColors[feature.parent.partType]);
+							selectedDBID = feature.parent.dbid;
+							document.getElementById("recode_btn").disabled = true;
+							if(feature.lane.dbid == geneDBID){
+								highlight_seq(feature.parent, typeColorsSelected[feature.parent.partType]);
+							}
+							else{
+								window.location = '/details?dbid=' + feature.lane.dbid;
+							}
 						};
 					}
 
@@ -129,7 +160,6 @@ function draw(canvasName){
 						for(i=0; i<features.length; i++){
 							if (features[i].uid == feature.parent.uid || features[i].dbid == cdsDBID){
 								features[i].borderWidth = 5;
-
 							}
 							else{
 								features[i].borderWidth = 0;
@@ -141,10 +171,8 @@ function draw(canvasName){
 					};
 					
 					newFeature.setColorGradient(typeColors[type], typeColors[type]);
-					
+					newFeature.ftype = type;
 					features.push(newFeature);
-
-					
 				}
 			
 		// n+=1;
@@ -163,11 +191,19 @@ function draw(canvasName){
 function draworig(){
 	for(i=0; i<features.length; i++){
 
-		if (features[i].dbid == cdsDBID){
-			features[i].borderWidth = 5;
+		if (features[i].lane.dbid == geneDBID){
+			features[i].setColorGradient( typeColorsSelected[features[i].ftype], typeColorsSelected[features[i].ftype]  );
+
+			if (features[i].dbid == selectedDBID){
+				features[i].borderWidth = 5;
+			}
+			else{
+				features[i].borderWidth = 0;
+			}
+
 		}
 		else{
-			features[i].borderWidth = 0;
+			features[i].setColorGradient( typeColors[features[i].ftype], typeColors[features[i].ftype]  );
 		}
 	}
 	geneView.redraw();
@@ -196,7 +232,7 @@ function highlight_seq(element, color){
 			elEnd = end-element.subFeatures[i].position;
 		}
 
-		if (color == "yellow"){
+		if (color == 'rgb(255, 255, 0)'){
 			sequenceCoverage.push({
 			start:		elStart,
 			end:		elEnd,

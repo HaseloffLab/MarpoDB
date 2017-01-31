@@ -2,4 +2,5 @@
 /server/data/*
 /server/templates/interpro/*
 **/*.pyc
+/server/blast/*
 **/test.py

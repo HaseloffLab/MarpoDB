@@ -1,8 +1,7 @@
 // Functions for RECODE page
 
-function go_recode(cdsName){
-	link = "/recode?"+"seq="+subSeq+"&strand="+strand+"&type="+type+"&cdsName="+cdsName
-	location.href=link;
+function go_recode(dbid, seqType){
+	location.href = "/recode?dbid=" + dbid + "&seqType=" + seqType
 }
 
 function recoder(sequence, element, name) {
@@ -85,6 +84,11 @@ function recode(seq, newseq, type){
 		back = "TACTCGAGACC"
 		add = 11;
 	}
+	else if(type == 'promoter5'){
+		front = "GGTCTCAGGAG"
+		back = "AATGCGAGACC"
+		add = 11;
+	}
 	else{
 		alert("Recode is for promoters and cdss")
 	}
@@ -130,7 +134,7 @@ function recode(seq, newseq, type){
 		delete changed;
    	}	  
   }
-function export_GB(cdsName, seqtype){
-	link = "/export/recode?"+"seq="+recodedseq+"&type="+seqtype+"&cdsName="+cdsName
+function export_GB(geneName, seqtype){
+	link = "/export/recode?"+"seq="+recodedseq+"&type="+seqtype+"&geneName="+geneName
 	location.href=link;
 }

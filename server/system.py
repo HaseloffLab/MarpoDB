@@ -17,23 +17,37 @@ from sqlalchemy import or_
 def splitString(s,n):
 	return [s[ start:start+n ] for start in range(0, len(s), n) ]
 
-def parseBlastResult(data, lineLenght = 60):
+def recfind(pattern, string, where_should_I_start=0):
+    # Save the result in a variable to avoid doing the same thing twice
+    pos = string.find(pattern, where_should_I_start)
+    if pos == -1:
+        # Not found!
+        return []
+    # No need for an else statement
+    return [pos] + recfind(pattern, string, pos + len(pattern))
+
+def parseBlastResult(data, session, lineLenght = 60):
 	print "BLAST:"
-	print data
+	# print data
 	blastResult = json.loads(data)
 	rows = []
-	for hit in blastResult["BlastOutput2"]["report"]["results"]["search"]["hits"]:
+
+	for hit in blastResult["BlastOutput2"][0]["report"]["results"]["search"]["hits"]:
 		row = {}
 		title = hit["description"][0]["title"]
-		row["cdsName"] = '.'.join( title.split()[0].split('_c0_'))
-	
+		row["dbid"] = title.split()[0]
+
+		if 'cds' in row["dbid"]:
+			row['locusdbid'] = session.query(Locus.dbid).filter(CDS.dbid == row["dbid"]).filter( Gene.cdsID == CDS.id ).filter(Locus.id == Gene.locusID).first()[0]
+		elif 'gene' in row["dbid"]:
+			row['locusdbid'] = session.query(Locus.dbid).filter(Gene.dbid == row['dbid']).filter(Gene.locusID == Locus.id).first()[0]
 		row.update(hit["hsps"][0])
 
 		print "identity: ", row["identity"]
 		print "align_len: ", row["align_len"]
 
-		row["identity"] = "{0:.2f}".format(float(row["identity"]) / blastResult["BlastOutput2"]["report"]["results"]["search"]["query_len"])
-		row["coverage"] = "{0:.2f}".format( float(row["align_len"]-row["gaps"]) / blastResult["BlastOutput2"]["report"]["results"]["search"]["query_len"])
+		row["identity"] = "{0:.2f}".format(float(row["identity"]) / blastResult["BlastOutput2"][0]["report"]["results"]["search"]["query_len"])
+		row["coverage"] = "{0:.2f}".format( float(row["align_len"]-row["gaps"]) / blastResult["BlastOutput2"][0]["report"]["results"]["search"]["query_len"])
 
 		row["qseq"] = splitString(row["qseq"], lineLenght )
 		row["hseq"] = splitString(row["hseq"], lineLenght )

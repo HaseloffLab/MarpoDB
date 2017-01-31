@@ -129,6 +129,14 @@ th, td {
 	margin-left: 10px;
 }
 
+.button:disabled{
+	color: #AAA;
+}
+.button:hover:disabled{
+	color: #AAA;
+	background-color: #BBB;
+}
+
 .button:hover{
 	color : white;
 	background-color: #777;
@@ -565,6 +573,10 @@ th, td {
 
 .registration-form{	
 	width: 245px;
+}
+
+.registration-error li{
+	color: red;
 }
 
 .registration-form label{
