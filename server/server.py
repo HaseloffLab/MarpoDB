@@ -20,8 +20,6 @@ import os
 import sys
 import subprocess
 
-dbName = sys.argv[1]
-
 app = Flask(__name__)
 app.secret_key = 'HJKDGSA&^D%HJKN.zczxcoasdk2194uru'
 app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql:///userdb"
@@ -64,8 +62,6 @@ def user_data():
 	print "userData:", userData
 
 	return dict(user_data = userData)
-
-marpodb = PartsDB('postgresql:///' + dbName, Base = Base)
 
 @app.errorhandler(404)
 def error404(e):
@@ -481,5 +477,6 @@ def help():
 	return render_template("help.html", title='Help')
 
 if __name__ == '__main__':
+	marpodb = PartsDB('postgresql:///' + sys.argv[1], Base = Base)
 	app.run(debug=True,host='0.0.0.0', port = 8081)
 
