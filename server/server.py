@@ -249,7 +249,7 @@ def blast_result():
 
 	return render_template('blast_result.html', title='BLAST result', result = results, idType = idType )
 
-@app.route('/export/cds')
+@app.route('/export/gene')
 def exportCds():
 	dbid = request.args.get('dbid','')
 
