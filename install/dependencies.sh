@@ -30,6 +30,19 @@ echo ". ~/.pypaths" >> ~/.bashrc
 echo ". ~/.ldpaths" >> ~/.bashrc
 
 ## SOFTWARE
+
+## Python libraries and virtualenv
+easy_install --user pip
+export PATH=$PATH:~/.local/bin
+echo "export PATH=$PATH:~/.local/bin" > ~/.paths
+pip install virtualenv --user
+virtualenv ~/ENV
+source ~/ENV/bin/activate
+echo "source ~/ENV/bin/activate" >> ~/.bashrc
+# python libraries to ~/ENV virtualenvironment
+cd $BASE
+pip install -r requirements.txt
+
 ## TransDecoder
 cd $SRC
 wget https://github.com/TransDecoder/TransDecoder/archive/v2.1.0.tar.gz --no-check-certificate
@@ -83,18 +96,6 @@ wget ftp://ftp.ebi.ac.uk/pub/databases/Pfam/releases/Pfam30.0/Pfam-A.hmm.gz
 gunzip -dv Pfam-A.hmm.gz
 mkdir Pfam
 mv Pfam-A.hmm Pfam/
-
-# pip
-easy_install --user pip
-export PATH=$PATH:~/.local/bin
-echo "export PATH=$PATH:~/.local/bin" > ~/.paths
-pip install virtualenv --user
-virtualenv ~/ENV
-source ~/ENV/bin/activate
-echo "source ~/ENV/bin/activate" >> ~/.bashrc
-# python libraries to ~/ENV virtualenvironment
-cd $BASE
-pip install -r requirements.txt
 
 ## Problematic ones...
 
@@ -198,5 +199,5 @@ echo "Now let's check if InterproScan works"
 INTERPRO=$(pwd)
 export PATH=$PATH:$INTERPRO
 echo "export PATH=$PATH:$INTERPRO" > ~/.paths
-
+cd $BASE
 cd install
