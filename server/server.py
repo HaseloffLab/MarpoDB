@@ -250,7 +250,7 @@ def blast_result():
 	return render_template('blast_result.html', title='BLAST result', result = results, idType = idType )
 
 @app.route('/export/gene')
-def exportCds():
+def exportGene():
 	dbid = request.args.get('dbid','')
 
 	if not dbid:
