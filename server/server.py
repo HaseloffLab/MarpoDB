@@ -259,7 +259,7 @@ def exportCds():
 	marpodbSession = marpodb.Session()
 	exporter = GenBankExporter(marpodb)
 
-	gene = marpodbSession.query(Gene).filter(Gene.cdsID == CDS.id).filter(CDS.dbid == dbid).first()
+	gene = marpodbSession.query(Gene).filter(Gene.dbid == dbid).first()
 		
 	print "LOG"
 
