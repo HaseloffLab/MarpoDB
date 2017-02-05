@@ -20,6 +20,8 @@ import os
 import sys
 import subprocess
 
+marpodb = PartsDB('postgresql:///' + os.environ["MARPODB_DB_NAME"], Base = Base)
+
 app = Flask(__name__)
 app.secret_key = 'HJKDGSA&^D%HJKN.zczxcoasdk2194uru'
 app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql:///userdb"
@@ -454,7 +456,7 @@ def logout():
 
 @app.route('/map')
 def map():
-	if not os.path.isfile('static/img/map.png'):
+	if not os.path.isfile('server/static/img/map.png'):
 		generateNewMap(User)
 		print "Map not found"
 	return render_template('map.html', title='Community map')
