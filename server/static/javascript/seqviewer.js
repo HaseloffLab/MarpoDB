@@ -158,7 +158,7 @@ function draw(canvasName){
 
 
 						for(i=0; i<features.length; i++){
-							if (features[i].uid == feature.parent.uid || features[i].dbid == cdsDBID){
+							if (features[i].uid == feature.parent.uid || features[i].dbid == selectedDBID){
 								features[i].borderWidth = 5;
 							}
 							else{
