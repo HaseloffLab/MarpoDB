@@ -4,4 +4,5 @@
 **/*.pyc
 /server/blast/*
 **/test.py
+/server/static/img/map.png
 /server/marpodb2.wgsi
