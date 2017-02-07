@@ -20,6 +20,8 @@ import os
 import sys
 import subprocess
 
+marpodb = PartsDB('postgresql:///' + os.environ["MARPODB_DB_NAME"], Base = Base)
+
 app = Flask(__name__)
 app.secret_key = 'HJKDGSA&^D%HJKN.zczxcoasdk2194uru'
 app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql:///userdb"
@@ -247,8 +249,8 @@ def blast_result():
 
 	return render_template('blast_result.html', title='BLAST result', result = results, idType = idType )
 
-@app.route('/export/cds')
-def exportCds():
+@app.route('/export/gene')
+def exportGene():
 	dbid = request.args.get('dbid','')
 
 	if not dbid:
@@ -257,7 +259,7 @@ def exportCds():
 	marpodbSession = marpodb.Session()
 	exporter = GenBankExporter(marpodb)
 
-	gene = marpodbSession.query(Gene).filter(Gene.cdsID == CDS.id).filter(CDS.dbid == dbid).first()
+	gene = marpodbSession.query(Gene).filter(Gene.dbid == dbid).first()
 		
 	print "LOG"
 
@@ -454,7 +456,7 @@ def logout():
 
 @app.route('/map')
 def map():
-	if not os.path.isfile('static/img/map.png'):
+	if not os.path.isfile('server/static/img/map.png'):
 		generateNewMap(User)
 		print "Map not found"
 	return render_template('map.html', title='Community map')
