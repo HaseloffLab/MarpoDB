@@ -75,26 +75,26 @@ passedIDs = [ targets[target][0] for target in targets ]
 
 for qId in queries:
 	if qId in passedIDs:
-	coverage = queries[qId]['covered'] / float(queries[qId]['length'])
-	identity = queries[qId]['identified'] / float(queries[qId]['length'])
+		coverage = queries[qId]['covered'] / float(queries[qId]['length'])
+		identity = queries[qId]['identified'] / float(queries[qId]['length'])
 
-	print '###'
-	print '###', queries[qId]['target'], coverage, identity, queries[qId]['code']
-	queries[qId]['exons'].sort( key = lambda x: x[0][0] )
-	for exon in queries[qId]['exons']:
-		tabs = []
-		tabs.append(queries[qId]['scaff'])
-		tabs.append('Cam1')
-		tabs.append('cDNA_match')
-		tabs.append(str(exon[1][0]) )
-		tabs.append(str(exon[1][1]) )
-		tabs.append('.')
-		
-		if queries[qId]['qStrand'] == queries[qId]['tStrand']:
-			tabs.append('+')
-		else:
-			tabs.append('-')
+		print '###'
+		print '###', queries[qId]['target'], coverage, identity, queries[qId]['code']
+		queries[qId]['exons'].sort( key = lambda x: x[0][0] )
+		for exon in queries[qId]['exons']:
+			tabs = []
+			tabs.append(queries[qId]['scaff'])
+			tabs.append('Cam1')
+			tabs.append('cDNA_match')
+			tabs.append(str(exon[1][0]) )
+			tabs.append(str(exon[1][1]) )
+			tabs.append('.')
+			
+			if queries[qId]['qStrand'] == queries[qId]['tStrand']:
+				tabs.append('+')
+			else:
+				tabs.append('-')
 
-		tabs.append('.')
-		tabs.append("Target={0} {1} {2}".format(queries[qId]['target'], exon[0][0], exon[0][1]))
-		print '\t'.join(tabs)
+			tabs.append('.')
+			tabs.append("Target={0} {1} {2}".format(queries[qId]['target'], exon[0][0], exon[0][1]))
+			print '\t'.join(tabs)
