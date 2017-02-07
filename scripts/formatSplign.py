@@ -56,11 +56,28 @@ for line in open(sys.argv[1]):
 coverageTh = float(sys.argv[2])
 identityTh = float(sys.argv[3])
 
+targets = {}
+
 for qId in queries:
 	coverage = queries[qId]['covered'] / float(queries[qId]['length'])
 	identity = queries[qId]['identified'] / float(queries[qId]['length'])
+	target 	 = queries[qId]['target']
 
 	if (coverage > coverageTh) and (identity > identityTh) and (not 'D' in queries[qId]['code']) and (not 'I' in queries[qId]['code']):
+		if not target in targets:
+			targets[target] = (qId, coverage, identity)
+		elif coverage > targets[target][1]:
+			targets[target] = (qId, coverage, identity)
+		elif coverage == targets[target][1] and identity > targets[target][2]:
+			targets[target] = (qId, coverage, identity)
+
+passedIDs = [ targets[target][0] for target in targets ]
+
+for qId in queries:
+	if qId in passedIDs:
+		coverage = queries[qId]['covered'] / float(queries[qId]['length'])
+		identity = queries[qId]['identified'] / float(queries[qId]['length'])
+
 		print '###'
 		print '###', queries[qId]['target'], coverage, identity, queries[qId]['code']
 		queries[qId]['exons'].sort( key = lambda x: x[0][0] )
@@ -80,6 +97,4 @@ for qId in queries:
 
 			tabs.append('.')
 			tabs.append("Target={0} {1} {2}".format(queries[qId]['target'], exon[0][0], exon[0][1]))
-			print '\t'.join(tabs)	
-		
-	
+			print '\t'.join(tabs)
