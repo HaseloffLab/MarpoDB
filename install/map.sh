@@ -22,9 +22,9 @@ mkdir ${outputDir}
 
 # Step 1: CDS prediction using Transdecoder
 
-TransDecoder.LongOrfs -t ${transcriptFile}
+#TransDecoder.LongOrfs -t ${transcriptFile}
 
-makeblastdb -in ${uniprotFasta} -dbtype 'prot'
+#makeblastdb -in ${uniprotFasta} -dbtype 'prot'
 
 blastp -query ${prefix}.transdecoder_dir/longest_orfs.pep -db ${uniprotFasta} -max_target_seqs 1 -outfmt 6 -evalue 1e-5 -num_threads ${numThreads} > ${outputDir}/${prefix}.TransdecoderBLAST.outfmt6
 
