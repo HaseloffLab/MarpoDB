@@ -1,4 +1,5 @@
 #!/bin/bash
+
 # Usage sh annotate.sh [numThreads] [Coverage_threshold] [Identity_threshold]
 #
 # We suggest to use a minimum coverage_threshold of 20 and a minimum identity_threshold of 35.
@@ -10,6 +11,12 @@ numThreads=$1
 cov=$2
 id=$3
 blastDB=data/Uniprot/uniprot.fasta
+
+if [ -z "$1" ]
+  then
+    echo "\n##\n#\n# ERROR - No arguments supplied\n#\n# Usage: sh annotate.sh [NUMBER_THREADS] [COVERAGE_THRESHOLD] [IDENTITY_THRESHOLD]\n#\n# We suggest using a minimum coverage_threshold of 20 and a minimum identity_threshold of 35.\n#\n##\n"
+	exit 1;
+fi
 
 mkdir ${tempDir}
 

@@ -2,6 +2,12 @@
 # Usage sh map.sh [numThreads]
 cd ..
 
+if [ -z "$1" ]
+  then
+    echo "\n##\n#\n# ERROR - No argument supplied\n#\n# Usage: sh map.sh [NUM_THREADS]\n#\n##\n"
+	exit 1;
+fi
+
 transcriptFile=data/transcripts.fa
 genomeFile=data/genome.fa
 numThreads=$1

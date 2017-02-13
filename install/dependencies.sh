@@ -1,7 +1,13 @@
 #!/bin/bash
 #
-# USAGE - sh dependencies.sh [DATABASE NAME]
+# USAGE - sh dependencies.sh [DATABASE_NAME]
 #
+
+if [ -z "$1" ]
+  then
+    echo "\n##\n#\n# ERROR - No arguments supplied\n#\n# USAGE - sh dependencies.sh [DATABASE_NAME]\n#\n##\n"
+	exit 1;
+fi
 
 # Ensuring we are in BASH.
 bash
