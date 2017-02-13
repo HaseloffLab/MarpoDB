@@ -1,5 +1,11 @@
 #!/bin/bash
 # Usage sh initialise.sh [Database_name]
+if [ -z "$1" ]
+  then
+    echo "\n##\n#\n# ERROR - No database name supplied\n#\n# Usage: sh initialise.sh [DATABASE_NAME]\n#\n##\n"
+	exit 1;
+fi
+
 cd ..
 
 DBname=$1
