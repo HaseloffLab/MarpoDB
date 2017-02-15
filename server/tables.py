@@ -25,6 +25,7 @@ class Terminator(Base,BaseMixIn,PartMixIn):
 class Gene(Base,BaseMixIn):
 	name 			= Column( String(100) )
 	alias			= Column( String(100) )
+	transcriptName  = Column( String(200) )
 	promoterID  	= Column( Integer, ForeignKey('promoter.id') )
 	utr5ID  		= Column( Integer, ForeignKey('utr5.id') )
 	cdsID  			= Column( Integer, ForeignKey('cds.id') )
