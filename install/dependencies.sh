@@ -14,38 +14,9 @@ bash
 cd ..
 $DATABASENAME=$1
 
-# Building directory structure. Go to the root of the MarpoDB directory. 
-mkdir src
-mkdir data
-
-# Setting up environmental variables. Remember to set them again if installing in more than one session and be in the root of the MarpoDB directory. 
-
-BASE=$(pwd)
-cd src
-SRC=$(pwd)
-cd $BASE
-cd data
-DATA=$(pwd)
-cd $BASE
-
-# Adding new custom paths into different files to avoid touching local .profile and duplicating paths. Only run once.
-echo "Adding new custom paths into different files to avoid touching local .profile and duplicating paths"
-echo "# Adding new custom paths" >> ~/.bashrc
-echo ". ~/.paths" >> ~/.bashrc
-echo ". ~/.pypaths" >> ~/.bashrc
-echo ". ~/.ldpaths" >> ~/.bashrc
-
 ## SOFTWARE
 
-## Python libraries and virtualenv
-easy_install --user pip
-export PATH=$PATH:~/.local/bin
-echo "export PATH=$PATH:~/.local/bin" > ~/.paths
-pip install virtualenv --user
-virtualenv ~/ENV
-source ~/ENV/bin/activate
-echo "source ~/ENV/bin/activate" >> ~/.bashrc
-# python libraries to ~/ENV virtualenvironment
+## Python libraries
 cd $BASE
 pip install -r requirements.txt
 
@@ -148,12 +119,14 @@ pip install .
 ### COMPLICATED ONES
 
 ## Splign and compart
-curl ftp://ftp.ncbi.nlm.nih.gov/genomes/TOOLS/splign/linux-i64/splign.tar.gz --user anonymous: -o splign.tar.gz
+#curl ftp://ftp.ncbi.nlm.nih.gov/genomes/TOOLS/splign/linux-i64/splign.tar.gz --user anonymous: -o splign.tar.gz
+wget https://ftp.ncbi.nlm.nih.gov/genomes/TOOLS/splign/linux-i64/splign.tar.gz --no-check-certificate
 mkdir ncbi_bins
 mv splign.tar.gz ncbi_bins
 cd ncbi_bins
 tar xfvzp splign.tar.gz
 BINS=$(pwd)
+export PATH=$PATH:$BINS
 echo "export PATH=$PATH:$BINS" > ~/.paths 
 
 ## If splign complains about not being able to find libpcre.so.0 do
