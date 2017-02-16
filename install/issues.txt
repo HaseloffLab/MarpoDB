@@ -1,3 +1,0 @@
-In server.py 
-Something about userdb database that did not happen before.
-Also requests testdb for connection
