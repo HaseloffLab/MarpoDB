@@ -28,17 +28,19 @@ mkdir ${outputDir}
 
 # Step 1: CDS prediction using Transdecoder
 
-#TransDecoder.LongOrfs -t ${transcriptFile}
+TransDecoder.LongOrfs -t ${transcriptFile}
 
 #makeblastdb -in ${uniprotFasta} -dbtype 'prot'
 
-blastp -query ${prefix}.transdecoder_dir/longest_orfs.pep -db ${uniprotFasta} -max_target_seqs 1 -outfmt 6 -evalue 1e-5 -num_threads ${numThreads} > ${outputDir}/${prefix}.TransdecoderBLAST.outfmt6
+#blastp -query ${prefix}.transdecoder_dir/longest_orfs.pep -db ${uniprotFasta} -max_target_seqs 1 -outfmt 6 -evalue 1e-5 -num_threads ${numThreads} > ${outputDir}/${prefix}.TransdecoderBLAST.outfmt6
 
-hmmpress ${pfamHMM}
+#hmmpress ${pfamHMM}
 
-hmmscan --cpu ${numThreads} --domtblout ${outputDir}/${prefix}.Pfam.domtblout --cut_ga ${pfamHMM} ${prefix}.transdecoder_dir/longest_orfs.pep
+#hmmscan --cpu ${numThreads} --domtblout ${outputDir}/${prefix}.Pfam.domtblout --cut_ga ${pfamHMM} ${prefix}.transdecoder_dir/longest_orfs.pep
 
-TransDecoder.Predict -t ${transcriptFile} --retain_pfam_hits ${outputDir}/${prefix}.Pfam.domtblout  --retain_blastp_hits ${outputDir}/${prefix}.TransdecoderBLAST.outfmt6
+#TransDecoder.Predict -t ${transcriptFile} --retain_pfam_hits ${outputDir}/${prefix}.Pfam.domtblout  --retain_blastp_hits ${outputDir}/${prefix}.TransdecoderBLAST.outfmt6
+
+TransDecoder.Predict -t ${transcriptFile}
 
 mv ${prefix}.transdecoder_dir ${outputDir}
 mv ${prefix}.transdecoder.* ${outputDir}
