@@ -104,7 +104,7 @@ cd $SRC
 wget http://initd.org/psycopg/tarballs/PSYCOPG-2-6/psycopg2-2.6.2.tar.gz
 tar xvfzp psycopg2-2.6.2.tar.gz 
 cd psycopg2-2.6.2
-python setup.py build_ext --pg-config $POSTGRESQL/bin/pg_config  --build-lib $POSTGRESQL/lib build && python setup.py install --user
+python setup.py build_ext --pg-config $POSTGRESQL/bin/pg_config  --build-lib $POSTGRESQL/lib build && python setup.py install
 cd build
 PYTHONP=$(pwd)
 export PYTHONPATH=${PYTHONPATH}:$PYTHONP

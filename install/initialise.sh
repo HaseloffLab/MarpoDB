@@ -13,9 +13,9 @@ echo "Loading sequences into database"
 python server/initialise.py ${DBname}
 
 echo "Getting sequences from database for annotation"
-python server/getsequences.py ${DBname} CDS
+python server/getsequences.py ${DBname} Prot
 
 mkdir temp
-mv CDSs.fa temp/sequences.fa
+mv data/Prot.fa temp/sequences.fa
 
 cd install

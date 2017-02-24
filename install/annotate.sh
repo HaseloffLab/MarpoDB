@@ -21,6 +21,8 @@ fi
 mkdir ${tempDir}
 
 # Blastp search
+makeblastdb -in ${blastDB} -dbtype 'prot'
+
 blastp -query ${tempDir}/sequences.fa -db data/Uniprot/uniprot.fasta -outfmt "6 qseqid sseqid qlen slen qstart qend sstart send qcovs pident evalue" -evalue 1e-6 -num_threads ${numThreads} > temp/blastOut.outfmt6
 
 python scripts/filterBlastByCl.py ${tempDir}/blastOut.outfmt6 ${cov} ${id} > ${tempDir}/blastOut.filtered.outfmt6
