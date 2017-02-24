@@ -479,6 +479,6 @@ def help():
 	return render_template("help.html", title='Help')
 
 if __name__ == '__main__':
-	marpodb = PartsDB('postgresql:///' + sys.argv[1], Base = Base)
+	marpodb = PartsDB('postgresql:///' + os.environ["MARPODB_DB_NAME"], Base = Base)
 	app.run(debug=True,host='0.0.0.0', port = 8081)
 
