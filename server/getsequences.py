@@ -52,6 +52,12 @@ elif exportFeature == 'Gene':
 		record = SeqRecord( seq = Seq(seq), id = gene.dbid, description='Extracted from '+sys.argv[1] )
 		records.append(record)
 
+elif exportFeature == 'Promoter':
+	for promoter in session.query(Promoter).all():
+		if len(promoter.seq) > 1000:
+			record = SeqRecord(seq = Seq(promoter.seq), id = promoter.dbid, description='Extracted from '+sys.argv[1] )
+			records.append(record)
+
 else:
 	print "Unknown exportFeature: '{0}'".format(exportFeature)
 	sys.exit() 
