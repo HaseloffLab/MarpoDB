@@ -424,8 +424,8 @@ def getBlastpHits(marpodbSession, cdsDBID):
 	if hits:
 		for hit in hits:
 			coordinateString = hit.coordinates
-			tabs = coordinateString.split(';')[:-1]
-			print tabs
+			# tabs = coordinateString.split(';')
+			tabs = [coordinateString]
 			coordinates = [  [int(tab.split(',')[0].split(':')[0]), int(tab.split(',')[0].split(':')[1]),\
 											int(tab.split(',')[1].split(':')[0]), int(tab.split(',')[1].split(':')[1]),\
 												float(tab.split(',')[2])] for tab in tabs ]

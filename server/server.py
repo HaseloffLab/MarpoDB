@@ -194,7 +194,8 @@ def details():
 	else:
 		titleEx = '<img src="static/img/star_na.png" onclick="starGene()" id="star_img"/>'
 
-	return render_template('details.html', geneDBID = gene.dbid, cdsDBID = cds.dbid, geneCoordinates = response['genes'], seq = response['seq'],  title = "Details for {0}".format(gene.dbid), titleEx = titleEx, blastp=annotation['blastp'], stared = stared )
+	alias = gene.alias
+	return render_template('details.html', alias = alias, geneDBID = gene.dbid, cdsDBID = cds.dbid, geneCoordinates = response['genes'], seq = response['seq'],  title = "Details for {0}".format(gene.dbid), titleEx = titleEx, blastp=annotation['blastp'], stared = stared )
 
 @app.route('/blast', methods=['GET', 'POST'])
 def blast():

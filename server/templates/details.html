@@ -46,6 +46,13 @@
 
 {% block content %}
 
+{% if alias%}
+	<h2 class = "subtitle">
+		<a href="https://phytozome.jgi.doe.gov/pz/portal.html#!results?search=0&crown=1&star=1&method=5040&searchText={{alias}}&offset=0" target="_blank">{{alias}}</a>
+	</h2>
+{%endif%}
+
+
 <div class="gene-details">
 	<div class = "geneStucture">
 		<div class = "geneView" >
