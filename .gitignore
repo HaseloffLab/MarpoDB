@@ -4,4 +4,4 @@
 **/*.pyc
 /server/blast/*
 **/test.py
-/server/marpodb2.wgsi
+marpodb2.wgsi

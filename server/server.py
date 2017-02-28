@@ -227,10 +227,10 @@ def blast_result():
 	# Validate fasta PENDING!
 	
 	if (program.startswith('blastn') or program == 'tblastx'):
-		route = 'blast/MarpoDB_Genes'
+		route = 'server/blast/MarpoDB_Genes'
 		idType = 'Gene'
 	else:
-		route = 'blast/MarpoDB_Proteins'
+		route = 'server/blast/MarpoDB_Proteins'
 		idType = 'CDS'
 
 	if (program.startswith('blastn') ):
