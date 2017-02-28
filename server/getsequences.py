@@ -20,19 +20,22 @@ exporter = GenBankExporter(marpodb)
 
 if exportFeature == 'Prot':
 
-	for gene in session.query(Gene).all():
-		feature = SeqFeature( location = exporter.coordinatesToLocation(gene.cds.coordinates) )
-		seq = feature.extract(Seq(gene.cds.seq, generic_dna)).translate()
+	for cds in session.query(CDS).all():
+		feature = SeqFeature( location = exporter.coordinatesToLocation(cds.coordinates) )
+		seq = feature.extract(Seq(cds.seq, generic_dna)).translate()
+		
 		if not (seq[0] == 'M' and seq.find('*') == len(seq)-1):
 			print gene.cds.dbid, seq
 		else:
-			record = SeqRecord( seq = seq, id = gene.cds.dbid, description='Extracted from '+sys.argv[1] )
+			record = SeqRecord( seq = seq, id = cds.dbid, description='Extracted from '+sys.argv[1] )
 			records.append(record)
 
 elif exportFeature == 'CDS':
 	for cds in session.query(CDS).all():
-		
-		record = SeqRecord( seq = cds.seq, id = cds.dbid, description='Extracted from '+sys.argv[1] )
+		feature = SeqFeature( location = exporter.coordinatesToLocation(cds.coordinates) )
+		seq = feature.extract(Seq(cds.seq, generic_dna))
+
+		record = SeqRecord( seq = seq, id = cds.dbid, description='Extracted from '+sys.argv[1] )
 		records.append(record)
 
 elif exportFeature == 'Gene':
@@ -48,6 +51,12 @@ elif exportFeature == 'Gene':
 			seq += gene.terminator.seq
 		record = SeqRecord( seq = Seq(seq), id = gene.dbid, description='Extracted from '+sys.argv[1] )
 		records.append(record)
+
+elif exportFeature == 'Promoter':
+	for promoter in session.query(Promoter).all():
+		if len(promoter.seq) > 1000:
+			record = SeqRecord(seq = Seq(promoter.seq), id = promoter.dbid, description='Extracted from '+sys.argv[1] )
+			records.append(record)
 
 else:
 	print "Unknown exportFeature: '{0}'".format(exportFeature)

@@ -194,7 +194,8 @@ def details():
 	else:
 		titleEx = '<img src="static/img/star_na.png" onclick="starGene()" id="star_img"/>'
 
-	return render_template('details.html', geneDBID = gene.dbid, cdsDBID = cds.dbid, geneCoordinates = response['genes'], seq = response['seq'],  title = "Details for {0}".format(gene.dbid), titleEx = titleEx, blastp=annotation['blastp'], stared = stared )
+	alias = gene.alias
+	return render_template('details.html', alias = alias, geneDBID = gene.dbid, cdsDBID = cds.dbid, geneCoordinates = response['genes'], seq = response['seq'],  title = "Details for {0}".format(gene.dbid), titleEx = titleEx, blastp=annotation['blastp'], stared = stared )
 
 @app.route('/blast', methods=['GET', 'POST'])
 def blast():
@@ -479,6 +480,6 @@ def help():
 	return render_template("help.html", title='Help')
 
 if __name__ == '__main__':
-	marpodb = PartsDB('postgresql:///' + sys.argv[1], Base = Base)
+	marpodb = PartsDB('postgresql:///' + os.environ["MARPODB_DB_NAME"], Base = Base)
 	app.run(debug=True,host='0.0.0.0', port = 8081)
 

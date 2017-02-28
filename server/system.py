@@ -49,6 +49,10 @@ def parseBlastResult(data, session, lineLenght = 60):
 		row["identity"] = "{0:.2f}".format(float(row["identity"]) / blastResult["BlastOutput2"][0]["report"]["results"]["search"]["query_len"])
 		row["coverage"] = "{0:.2f}".format( float(row["align_len"]-row["gaps"]) / blastResult["BlastOutput2"][0]["report"]["results"]["search"]["query_len"])
 
+		if blastResult["BlastOutput2"][0]["report"]["program"] == "blastx":
+			row["identity"] = "{0:.2f}".format( 3 * float(row["identity"]) )
+			row["coverage"] = "{0:.2f}".format( 3 * float(row["coverage"]) )
+
 		row["qseq"] = splitString(row["qseq"], lineLenght )
 		row["hseq"] = splitString(row["hseq"], lineLenght )
 		row["midline"] = [ s.replace(" ", "&nbsp") for s in splitString(row["midline"], lineLenght )]
@@ -420,8 +424,8 @@ def getBlastpHits(marpodbSession, cdsDBID):
 	if hits:
 		for hit in hits:
 			coordinateString = hit.coordinates
-			tabs = coordinateString.split(';')[:-1]
-			print tabs
+			# tabs = coordinateString.split(';')
+			tabs = [coordinateString]
 			coordinates = [  [int(tab.split(',')[0].split(':')[0]), int(tab.split(',')[0].split(':')[1]),\
 											int(tab.split(',')[1].split(':')[0]), int(tab.split(',')[1].split(':')[1]),\
 												float(tab.split(',')[2])] for tab in tabs ]

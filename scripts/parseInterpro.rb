@@ -5,7 +5,7 @@ begin
 	b = a.split('<div class="grid_19 omega main-content">')
 	c = b[1].split("</body>")
 	d = ' <div class="container_24"><div class="grid_24 clearfix" id="content"><div class="grid_19 omega main-content">'+c[0]
-	e = d.gsub('src="resources/' , 'src="../static/interpro/resources/')
-	f = d.gsub('pfam.sanger.ac.uk' , 'pfam.xfam.org')
+	e = d.gsub('resources/' , '../static/interpro/resources/')
+	f = e.gsub('pfam.sanger.ac.uk' , 'pfam.xfam.org')
 	puts f
 end
