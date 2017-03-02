@@ -39,10 +39,11 @@ mkdir ${tempDir}/interpro
 cat ${tempDir}/sequences.fa | sed 's/*//g' > ${tempDir}/sequences_clean.fa
 interproscan.sh -d ${tempDir}/interpro -f gff3 html -goterms -pa -i ${tempDir}/sequences_clean.fa
 
-cd interpro
+cd ${tempDir}/interpro
 tar xvfz sequences_clean.fa.html.tar.gz
+mkdir ../../server/templates/interpro
 ls *.html > list
-while read line; do ruby ../../scripts/parseInterpro.rb $line > "../../server/templates/.interpros/"$line; done < list
+while read line; do ruby ../../scripts/parseInterpro.rb $line > "../../server/templates/interpro/"$line; done < list
 
 mkdir data/filtered
 cp temp/Pfam.domtblout data/filtered/Pfam.domtblout
