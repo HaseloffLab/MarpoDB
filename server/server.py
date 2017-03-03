@@ -19,6 +19,7 @@ from Bio.Alphabet import IUPAC
 import os
 import sys
 import subprocess
+import md5
 
 marpodb = PartsDB('postgresql:///' + os.environ["MARPODB_DB_NAME"], Base = Base)
 
@@ -196,6 +197,30 @@ def details():
 
 	alias = gene.alias
 	return render_template('details.html', alias = alias, geneDBID = gene.dbid, cdsDBID = cds.dbid, geneCoordinates = response['genes'], seq = response['seq'],  title = "Details for {0}".format(gene.dbid), titleEx = titleEx, blastp=annotation['blastp'], stared = stared )
+
+# @app.route('/hmmer', methods=['GET', 'POST'])
+# def hmmer():
+# 	if request.method == 'POST':
+# 		smaFile = request.files['file']
+# 		if not smaFile.filename:
+# 			flash('No file selected')
+# 			return render_template('hmmer.html', title='Run HMMER search')
+# 		smaContent = smaFile.read()
+		
+# 		hexer = md5.new()
+# 		hexer.update(smaContent)
+# 		hmmFileName = '/temp/' + hexer.hexdigest()
+
+# 		cmd = subprocess.Popen( ['hmmbuild', '--informat', 'STOCKHOLM', hmmFileName, '-'], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+# 		cmd.communicate(smaContent)
+		
+# 		cmd = subprocess.Popen( ['hmmsearch', hmmFileName, '/blast/Prot.fa'], stdin=subprocess.PIPE, stdout=subprocess.PIPE )
+# 		out, err = cmd.communicate()
+
+# 		os.remove(hmmFileName)
+# 		return out
+
+# 	return render_template('hmmer.html', title='Run HMMER search')
 
 @app.route('/blast', methods=['GET', 'POST'])
 def blast():
