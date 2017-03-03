@@ -26,6 +26,25 @@ def recfind(pattern, string, where_should_I_start=0):
     # No need for an else statement
     return [pos] + recfind(pattern, string, pos + len(pattern))
 
+def parseHMMResult(tableFileName, session):
+	tableFile = open(tableFileName)
+
+	rows = []
+
+	for line in tableFile:
+		if not line.startswith('#'):
+			tabs = line.split()
+			row = {}
+			row['dbid'] = tabs[0]
+			row['eVal'] = tabs[4]
+			row['score'] = tabs[5]
+			row['bias'] = tabs[6]
+
+			rows.append(row)
+
+	return rows
+
+
 def parseBlastResult(data, session, lineLenght = 60):
 	print "BLAST:"
 	# print data
