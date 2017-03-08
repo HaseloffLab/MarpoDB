@@ -28,6 +28,9 @@ def recfind(pattern, string, where_should_I_start=0):
 
 def parseHMMResult(tableFileName, session):
 	tableFile = open(tableFileName)
+	
+	if not tableFile:
+		print 'NO FILE', tableFileName
 
 	rows = []
 

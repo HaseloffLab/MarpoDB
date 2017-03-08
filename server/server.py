@@ -209,11 +209,9 @@ def hmmer():
 		
 		hexer = md5.new()
 		hexer.update(smaContent)
-		hmmFileName = 'server/temp/' + hexer.hexdigest()
+		hmmFileName = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'temp/' + hexer.hexdigest() )
 
-		os.path.dirname(os.path.realpath(__file__))
-
-		cmd = subprocess.Popen( ['hmmbuild', '--informat', 'STOCKHOLM', hmmFileName, '-'], stdin=subprocess.PIPE, stdout=subprocess.PIPE, cwd = os.path.dirname(os.path.realpath(__file__)) )
+		cmd = subprocess.Popen( ['hmmbuild', '--informat', 'STOCKHOLM', hmmFileName, '-'], stdin=subprocess.PIPE, stdout=subprocess.PIPE )
 		out, err = cmd.communicate(smaContent)
 		
 		if err:
@@ -223,15 +221,13 @@ def hmmer():
 		print out, err
 
 		tableFileName = hmmFileName + '.tblout'
-
-		cmd = subprocess.Popen( ['hmmsearch', '--tblout', tableFileName, hmmFileName, 'data/Prot.fa'], stdin=subprocess.PIPE, stdout=subprocess.PIPE, cwd = os.path.dirname(os.path.realpath(__file__)) )
+		protDB = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'data/Prot.fa')
+		cmd = subprocess.Popen( ['hmmsearch', '--tblout', tableFileName, hmmFileName, protDB], stdin=subprocess.PIPE, stdout=subprocess.PIPE )
 		out, err = cmd.communicate()
 
-		try:
+	   	try:	
 			marpodbSession = marpodb.Session()
-
 			results = parseHMMResult(tableFileName, marpodbSession)
-
 			marpodbSession.close()
 
 			os.remove(hmmFileName)
