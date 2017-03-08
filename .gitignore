@@ -1,6 +1,7 @@
 **/.DS_Store
 /server/data/*
 /server/templates/interpro/*
+/server/temp/*
 **/*.pyc
 /server/blast/*
 **/test.py

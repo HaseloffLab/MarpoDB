@@ -209,7 +209,7 @@ def hmmer():
 		
 		hexer = md5.new()
 		hexer.update(smaContent)
-		hmmFileName = 'temp/' + hexer.hexdigest()
+		hmmFileName = 'server/temp/' + hexer.hexdigest()
 
 		os.path.dirname(os.path.realpath(__file__))
 
