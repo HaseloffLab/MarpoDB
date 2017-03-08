@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<form id="form" action="" class="center-form" method="POST" enctype="multipart/form-data">
+	<p id="description" class ="big-label">Please upload STOCKHOLM alignment file</p>
+	<div class="hmmer-form">
+		<input type=file name=file>
+		<input id="blast-button" class = "button hmmer-button" type=submit value=HMMER>
+	</div>
+
+</form>
+{% endblock %}
