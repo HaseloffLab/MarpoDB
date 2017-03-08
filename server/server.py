@@ -214,22 +214,37 @@ def hmmer():
 		os.path.dirname(os.path.realpath(__file__))
 
 		cmd = subprocess.Popen( ['hmmbuild', '--informat', 'STOCKHOLM', hmmFileName, '-'], stdin=subprocess.PIPE, stdout=subprocess.PIPE, cwd = os.path.dirname(os.path.realpath(__file__)) )
-		cmd.communicate(smaContent)
+		out, err = cmd.communicate(smaContent)
 		
+		if err:
+			flash('Error building and hmm file')
+			return render_template('hmmer.html', title='Run HMMER search')
+
+		print out, err
+
 		tableFileName = hmmFileName + '.tblout'
 
 		cmd = subprocess.Popen( ['hmmsearch', '--tblout', tableFileName, hmmFileName, 'data/Prot.fa'], stdin=subprocess.PIPE, stdout=subprocess.PIPE, cwd = os.path.dirname(os.path.realpath(__file__)) )
 		out, err = cmd.communicate()
 
-		marpodbSession = marpodb.Session()
+		try:
+			marpodbSession = marpodb.Session()
 
-		results = parseHMMResult(tableFileName, session)
+			results = parseHMMResult(tableFileName, marpodbSession)
 
-		os.remove(hmmFileName)
-		os.remove(tableFileName)
+			marpodbSession.close()
 
+			os.remove(hmmFileName)
+			os.remove(tableFileName)
+		except:
+			flash('Error running hmmsearch')
+			return render_template('hmmer.html', title='Run HMMER search')
 
-		return out
+		if not results:
+			flash('No hits found')
+			return render_template('hmmer.html', title='Run HMMER search')
+
+		return render_template('hmmer_results.html', title='HMMER result', result = results )
 
 	return render_template('hmmer.html', title='Run HMMER search')
 
@@ -275,7 +290,7 @@ def blast():
 
 			if not results:
 				flash('No hits found')
-
+				return render_template('blast.html', title='BLAST to MarpoDB')
 			return render_template('blast_result.html', title='BLAST result', result = results, idType = idType )	
 
 	return render_template('blast.html', title='BLAST to MarpoDB')

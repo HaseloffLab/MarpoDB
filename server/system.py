@@ -39,7 +39,7 @@ def parseHMMResult(tableFileName, session):
 			row['eVal'] = tabs[4]
 			row['score'] = tabs[5]
 			row['bias'] = tabs[6]
-
+			row['locusdbid'] = session.query(Locus.dbid).filter(CDS.dbid == row["dbid"]).filter( Gene.cdsID == CDS.id ).filter(Locus.id == Gene.locusID).first()[0]
 			rows.append(row)
 
 	return rows
