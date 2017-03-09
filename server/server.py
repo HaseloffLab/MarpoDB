@@ -210,7 +210,10 @@ def hmmer():
 		
 		hexer = md5.new()
 		hexer.update(smaContent)
-		hmmFileName = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'temp/' + hexer.hexdigest() )
+		
+		serverDir = os.path.dirname(os.path.realpath(__file__))
+
+		hmmFileName = os.path.join(serverDir, 'temp/' + hexer.hexdigest() )
 
 		cmd = subprocess.Popen( ['hmmbuild', '--informat', 'STOCKHOLM', hmmFileName, '-'], stdin=subprocess.PIPE, stdout=subprocess.PIPE )
 		out, err = cmd.communicate(smaContent)
@@ -222,7 +225,7 @@ def hmmer():
 		print out, err
 
 		tableFileName = hmmFileName + '.tblout'
-		protDB = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'data/Prot.fa')
+		protDB = os.path.join(serverDir, 'data/Prot.fa')
 		cmd = subprocess.Popen( ['hmmsearch', '--tblout', tableFileName, hmmFileName, protDB], stdin=subprocess.PIPE, stdout=subprocess.PIPE )
 		out, err = cmd.communicate()
 
@@ -260,6 +263,8 @@ def blast():
 		else:
 			if not (query and evalue and program and matrix and perc):
 				abort(500)
+			
+			serverDir = os.path.dirname(os.path.realpath(__file__))
 
 			if (program.startswith('blastn') or program == 'tblastx'):
 				route = 'blast/MarpoDB_Genes'
@@ -267,6 +272,8 @@ def blast():
 			else:
 				route = 'blast/MarpoDB_Proteins'
 				idType = 'CDS'
+			
+			route = os.path.join( serverDir, route  )
 
 			if (program.startswith('blastn') ):
 				cmd = subprocess.Popen( program.split() + ['-db', route, '-evalue', evalue,'-num_alignments', '10', '-num_threads', '1', '-outfmt', '15', '-perc_identity' , perc], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
@@ -274,12 +281,13 @@ def blast():
 				cmd = subprocess.Popen( program.split() + ['-db', route, '-evalue', evalue,'-num_alignments', '10', '-num_threads', '1', '-outfmt', '15', '-matrix', matrix], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 			
 			out,error = cmd.communicate(query)
+			
+			print "CMD output: ", out
+                        print "CMD error:", error
 
 			if not out:
 				flash('BLAST error')
-
-			# print "CMD output: ", out
-			# print "CMD error:", error
+				return render_template('blast.html', title='BLAST to MarpoDB')
 			
 			session = marpodb.Session()
 			results = parseBlastResult(out, session)
