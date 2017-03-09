@@ -200,11 +200,12 @@ def details():
 
 @app.route('/hmmer', methods=['GET', 'POST'])
 def hmmer():
+	title = 'HMMER search (Beta)'
 	if request.method == 'POST':
 		smaFile = request.files['file']
 		if not smaFile.filename:
 			flash('No file selected')
-			return render_template('hmmer.html', title='Run HMMER search')
+			return render_template('hmmer.html', title= title)
 		smaContent = smaFile.read()
 		
 		hexer = md5.new()
@@ -216,7 +217,7 @@ def hmmer():
 		
 		if err:
 			flash('Error building and hmm file')
-			return render_template('hmmer.html', title='Run HMMER search')
+			return render_template('hmmer.html', title= title)
 
 		print out, err
 
@@ -234,15 +235,15 @@ def hmmer():
 			os.remove(tableFileName)
 		except:
 			flash('Error running hmmsearch')
-			return render_template('hmmer.html', title='Run HMMER search')
+			return render_template('hmmer.html', title= title)
 
 		if not results:
 			flash('No hits found')
-			return render_template('hmmer.html', title='Run HMMER search')
+			return render_template('hmmer.html', title=title)
 
 		return render_template('hmmer_results.html', title='HMMER result', result = results )
 
-	return render_template('hmmer.html', title='Run HMMER search')
+	return render_template('hmmer.html', title=title)
 
 @app.route('/blast', methods=['GET', 'POST'])
 def blast():
