@@ -215,19 +215,21 @@ def hmmer():
 
 		hmmFileName = os.path.join(serverDir, 'temp/' + hexer.hexdigest() )
 
-		cmd = subprocess.Popen( ['hmmbuild', '--informat', 'STOCKHOLM', hmmFileName, '-'], stdin=subprocess.PIPE, stdout=subprocess.PIPE )
+		cmd = subprocess.Popen( ['hmmbuild', '--informat', 'STOCKHOLM', hmmFileName, '-'], stderr=subprocess.PIPE,  stdin=subprocess.PIPE, stdout=subprocess.PIPE )
 		out, err = cmd.communicate(smaContent)
-		
 		if err:
-			flash('Error building and hmm file')
+			flash(err)
 			return render_template('hmmer.html', title= title)
 
-		print out, err
 
 		tableFileName = hmmFileName + '.tblout'
 		protDB = os.path.join(serverDir, 'data/Prot.fa')
-		cmd = subprocess.Popen( ['hmmsearch', '--tblout', tableFileName, hmmFileName, protDB], stdin=subprocess.PIPE, stdout=subprocess.PIPE )
+		cmd = subprocess.Popen( ['hmmsearch', '--tblout', tableFileName, hmmFileName, protDB], stderr=subprocess.PIPE, stdin=subprocess.PIPE, stdout=subprocess.PIPE )
 		out, err = cmd.communicate()
+		
+		if err:
+			flash(err)
+			return render_template('hmmer.html', title= title)
 
 	   	try:	
 			marpodbSession = marpodb.Session()
