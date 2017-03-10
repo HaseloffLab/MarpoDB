@@ -200,54 +200,69 @@ def details():
 
 @app.route('/hmmer', methods=['GET', 'POST'])
 def hmmer():
-	title = 'HMMER search (Beta)'
-	if request.method == 'POST':
-		smaFile = request.files['file']
-		if not smaFile.filename:
-			flash('No file selected')
-			return render_template('hmmer.html', title= title)
-		smaContent = smaFile.read()
-		
-		hexer = md5.new()
-		hexer.update(smaContent)
-		
-		serverDir = os.path.dirname(os.path.realpath(__file__))
+    title = 'HMMER search (Beta)'
+    
+    if request.method == 'POST':
+            smaFile = request.files['file']
+        
+            if smaFile.filename:
+                smaContent = smaFile.read()
 
-		hmmFileName = os.path.join(serverDir, 'temp/' + hexer.hexdigest() )
+                hexer = md5.new()
+                hexer.update(smaContent)
 
-		cmd = subprocess.Popen( ['hmmbuild', '--informat', 'STOCKHOLM', hmmFileName, '-'], stdin=subprocess.PIPE, stdout=subprocess.PIPE )
-		out, err = cmd.communicate(smaContent)
-		
-		if err:
-			flash('Error building and hmm file')
-			return render_template('hmmer.html', title= title)
+                serverDir = os.path.dirname(os.path.realpath(__file__))
 
-		print out, err
+                smaFileName = os.path.join(serverDir, 'temp/' + hexer.hexdigest() )
 
-		tableFileName = hmmFileName + '.tblout'
-		protDB = os.path.join(serverDir, 'data/Prot.fa')
-		cmd = subprocess.Popen( ['hmmsearch', '--tblout', tableFileName, hmmFileName, protDB], stdin=subprocess.PIPE, stdout=subprocess.PIPE )
-		out, err = cmd.communicate()
+                smaFile = open(smaFileName, 'w')
+                smaFile.write(smaContent)
+                smaFile.close()
 
-	   	try:	
-			marpodbSession = marpodb.Session()
-			results = parseHMMResult(tableFileName, marpodbSession)
-			marpodbSession.close()
+                hmmFileName = smaFileName + '.hmm'
 
-			os.remove(hmmFileName)
-			os.remove(tableFileName)
-		except:
-			flash('Error running hmmsearch')
-			return render_template('hmmer.html', title= title)
+                cmd = subprocess.Popen( ['hmmbuild', '--informat', 'STOCKHOLM', hmmFileName, smaFileName], stderr=subprocess.PIPE,  stdin=subprocess.PIPE, stdout=subprocess.PIPE )
+                out, err = cmd.communicate(smaContent)
 
-		if not results:
-			flash('No hits found')
-			return render_template('hmmer.html', title=title)
+                if not err:
+                    tableFileName = hmmFileName + '.tblout'
+                    protDB = os.path.join(serverDir, 'data/Prot.fa')
+                    cmd = subprocess.Popen( ['hmmsearch', '--tblout', tableFileName, hmmFileName, protDB], stderr=subprocess.PIPE, stdin=subprocess.PIPE, stdout=subprocess.PIPE )
+                    out, err = cmd.communicate()
 
-		return render_template('hmmer_results.html', title='HMMER result', result = results )
+                    if not err:
+			errorMessage = ''
+                        try:
+                            marpodbSession = marpodb.Session()
+                            results = parseHMMResult(tableFileName, marpodbSession)
+                            marpodbSession.close()
+                        except:
+                            errorMessage = 'Failed to run hmmsearch. Please report if happens again.'
 
-	return render_template('hmmer.html', title=title)
+                        if not errorMessage:
+                            if results:
+                                return render_template('hmmer_results.html', title='HMMER result', result = results )
+                            else:
+                                errorMessage = 'No hits found' 
+                    else:
+                        errorMessage = 'Error running hmmsearch. Check your input file.'
 
+                else:
+                    errorMessage = 'Error running hmmbuild. Check your input file.'
+
+            else:
+                errorMessage = 'No file selected'
+
+            try:
+                os.remove(hmmFileName)
+                os.remove(smaFileName)
+                os.remove(tableFileName)
+            except:
+                pass
+
+            flash(errorMessage)
+
+    return render_template('hmmer.html', title=title)
 @app.route('/blast', methods=['GET', 'POST'])
 def blast():
 	
