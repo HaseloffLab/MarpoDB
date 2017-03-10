@@ -134,12 +134,11 @@ def sortHits(hits, column, nHits):
 	return sortedHits[0:nHits+1]
 
 def getGeneHomolog(marpodbSession, cdsDBID):
-	hits = marpodbSession.query(BlastpHit).\
+	hit = marpodbSession.query(BlastpHit).\
 			filter(BlastpHit.targetID == CDS.id).\
-			filter(CDS.dbid == cdsDBID).all()
+			filter(CDS.dbid == cdsDBID).order_by( BlastpHit.eVal ).first()
 
-	if hits:
-		hits.sort(key= lambda x: x.eVal)
+	if hit:
 		return hits[0].proteinName
 	else:
 		return cdsDBID
