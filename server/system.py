@@ -139,7 +139,7 @@ def getGeneHomolog(marpodbSession, cdsDBID):
 			filter(CDS.dbid == cdsDBID).order_by( BlastpHit.eVal ).first()
 
 	if hit:
-		return hits[0].proteinName
+		return hit[0].proteinName
 	else:
 		return cdsDBID
 
