@@ -165,7 +165,7 @@ def getUserData(StarGene, user, session, marpodbSession):
 	userData['starGenes'] = []
 
 	for cdsid in cdsIds:
-		homolog = getGeneHomolog(marpodbSession, cdsid)
+		homolog = marpodbSession.query(Gene).filter(Gene.cdsID == CDS.id).filter(CDS.dbid == cdsid).first().name
 		userData['starGenes'].append( (cdsid, homolog ) )
 
 	return userData

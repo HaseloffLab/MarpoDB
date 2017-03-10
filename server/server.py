@@ -9,7 +9,7 @@ from flask_user import UserMixin, SQLAlchemyAdapter, UserManager, LoginManager
 from flask_login import login_user, login_required, logout_user, current_user, user_logged_in
 
 from user import RegisterForm, LoginForm
-from system import getUserData, generateNewMap, getTopGenes, processQuery, getGeneCoordinates, getCDSDetails, parseBlastResult, parseHMMResult, recfind
+from system import getUserData, generateNewMap, getTopGenes, processQuery, getGeneCoordinates, getCDSDetails, parseBlastResult, parseHMMResult, recfind, getGeneHomolog
 
 from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
@@ -494,6 +494,11 @@ def starGene():
 	if cds:
 		if current_user.is_authenticated:
 			star = StarGene.query.filter(StarGene.cdsdbid == cdsdbid, StarGene.userid == current_user.id).first()
+
+			gene = marpodbSession.query(Gene).(Gene.cdsID = cds.id).first()
+			if not gene.name:
+				gene.name = getGeneHomolog(marpodbSession, cdsdbid)
+				marpodbSession.add(gene)
 
 			if star:
 				userDB.session.delete(star)
