@@ -495,10 +495,12 @@ def starGene():
 		if current_user.is_authenticated:
 			star = StarGene.query.filter(StarGene.cdsdbid == cdsdbid, StarGene.userid == current_user.id).first()
 
-			gene = marpodbSession.query(Gene).(Gene.cdsID = cds.id).first()
+			gene = marpodbSession.query(Gene).filter(Gene.cdsID == cds.id).first()
+			print gene.name, getGeneHomolog(marpodbSession, cdsdbid)
 			if not gene.name:
 				gene.name = getGeneHomolog(marpodbSession, cdsdbid)
 				marpodbSession.add(gene)
+				marpodbSession.commit()
 
 			if star:
 				userDB.session.delete(star)
