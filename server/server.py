@@ -156,18 +156,23 @@ def details():
 		if not gene:
 			cds = marpodbSession.query(CDS).filter(CDS.dbid == dbid).first()
 			if cds:
-				gene  = marpodbSession.query(Gene).filter(Gene.cdsID == cds.id).first()
-				locus = marpodbSession.query(Locus).filter(Locus.id == Gene.locusID).\
-						filter(Gene.cdsID == cds.id).first()
+				# gene  = marpodbSession.query(Gene).filter(Gene.cdsID == cds.id).first()
+				gene  = marpodbSession.query(Gene).filter( Gene.cds.has(id = cds.id) ).first()
+				locus = gene.locus
+				# locus = marpodbSession.query(Locus).filter(Locus.id == Gene.locusID).\
+				# 		filter(Gene.cdsID == cds.id).first()
 		# if Gene
 		else:
-			locus = marpodbSession.query(Locus).filter(Locus.id == gene.locusID).first()
-			cds = marpodbSession.query(CDS).filter(CDS.id == gene.cdsID).first()
+			locus = gene.locus
+			cds = gene.cds
+			# locus = marpodbSession.query(Locus).filter(Locus.id == gene.locusID).first()
+			# cds = marpodbSession.query(CDS).filter(CDS.id == gene.cdsID).first()
 	else:
 		# if Locus:
 		gene = marpodbSession.query(Gene).filter(Gene.locusID == locus.id).first()
-		cds = marpodbSession.query(CDS).filter(CDS.id == Gene.cdsID).\
-					filter(Gene.locusID == locus.id).first()
+		cds = gene.cds
+		# cds = marpodbSession.query(CDS).filter(CDS.id == Gene.cdsID).\
+		# 			filter(Gene.locusID == locus.id).first()
 
 	if not cds:
 		abort(404)

@@ -177,7 +177,7 @@ def findDataIn(marpodbSession, level, table, queryColumns, equal, returnColumns)
 
 	queryColumns = [ getColumnByName(cls, name) for name in queryColumns ]
 
-	query =  marpodbSession.query(tCls.id, tCls.dbid)
+	query =  marpodbSession.query(tCls)
 
 	for column in returnColumns:
 		query = query.add_columns(column)
@@ -187,7 +187,8 @@ def findDataIn(marpodbSession, level, table, queryColumns, equal, returnColumns)
 				filter( or_( qC.ilike('%'+equal+'%') for qC in queryColumns ) ).all()
 
 	if targets:
-		return [  (levelID, levelDBID, cols) for levelID, levelDBID, cols in zip( [t[0] for t in targets], [t[1] for t in targets], [ {rc.name: x for rc, x in zip(returnColumns, t[2:]) } for t in targets ] )  ]
+		print [  (levelID, levelDBID, geneDBID, locusDBID, cols) for levelID, levelDBID, geneDBID, locusDBID, cols in zip( [t[0].id for t in targets], [t[0].dbid for t in targets], [t[0].gene.dbid for t in targets], [t[0].gene.locus.dbid for t in targets], [ {rc.name: x for rc, x in zip(returnColumns, t[1:]) } for t in targets ] )  ]
+		return [  (levelID, levelDBID, geneDBID, locusDBID, cols) for levelID, levelDBID, geneDBID, locusDBID, cols in zip( [t[0].id for t in targets], [t[0].dbid for t in targets], [t[0].gene.dbid for t in targets], [t[0].gene.locus.dbid for t in targets], [ {rc.name: x for rc, x in zip(returnColumns, t[1:]) } for t in targets ] )  ]
 	else:
 		return {}
 
@@ -240,7 +241,9 @@ def processQuery(marpodbSession, scope, term, columns, nHits):
 
 				partID 		= hit[0]
 				partDBID	= hit[1]
-				cols 		= hit[2]
+				geneDBID	= hit[2]
+				locusDBID	= hit[3]
+				cols 		= hit[4]
 
 				fullCols = [''] * len(displayColumns)
 				
@@ -253,11 +256,11 @@ def processQuery(marpodbSession, scope, term, columns, nHits):
 				# locusDBID = marpodbSession.query(Locus.dbid).filter(Locus.id == Gene.locusID).\
 				# 			filter(partColumn == partID).first()[0]
 
-				out = marpodbSession.query(Locus.dbid, Gene.dbid).filter( Locus.id == Gene.locusID ).\
-							filter(partColumn == partID).first()
+				# out = marpodbSession.query(Locus.dbid, Gene.dbid).filter( Locus.id == Gene.locusID ).\
+				# 			filter(partColumn == partID).first()
 				
-				locusDBID = out[0]
-				geneDBID  = out[1]
+				# locusDBID = out[0]
+				# geneDBID  = out[1]
 
 				if locusDBID:
 					if not locusDBID in loci:
