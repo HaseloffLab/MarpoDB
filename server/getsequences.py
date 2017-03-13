@@ -45,6 +45,8 @@ elif exportFeature == 'Gene':
 			seq += gene.promoter.seq
 		if gene.utr5:
 			seq += gene.utr5.seq
+		if gene.cds:
+			seq += gene.cds.seq
 		if gene.utr3:
 			seq += gene.utr3.seq
 		if gene.terminator:
