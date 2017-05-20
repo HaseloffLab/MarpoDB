@@ -26,6 +26,28 @@ def recfind(pattern, string, where_should_I_start=0):
     # No need for an else statement
     return [pos] + recfind(pattern, string, pos + len(pattern))
 
+def parseHMMResult(tableFileName, session):
+	tableFile = open(tableFileName)
+	
+	if not tableFile:
+		print 'NO FILE', tableFileName
+
+	rows = []
+
+	for line in tableFile:
+		if not line.startswith('#'):
+			tabs = line.split()
+			row = {}
+			row['dbid'] = tabs[0]
+			row['eVal'] = tabs[4]
+			row['score'] = tabs[5]
+			row['bias'] = tabs[6]
+			row['locusdbid'] = session.query(Locus.dbid).filter(CDS.dbid == row["dbid"]).filter( Gene.cdsID == CDS.id ).filter(Locus.id == Gene.locusID).first()[0]
+			rows.append(row)
+
+	return rows
+
+
 def parseBlastResult(data, session, lineLenght = 60):
 	print "BLAST:"
 	# print data
@@ -112,13 +134,12 @@ def sortHits(hits, column, nHits):
 	return sortedHits[0:nHits+1]
 
 def getGeneHomolog(marpodbSession, cdsDBID):
-	hits = marpodbSession.query(BlastpHit).\
+	hit = marpodbSession.query(BlastpHit).\
 			filter(BlastpHit.targetID == CDS.id).\
-			filter(CDS.dbid == cdsDBID).all()
+			filter(CDS.dbid == cdsDBID).order_by( BlastpHit.eVal ).first()
 
-	if hits:
-		hits.sort(key= lambda x: x.eVal)
-		return hits[0].proteinName
+	if hit:
+		return hit.proteinName
 	else:
 		return cdsDBID
 
@@ -144,7 +165,7 @@ def getUserData(StarGene, user, session, marpodbSession):
 	userData['starGenes'] = []
 
 	for cdsid in cdsIds:
-		homolog = getGeneHomolog(marpodbSession, cdsid)
+		homolog = marpodbSession.query(Gene).filter(Gene.cdsID == CDS.id).filter(CDS.dbid == cdsid).first().name
 		userData['starGenes'].append( (cdsid, homolog ) )
 
 	return userData
@@ -164,6 +185,7 @@ def findDataIn(marpodbSession, level, table, queryColumns, equal, returnColumns)
 	targets = query.\
 				filter(tCls.id == cls.targetID).\
 				filter( or_( qC.ilike('%'+equal+'%') for qC in queryColumns ) ).all()
+
 	if targets:
 		return [  (levelID, levelDBID, cols) for levelID, levelDBID, cols in zip( [t[0] for t in targets], [t[1] for t in targets], [ {rc.name: x for rc, x in zip(returnColumns, t[2:]) } for t in targets ] )  ]
 	else:
@@ -228,14 +250,20 @@ def processQuery(marpodbSession, scope, term, columns, nHits):
 				
 				partColumn = getColumnByName(Gene, scLevel+'ID')
 
-				locusDBID = marpodbSession.query(Locus.dbid).filter(Locus.id == Gene.locusID).\
-							filter(partColumn == partID).first()[0]
+				# locusDBID = marpodbSession.query(Locus.dbid).filter(Locus.id == Gene.locusID).\
+				# 			filter(partColumn == partID).first()[0]
+
+				out = marpodbSession.query(Locus.dbid, Gene.dbid).filter( Locus.id == Gene.locusID ).\
+							filter(partColumn == partID).first()
+				
+				locusDBID = out[0]
+				geneDBID  = out[1]
 
 				if locusDBID:
 					if not locusDBID in loci:
 						loci[locusDBID] = {"genes": {}}
 
-					geneDBID = marpodbSession.query(Gene.dbid).filter(partColumn == partID).first()[0]
+					# geneDBID = marpodbSession. query(Gene.dbid).filter(partColumn == partID).first()[0]
 					if geneDBID:
 						if not geneDBID in loci[locusDBID]["genes"]:
 							loci[locusDBID]["genes"][geneDBID] = {"parts": {} }

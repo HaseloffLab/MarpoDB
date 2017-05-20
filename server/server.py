@@ -9,7 +9,7 @@ from flask_user import UserMixin, SQLAlchemyAdapter, UserManager, LoginManager
 from flask_login import login_user, login_required, logout_user, current_user, user_logged_in
 
 from user import RegisterForm, LoginForm
-from system import getUserData, generateNewMap, getTopGenes, processQuery, getGeneCoordinates, getCDSDetails, parseBlastResult, recfind
+from system import getUserData, generateNewMap, getTopGenes, processQuery, getGeneCoordinates, getCDSDetails, parseBlastResult, parseHMMResult, recfind, getGeneHomolog
 
 from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
@@ -19,6 +19,7 @@ from Bio.Alphabet import IUPAC
 import os
 import sys
 import subprocess
+import md5
 
 marpodb = PartsDB('postgresql:///' + os.environ["MARPODB_DB_NAME"], Base = Base)
 
@@ -108,9 +109,13 @@ def login():
 @app.route('/results')
 def result():
 	nHits = 5
+
    	columns = { 'blastphit'	: [BlastpHit.proteinName, BlastpHit.origin, BlastpHit.eVal],\
 			   	'pfamhit'	: [PfamHit.description, PfamHit.eVal],\
-   				'cds'		: [CDS.dbid]\
+			   	'cds'		: [CDS.dbid]\
+   	#columns = { 'pfamhit'	: [PfamHit.name, PfamHit.acc, PfamHit.eVal, PfamHit.description],\
+   	#			'blastphit': [BlastpHit.proteinName, BlastpHit.geneName, BlastpHit.origin, BlastpHit.eVal, BlastpHit.uniID],\
+   				
    	}
 
 	marpodbSession = marpodb.Session()
@@ -197,6 +202,71 @@ def details():
 	alias = gene.alias
 	return render_template('details.html', alias = alias, geneDBID = gene.dbid, cdsDBID = cds.dbid, geneCoordinates = response['genes'], seq = response['seq'],  title = "Details for {0}".format(gene.dbid), titleEx = titleEx, blastp=annotation['blastp'], stared = stared )
 
+@app.route('/hmmer', methods=['GET', 'POST'])
+def hmmer():
+    title = 'HMMER search (Beta)'
+    
+    if request.method == 'POST':
+            smaFile = request.files['file']
+        
+            if smaFile.filename:
+                smaContent = smaFile.read()
+
+                hexer = md5.new()
+                hexer.update(smaContent)
+
+                serverDir = os.path.dirname(os.path.realpath(__file__))
+
+                smaFileName = os.path.join(serverDir, 'temp/' + hexer.hexdigest() )
+
+                smaFile = open(smaFileName, 'w')
+                smaFile.write(smaContent)
+                smaFile.close()
+
+                hmmFileName = smaFileName + '.hmm'
+
+                cmd = subprocess.Popen( ['hmmbuild', '--informat', 'STOCKHOLM', hmmFileName, smaFileName], stderr=subprocess.PIPE,  stdin=subprocess.PIPE, stdout=subprocess.PIPE )
+                out, err = cmd.communicate(smaContent)
+
+                if not err:
+                    tableFileName = hmmFileName + '.tblout'
+                    protDB = os.path.join(serverDir, 'data/Prot.fa')
+                    cmd = subprocess.Popen( ['hmmsearch', '--tblout', tableFileName, hmmFileName, protDB], stderr=subprocess.PIPE, stdin=subprocess.PIPE, stdout=subprocess.PIPE )
+                    out, err = cmd.communicate()
+
+                    if not err:
+			errorMessage = ''
+                        try:
+                            marpodbSession = marpodb.Session()
+                            results = parseHMMResult(tableFileName, marpodbSession)
+                            marpodbSession.close()
+                        except:
+                            errorMessage = 'Failed to run hmmsearch. Please report if happens again.'
+
+                        if not errorMessage:
+                            if results:
+                                return render_template('hmmer_results.html', title='HMMER result', result = results )
+                            else:
+                                errorMessage = 'No hits found' 
+                    else:
+                        errorMessage = 'Error running hmmsearch. Check your input file.'
+
+                else:
+                    errorMessage = 'Error running hmmbuild. Check your input file.'
+
+            else:
+                errorMessage = 'No file selected'
+
+            try:
+                os.remove(hmmFileName)
+                os.remove(smaFileName)
+                os.remove(tableFileName)
+            except:
+                pass
+
+            flash(errorMessage)
+
+    return render_template('hmmer.html', title=title)
 @app.route('/blast', methods=['GET', 'POST'])
 def blast():
 	
@@ -207,48 +277,47 @@ def blast():
 		matrix = request.form["matrix"]
 		perc = request.form["perc"]
 		
-		if query !="":
-			return redirect(url_for('blast_result', query=query, evalue=evalue, program=program,matrix=matrix, perc=perc))
-		else:
+		if query == "":
 			flash('Empty query')
-	
+		else:
+			if not (query and evalue and program and matrix and perc):
+				abort(500)
+			
+			serverDir = os.path.dirname(os.path.realpath(__file__))
+
+			if (program.startswith('blastn') or program == 'tblastx'):
+				route = 'blast/MarpoDB_Genes'
+				idType = 'Gene'
+			else:
+				route = 'blast/MarpoDB_Proteins'
+				idType = 'CDS'
+			
+			route = os.path.join( serverDir, route  )
+
+			if (program.startswith('blastn') ):
+				cmd = subprocess.Popen( program.split() + ['-db', route, '-evalue', evalue,'-num_alignments', '10', '-num_threads', '1', '-outfmt', '15', '-perc_identity' , perc], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+			else:	
+				cmd = subprocess.Popen( program.split() + ['-db', route, '-evalue', evalue,'-num_alignments', '10', '-num_threads', '1', '-outfmt', '15', '-matrix', matrix], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+			
+			out,error = cmd.communicate(query)
+			
+			print "CMD output: ", out
+                        print "CMD error:", error
+
+			if not out:
+				flash('BLAST error')
+				return render_template('blast.html', title='BLAST to MarpoDB')
+			
+			session = marpodb.Session()
+			results = parseBlastResult(out, session)
+			session.close()
+
+			if not results:
+				flash('No hits found')
+				return render_template('blast.html', title='BLAST to MarpoDB')
+			return render_template('blast_result.html', title='BLAST result', result = results, idType = idType )	
+
 	return render_template('blast.html', title='BLAST to MarpoDB')
-
-@app.route('/blast_result')
-def blast_result():
-	query = request.args.get('query','')
-	evalue = request.args.get('evalue','')
-	program = request.args.get('program','')
-	matrix = request.args.get('matrix','')
-	perc = request.args.get('perc','')
-
-	if not (query and evalue and program and matrix and perc):
-		abort(500)
-
-	# Validate fasta PENDING!
-	
-	if (program.startswith('blastn') or program == 'tblastx'):
-		route = 'blast/MarpoDB_Genes'
-		idType = 'Gene'
-	else:
-		route = 'blast/MarpoDB_Proteins'
-		idType = 'CDS'
-
-	if (program.startswith('blastn') ):
-		cmd = subprocess.Popen( program.split() + ['-db', route, '-evalue', evalue,'-num_alignments', '10', '-num_threads', '1', '-outfmt', '15', '-perc_identity' , perc], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
-	else:	
-		cmd = subprocess.Popen( program.split() + ['-db', route, '-evalue', evalue,'-num_alignments', '10', '-num_threads', '1', '-outfmt', '15', '-matrix', matrix], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
-	
-	out,error = cmd.communicate(query)
-
-	# print "CMD output: ", out
-	# print "CMD error:", error
-	
-	session = marpodb.Session()
-	results = parseBlastResult(out, session)
-	session.close()
-
-	return render_template('blast_result.html', title='BLAST result', result = results, idType = idType )
 
 @app.route('/export/gene')
 def exportGene():
@@ -429,6 +498,13 @@ def starGene():
 	if cds:
 		if current_user.is_authenticated:
 			star = StarGene.query.filter(StarGene.cdsdbid == cdsdbid, StarGene.userid == current_user.id).first()
+
+			gene = marpodbSession.query(Gene).filter(Gene.cdsID == cds.id).first()
+			print gene.name, getGeneHomolog(marpodbSession, cdsdbid)
+			if not gene.name:
+				gene.name = getGeneHomolog(marpodbSession, cdsdbid)
+				marpodbSession.add(gene)
+				marpodbSession.commit()
 
 			if star:
 				userDB.session.delete(star)

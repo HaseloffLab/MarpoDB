@@ -516,7 +516,20 @@ th, td {
 
 
 
+/* HMMER */
 
+.hmmer-input{
+	display: inline-block;
+}
+
+.hmmer-button{
+	position: relative;
+	width: 100px;
+	height: 26px;
+}
+.hmmer-form{
+	text-align: center;
+}
 
 /* Blast */
 
@@ -558,7 +571,7 @@ th, td {
 	width: 75px;
 }
 
-#blast-button{
+.blast-button{
 	position: relative;
 	width: 100px;
 	height: 26px;
