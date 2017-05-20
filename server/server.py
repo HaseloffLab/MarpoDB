@@ -108,8 +108,8 @@ def login():
 @app.route('/results')
 def result():
 	nHits = 5
-   	columns = { 'pfamhit'	: [PfamHit.name, PfamHit.acc, PfamHit.eVal, PfamHit.description],\
-   				'blastphit': [BlastpHit.proteinName, BlastpHit.geneName, BlastpHit.origin, BlastpHit.eVal],\
+   	columns = { 'blastphit'	: [BlastpHit.proteinName, BlastpHit.origin, BlastpHit.eVal],\
+			   	'pfamhit'	: [PfamHit.description, PfamHit.eVal],\
    				'cds'		: [CDS.dbid]\
    	}
 
@@ -119,7 +119,7 @@ def result():
 	scope = request.args.get('scope','').split('|')
 
 	if not (term and scope):
-		 flash('Empyt search term or scope')
+		 flash('Empty search term or scope')
 		 return redirect(url_for('query'))
 
 	table = processQuery(marpodbSession, scope, term, columns, nHits)

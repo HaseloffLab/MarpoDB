@@ -395,17 +395,19 @@ def getGeneCoordinates(marpodbSession, locusid):
 
 	for gene in genes:
 		record =  exporter.export(gene, None)
-		response['genes'][record.id] = {'strand' : gene.locusStrand, 'features' : {}}
-
+		
+		# I do not know why but if I change the gene.locusStrand variable to 1 then it makes it right, at least for some of them...
+		#response['genes'][record.id] = {'strand' : gene.locusStrand, 'features' : {}}
+		response['genes'][record.id] = {'strand' : 1, 'features' : {}}
+		
 		for feature in record.features:
 			try:
 				locations = feature.location.parts
 			except:
 				locations = [feature.location]
-
 	
 			coordinates = ";".join([ "{0}:{1}".format(part.start, part.end) for part in locations  ])
-
+			
 			response['genes'][record.id]['features'][feature.id] = coordinates
 		
 		if not 'seq' in response:

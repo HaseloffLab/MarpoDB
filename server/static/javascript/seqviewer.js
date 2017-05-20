@@ -1,15 +1,15 @@
-var typeColors = {	'promoter'   : 'rgb(50, 50, 0)',
-						'terminator' : 'rgb(50, 0, 0)',
-						'utr5'		 : 'rgb(0, 50, 75)',
-						'cds'		 : 'rgb(0, 50, 0)',
-						'utr3'		 : 'rgb(0, 50, 75)'
+var typeColors = {		'promoter'   : 'rgb(255, 255, 200)',
+						'terminator' : 'rgb(250, 200, 200)',
+						'utr5'		 : 'rgb(200, 240, 250)',
+						'cds'		 : 'rgb(190, 255, 190)',
+						'utr3'		 : 'rgb(200, 240, 250)'
 };
 
-var typeColorsSelected = {	'promoter'   : 'rgb(255, 255, 0)',
-							'terminator' : 'rgb(255, 0, 0)',
-							'utr5'		 : 'rgb(0, 200, 250)',
-							'cds'		 : 'rgb(0, 200, 0)',
-							'utr3'		 : 'rgb(0, 200, 250)'
+var typeColorsSelected = {	'promoter'   : 'rgb(255, 255, 80)',
+							'terminator' : 'rgb(255, 80, 80)',
+							'utr5'		 : 'rgb(80, 200, 250)',
+							'cds'		 : 'rgb(80, 200, 80)',
+							'utr3'		 : 'rgb(80, 200, 250)'
 };
 
 var features = []
@@ -20,7 +20,7 @@ function seqviewer(sequence, element) {
 		seqViewer.render(element, {
 			'charsPerLine': 100,
 			'search': true,
-			'sequenceMaxHeight': "385px",
+			'sequenceMaxHeight': "285px",
 			'title': "Gene"
 		});
 			  
@@ -212,7 +212,6 @@ function draworig(){
 function highlight_seq(element, color){
 
 	var sequenceCoverage = [];
-	// WARNING removed local variable definition! - RECODE
 	subSeq = "";
 	strand = element.strand
 	type = element.type
@@ -232,7 +231,7 @@ function highlight_seq(element, color){
 			elEnd = end-element.subFeatures[i].position;
 		}
 
-		if (color == 'rgb(255, 255, 0)'){
+		if (color == 'rgb(255, 255, 80)'){
 			sequenceCoverage.push({
 			start:		elStart,
 			end:		elEnd,
@@ -250,8 +249,12 @@ function highlight_seq(element, color){
 			underscore:	false 
 			});
 		}
-
-		subSeq = subSeq + seq.substring(elStart, elEnd);
+		if (element.strand == '+'){
+			subSeq = subSeq + seq.substring(elStart, elEnd);
+		}
+		else{
+			subSeq = seq.substring(elStart, elEnd) + subSeq; 
+		}
 	}
 
 	seqViewer.coverage(sequenceCoverage);

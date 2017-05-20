@@ -143,11 +143,11 @@ th, td {
 }
 
 .logo{
-  position: relative;
-  left:50%;
-  width: 200px;
-  margin-top: 10px;
-  margin-left: -100px;
+	position: relative;
+	left:50%;
+	width: 200px;
+	margin-top: 10px;
+	margin-left: -100px;
 }
 
 .help{
