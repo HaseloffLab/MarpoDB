@@ -139,7 +139,7 @@ def getGeneHomolog(marpodbSession, cdsDBID):
 			filter(CDS.dbid == cdsDBID).order_by( BlastpHit.eVal ).first()
 
 	if hit:
-		return hit.proteinName
+		return hit.description
 	else:
 		return cdsDBID
 
@@ -425,8 +425,8 @@ def getGeneCoordinates(marpodbSession, locusid):
 		record =  exporter.export(gene, None)
 		
 		# I do not know why but if I change the gene.locusStrand variable to 1 then it makes it right, at least for some of them...
-		#response['genes'][record.id] = {'strand' : gene.locusStrand, 'features' : {}}
-		response['genes'][record.id] = {'strand' : 1, 'features' : {}}
+		response['genes'][record.id] = {'strand' : gene.locusStrand, 'features' : {}}
+		#response['genes'][record.id] = {'strand' : 1, 'features' : {}}
 		
 		for feature in record.features:
 			try:
@@ -465,7 +465,7 @@ def getBlastpHits(marpodbSession, cdsDBID):
 			row['uniID'] = hit.uniID
 			row['tLen'] = hit.tLen
 			row['qLen'] = hit.qLen
-			row['proteinName'] = hit.proteinName
+			row['proteinName'] = hit.description
 			row['origin'] = hit.origin
 			row['eVal'] = hit.eVal
 			row['coordinates'] = coordinates

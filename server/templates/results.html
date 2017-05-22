@@ -4,20 +4,11 @@
 {% set headerLabels = {
 	"id"			: "MarpoID",
 	"name"			: "Name",
-<<<<<<< HEAD
 	"description" 	: "Description",
 	"proteinName"	: "Description",
-	"origin"		: "Source",
+	"origin"		: "Origin",
 	"eVal"			: "E-value"
-=======
-	"acc"			: "Pfam ACC",
-	"eVal"			: "e-value",
-	"description" 	: "Pfam description",
-	"proteinName"	: "Protein name",
-	"geneName"		: "Gene name",
-	"origin"		: "Organism",
-	"uniID"			: "UniProt"
->>>>>>> 0db160b6c82a1ce9ca94555b5c240aa18ceee73f
+
 }%}
 
 {% set hitLabels = {
@@ -26,13 +17,22 @@
 	"cds"			: "CDS"
 }%}
 	
-	<div id="table" class="results-table">
-		<table>
-			<tr>
+	<div id="table" class="results-table-div">
+		<table class="results_table" style="border-bottom: solid 1.5px black !important; border-top: solid 1.5px black !important;">
+			<tr class="theader">
 				{% for item in table["header"] %}
-					<th class="tdheader"> {{headerLabels[item]}} </th>
+					{% if headerLabels[item] == "MarpoID"  %}
+						<th class="tdheader" style="min-width:80px"> {{headerLabels[item]}} </th>
+					{% elif headerLabels[item] == "Description" %}
+						<th class="tdheader" style="min-width:200px"> {{headerLabels[item]}} </th>
+					{% elif headerLabels[item] == "E-value" %}
+						<th class="tdheader center"> {{headerLabels[item]}} </th>
+					{% elif headerLabels[item] == "Origin" %}
+						<th class="tdheader" style="min-width:120px"> {{headerLabels[item]}} </th>
+					{% endif %}
 				{% endfor %}
 			</tr>
+			
 			{% for row in table["data"] %}
 				<tr class="header {{row['level']}}" id="header{{row['rowid']}}" parent-id="header{{row['pid']}}">
 					{% if row["level"] != "hit" %}
@@ -41,9 +41,10 @@
 						<td><span class="ident"></span>{{row['cols'][0]}}</td>
 					{% endif  %}
 
-					{% for col in row["cols"][1:] %}
+					{% for col in row["cols"][1:-1] %}
 						<td class="truncate">{{col|string}}</td>
 					{% endfor %}
+						<td class="truncate center">{{row["cols"][-1]|string}}</td>
 				</tr>
 
 			{% endfor %}
@@ -62,9 +63,7 @@
 				</tr>
 			{% endfor %} -->
 					
-			
-			
 		</table>
+	</div>	
 	<script src="/static/javascript/nestedtable.js"></script>
-	</div>
 {% endblock %}

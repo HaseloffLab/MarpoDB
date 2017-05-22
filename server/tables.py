@@ -51,10 +51,10 @@ class BlastpHit(Base, BaseMixIn, AnnotationMixIn):
 	qLen			= Column( Integer )
 	tLen			= Column( Integer )
 	coordinates		= Column( Text )
-	eVal 			= Column( Float )
-	proteinName 	= Column( Text )
+	description 	= Column( Text )
 	geneName 		= Column( Text )
 	origin 			= Column( Text )
+	eVal 			= Column( Float )
 
 class PfamHit(Base, BaseMixIn, AnnotationMixIn):
 
@@ -62,8 +62,8 @@ class PfamHit(Base, BaseMixIn, AnnotationMixIn):
 	__annotatorclass__ = PfamAnnotator
 
 	name 			= Column( String(100) )
-	acc 			= Column( String(100) )
-	eVal 			= Column( Float )
+	origin 			= Column( String(100) )
 	cVal 			= Column( Float )
 	description 	= Column( Text )
 	coordinates		= Column( Text )
+	eVal 			= Column( Float )

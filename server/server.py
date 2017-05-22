@@ -110,8 +110,8 @@ def login():
 def result():
 	nHits = 5
 
-   	columns = { 'blastphit'	: [BlastpHit.proteinName, BlastpHit.origin, BlastpHit.eVal],\
-			   	'pfamhit'	: [PfamHit.description, PfamHit.eVal],\
+   	columns = { 'blastphit'	: [BlastpHit.description, BlastpHit.origin, BlastpHit.eVal],\
+			   	'pfamhit'	: [PfamHit.description,PfamHit.origin, PfamHit.eVal],\
 			   	'cds'		: [CDS.dbid]\
    	#columns = { 'pfamhit'	: [PfamHit.name, PfamHit.acc, PfamHit.eVal, PfamHit.description],\
    	#			'blastphit': [BlastpHit.proteinName, BlastpHit.geneName, BlastpHit.origin, BlastpHit.eVal, BlastpHit.uniID],\
