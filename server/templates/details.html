@@ -24,19 +24,15 @@
 	<script src="/static/javascript/recode.js"></script>
 	<script>
 		var seq = "{{seq}}";
-		var genes = {}
 		var cdsDBID = "{{cdsDBID}}"
 		var geneDBID = "{{geneDBID}}"
-		var selectedDBID;
 
-		{% for genedbid, gene in geneCoordinates.iteritems() %}
-			gene = {"parts" : {}, "strand" : {{gene['strand']}} }
+		selectedDBID = cdsDBID;
+		seqType = "cds";
+		parts = {}
 
-			{% for dbid, coordinates in gene['features'].iteritems() %}
-				gene["parts"]["{{dbid}}"] = "{{coordinates}}"
-			{% endfor %}
-
-			genes[ "{{genedbid}}" ] = gene;
+		{% for dbid, coordinates in geneCoordinates.iteritems() %}
+			parts["{{dbid}}"] = "{{coordinates}}"
 		{% endfor %}
 
 	</script>
@@ -45,6 +41,12 @@
 
 
 {% block content %}
+
+{% if current_user.is_authenticated %}
+	<h2 class = "subtitle">
+		<input id ="geneName" class="geneName" type="text" value = "{{user_data["starGenes"][cdsDBID]}}">
+	</h2>
+{% endif %}
 
 {% if alias%}
 	<h2 class = "subtitle">
@@ -70,7 +72,7 @@
 		</div>
 
 		<div class = "panels" data-collapse>
-			<!--<h2 class="section">InterPro</h2>-->
+			<h2 class="section">InterPro</h2>
 			<div id = "interproPanel">
 				{% set interproPath = "interpro/" + cdsDBID + ".html" %}
 				{% include interproPath %}
@@ -104,8 +106,12 @@
 <script>
 	$(function(){
 
-		var seqType = 'cds';
+		// var seqType = 'cds';
 
+		$("#geneName").change( function(){
+			changeStarName();
+		});
+		
 		var clipboard = new Clipboard('#clipboard_btn')
 		$("#clipboard_btn").mouseleave(function(){
 				$(this).removeClass('tooltipped');

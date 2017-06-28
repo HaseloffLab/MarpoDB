@@ -1,4 +1,9 @@
 {% extends "layout.html" %}
+
+{% block head %}
+	<script src="/static/javascript/blast-viz.js"></script>
+{% endblock %}
+
 {% block content %}
 
 <!-- All possible headers:
@@ -43,7 +48,7 @@
 } %}
 
 
-{% set header = ['dbid', 'locusdbid', 'bit_score', 'evalue', 'coverage', 'identity']%}
+{% set header = ['dbid', 'locusdbid', 'bit_score', 'evalue']%}
 
 <div id="blast_results" class="results-table">
 	<table>
@@ -51,6 +56,7 @@
 			{% for key in header %}
 				<td class="tdheader"> {{colNames[key]}} </td>
 			{% endfor %}
+			<td class="tdheader"> Alignment </td>
 		</tr>
 
 		{% for row in result%}
@@ -61,6 +67,9 @@
 				{% for key in header[2:] %}
 					<td>{{ row[key] }}</td>
 				{% endfor %}
+					<td class="blast-canvas-container">
+						<canvas id = "row{{loop.index}}"></canvas>
+					</td>
 			</tr>
 
 			<tr class="header" id="{{ loop.index * 2 + 1 }}" parent-id="{{loop.index * 2}}" style="display:none">
@@ -78,5 +87,11 @@
 	</table>
 	<script src="/static/javascript/nestedtable.js"></script>
 </div>
+
+<script>
+	$(function(){
+		blastviz("#blast_results", {{maxLen}}, {{result | tojson |safe}});
+	});
+</script>
 
 {% endblock %}

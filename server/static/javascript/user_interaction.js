@@ -5,10 +5,18 @@ function starGene(){
 	var imagesrc = document.getElementById("star_img").src;
 	if (imagesrc.indexOf('_na') == -1){
 		$("#star_img").attr("src", "static/img/star_na.png");
+		$("#geneName").hide()
 	}
 	else{
 		$("#star_img").attr("src", "static/img/star.png");
+		$("#geneName").show()
 	}
+}
+
+function changeStarName(){
+	var request = new XMLHttpRequest();
+	request.open("GET", "/" + "changestarname?cdsdbid="+cdsDBID + "&newname=" + $("#geneName").val(), true);
+	request.send();
 }
 
 function blast(){

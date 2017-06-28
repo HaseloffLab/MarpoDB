@@ -1,0 +1,1 @@
+PYTHONSTARTUP=console.py python

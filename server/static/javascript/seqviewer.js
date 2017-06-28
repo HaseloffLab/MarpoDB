@@ -57,130 +57,124 @@ function draw(canvasName){
 	geneView.scale.font.color = "black";
 	geneView.scale.font.size = 12;
 
-	for( genedbid in genes ){
+	
 
-		console.log(genedbid);
-		geneTrack = geneView.addTrack().addLane();
-		console.log('Strand: ', genes[genedbid]['strand'])
+	geneTrack = geneView.addTrack().addLane();
+	geneTrack.dbid = geneDBID;
 
-		if (genes[genedbid]['strand'] == 1){
-			strand = '+'
-		}
-		else{
-			strand = '-'
-		}
+	for( dbid in parts ){
 
-		geneTrack.dbid = genedbid;
-
-		for( dbid in genes[genedbid]["parts"] ){
-
-					type = dbid.split('.')[1];
+				type = dbid.split('.')[1];
 
 
-					coordinateStr = genes[genedbid]["parts"][dbid];
-					exonStr = coordinateStr.split(";");
-					blocks = []
+				coordinateStr = parts[dbid];
+				exonStr = coordinateStr.split(";");
+				blocks = []
 
-					minStart = 1000000;
-					maxEnd = -1;
+				minStart = 1000000;
+				maxEnd = -1;
 
-			
-					for ( idx in exonStr ){
-						
-						exon = exonStr[idx]
-
-						start  = parseInt(exon.split(':')[0]);
-						end    = parseInt(exon.split(':')[1]);
-
-						minStart = Math.min(minStart, start);
-						maxEnd   = Math.max(maxEnd, end);
-
-						blocks.push( new BlockArrow(type, start, end-start, strand, {'borderColor':'black'} ) );
-					}
-
-					for(i=0; i<blocks.length; i++){
-						blocks[i].position -= minStart;
-					}
-
-					if (strand == '+'){
-						newFeature = geneTrack.addFeature( new Complex(type, minStart, maxEnd - minStart, strand, blocks) ) ;
-					}
-					else{
-						newFeature = geneTrack.addFeature( new Complex(type, seq.length - maxEnd, maxEnd - minStart, strand, blocks) );
-					}
-
-					newFeature.dbid = dbid;
-					newFeature.partType = type;
-
-					if (type == 'cds'){
-						onClick = function(feature){
-							selectedDBID = feature.parent.dbid;
-							document.getElementById("recode_btn").disabled = false;
-							if (feature.parent.dbid == cdsDBID){
-								highlight_seq(feature.parent, typeColorsSelected[feature.parent.partType]);
-								seqType = 'cds';
-							}
-							else{
-								window.location = '/details?dbid=' + feature.parent.dbid;
-							}
-						};
-					}
-					else if (type == 'promoter'){
-						onClick = function(feature){
-							selectedDBID = feature.parent.dbid;
-							document.getElementById("recode_btn").disabled = false;
-							if(feature.lane.dbid == geneDBID){
-								highlight_seq(feature.parent, typeColorsSelected[feature.parent.partType]);
-								seqType = 'promoter5';
-							}
-							else{
-								window.location = '/details?dbid=' + feature.lane.dbid;
-							}
-						};
-					}
-					else{
-						onClick = function(feature){
-							selectedDBID = feature.parent.dbid;
-							document.getElementById("recode_btn").disabled = true;
-							if(feature.lane.dbid == geneDBID){
-								highlight_seq(feature.parent, typeColorsSelected[feature.parent.partType]);
-							}
-							else{
-								window.location = '/details?dbid=' + feature.lane.dbid;
-							}
-						};
-					}
-
-					newFeature.onClick = onClick;
-
-
-					newFeature.onMouseover = function(feature){
-
-
-						for(i=0; i<features.length; i++){
-							if (features[i].uid == feature.parent.uid || features[i].dbid == selectedDBID){
-								features[i].borderWidth = 5;
-							}
-							else{
-								features[i].borderWidth = 0;
-							}
-						}
-
-						
-						geneView.redraw();
-					};
-					
-					newFeature.setColorGradient(typeColors[type], typeColors[type]);
-					newFeature.ftype = type;
-					features.push(newFeature);
-				}
-			
-		// n+=1;
-		// if (n == 4){
-		// 	break;
-		// }
 		
-	}
+				for ( idx in exonStr ){
+					
+					exon = exonStr[idx]
+
+					start  = parseInt(exon.split(':')[0]);
+					end    = parseInt(exon.split(':')[1]);
+
+					minStart = Math.min(minStart, start);
+					maxEnd   = Math.max(maxEnd, end);
+
+					blocks.push( new BlockArrow(type, start, end-start, '+', {'borderColor':'black'} ) );
+				}
+
+				for(i=0; i<blocks.length; i++){
+					blocks[i].position -= minStart;
+				}
+
+				
+				newFeature = geneTrack.addFeature( new Complex(type, minStart, maxEnd - minStart, '+', blocks) ) ;
+				
+
+				newFeature.dbid = dbid;
+				newFeature.partType = type;
+
+				
+				newFeature.onClick = function(feature){
+					selectedDBID = feature.parent.dbid;
+					highlight_seq(feature.parent, typeColorsSelected[feature.parent.partType]);
+					seqType = feature.parent.partType;
+
+					if (seqType == "cds" || seqType == "promoter"){
+						document.getElementById("recode_btn").disabled = false;
+					}
+					else{
+						document.getElementById("recode_btn").disabled = true;
+					}
+				}
+				
+				// if (type == 'cds'){
+				// 	onClick = function(feature){
+				// 		selectedDBID = feature.parent.dbid;
+				// 		document.getElementById("recode_btn").disabled = false;
+				// 		if (feature.parent.dbid == cdsDBID){
+				// 			highlight_seq(feature.parent, typeColorsSelected[feature.parent.partType]);
+				// 			seqType = 'cds';
+				// 		}
+				// 		else{
+				// 			window.location = '/details?dbid=' + feature.parent.dbid;
+				// 		}
+				// 	};
+				// }
+				// else if (type == 'promoter'){
+				// 	onClick = function(feature){
+				// 		selectedDBID = feature.parent.dbid;
+				// 		document.getElementById("recode_btn").disabled = false;
+				// 		if(feature.lane.dbid == geneDBID){
+				// 			highlight_seq(feature.parent, typeColorsSelected[feature.parent.partType]);
+				// 			seqType = 'promoter5';
+				// 		}
+				// 		else{
+				// 			window.location = '/details?dbid=' + feature.lane.dbid;
+				// 		}
+				// 	};
+				// }
+				// else{
+				// 	onClick = function(feature){
+				// 		selectedDBID = feature.parent.dbid;
+				// 		document.getElementById("recode_btn").disabled = true;
+				// 		if(feature.lane.dbid == geneDBID){
+				// 			highlight_seq(feature.parent, typeColorsSelected[feature.parent.partType]);
+				// 		}
+				// 		else{
+				// 			window.location = '/details?dbid=' + feature.lane.dbid;
+				// 		}
+				// 	};
+				// }
+
+				// newFeature.onClick = onClick;
+
+
+				newFeature.onMouseover = function(feature){
+
+
+					for(i=0; i<features.length; i++){
+						if (features[i].uid == feature.parent.uid || features[i].dbid == selectedDBID){
+							features[i].borderWidth = 5;
+						}
+						else{
+							features[i].borderWidth = 0;
+						}
+					}
+
+					
+					geneView.redraw();
+				};
+				
+				newFeature.setColorGradient(typeColors[type], typeColors[type]);
+				newFeature.ftype = type;
+				features.push(newFeature);
+			}		
 
 	console.log(geneView);
 	canvas.height = geneView.getHeight() + 20;
@@ -191,20 +185,27 @@ function draw(canvasName){
 function draworig(){
 	for(i=0; i<features.length; i++){
 
-		if (features[i].lane.dbid == geneDBID){
-			features[i].setColorGradient( typeColorsSelected[features[i].ftype], typeColorsSelected[features[i].ftype]  );
-
-			if (features[i].dbid == selectedDBID){
-				features[i].borderWidth = 5;
-			}
-			else{
-				features[i].borderWidth = 0;
-			}
-
+		features[i].setColorGradient( typeColorsSelected[features[i].ftype], typeColorsSelected[features[i].ftype]  );
+		if (features[i].dbid == selectedDBID){
+			features[i].borderWidth = 5;
 		}
 		else{
-			features[i].setColorGradient( typeColors[features[i].ftype], typeColors[features[i].ftype]  );
+			features[i].borderWidth = 0;
 		}
+		// if (features[i].lane.dbid == geneDBID){
+		// 	features[i].setColorGradient( typeColorsSelected[features[i].ftype], typeColorsSelected[features[i].ftype]  );
+
+		// 	if (features[i].dbid == selectedDBID){
+		// 		features[i].borderWidth = 5;
+		// 	}
+		// 	else{
+		// 		features[i].borderWidth = 0;
+		// 	}
+
+		// }
+		// else{
+		// 	features[i].setColorGradient( typeColors[features[i].ftype], typeColors[features[i].ftype]  );
+		// }
 	}
 	geneView.redraw();
 }
@@ -249,12 +250,9 @@ function highlight_seq(element, color){
 			underscore:	false 
 			});
 		}
-		if (element.strand == '+'){
-			subSeq = subSeq + seq.substring(elStart, elEnd);
-		}
-		else{
-			subSeq = seq.substring(elStart, elEnd) + subSeq; 
-		}
+		
+		subSeq = subSeq + seq.substring(elStart, elEnd);
+
 	}
 
 	seqViewer.coverage(sequenceCoverage);

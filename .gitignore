@@ -5,7 +5,6 @@
 **/*.pyc
 /server/blast/*
 **/test.py
-<<<<<<< HEAD
 marpodb2.wgsi
 /server/static/img/map.png
 /data/*
