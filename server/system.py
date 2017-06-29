@@ -557,12 +557,17 @@ def getBlastpHits(marpodbSession, cdsDBID):
 
 	return returnTable
 
+def getDbxRef(marpodbSession, cdsDBID):
+	hit = marpodbSession.query(DbxRef.origin, DbxRef.description).filter(DbxRef.targetID==CDS.id).filter(CDS.dbid == cdsDBID).first()
+	hit = { hit[0]: hit[1] } if hit else {}
+
+	return hit
 
 def getCDSDetails(marpodbSession, cdsDBID):
 
 	response = {}
 	response['blastp'] = getBlastpHits(marpodbSession, cdsDBID)
-
+	response['dbxref'] = getDbxRef(marpodbSession, cdsDBID)
 	return response
 
 def exportGB(cur, cdsName):

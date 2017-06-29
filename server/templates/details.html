@@ -42,18 +42,17 @@
 
 {% block content %}
 
-{% if current_user.is_authenticated %}
-	<h2 class = "subtitle">
-		<input id ="geneName" class="geneName" type="text" value = "{{user_data["starGenes"][cdsDBID]}}">
-	</h2>
-{% endif %}
-
 {% if alias%}
 	<h2 class = "subtitle">
 		<a href="https://phytozome.jgi.doe.gov/pz/portal.html#!results?search=0&crown=1&star=1&method=5040&searchText={{alias}}&offset=0" target="_blank">{{alias}}</a>
 	</h2>
 {%endif%}
 
+{% if current_user.is_authenticated %}
+	<h2 class = "subtitle">
+		<input id ="geneName" class="geneName" type="text" value = "{{user_data["starGenes"][cdsDBID]}}">
+	</h2>
+{% endif %}
 
 <div class="gene-details">
 	<div class = "geneStucture">

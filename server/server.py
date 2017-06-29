@@ -190,8 +190,8 @@ def details():
 		titleEx = '<img src="static/img/star.png" onclick="starGene()" id="star_img"/>'
 	else:
 		titleEx = '<img src="static/img/star_na.png" onclick="starGene()" id="star_img"/>'
-
-	alias = gene.alias
+	print annotation["dbxref"]
+	alias = annotation["dbxref"]["Phytozome MP-Tak 3.1"] if "Phytozome MP-Tak 3.1" in annotation["dbxref"] else ""
 	return render_template('details.html', alias = alias, geneDBID = gene.dbid, cdsDBID = cds.dbid, geneCoordinates = response["parts"], seq = response["seq"],  title = "Details for {0}".format(gene.dbid), titleEx = titleEx, blastp=annotation['blastp'], stared = stared )
 
 @app.route('/hmmer', methods=['GET', 'POST'])
