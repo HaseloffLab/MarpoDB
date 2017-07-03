@@ -691,8 +691,19 @@ a:hover{
 }
 
 .about_text{
-    
 	margin-top: 20px;
 	margin-bottom: 20px;
+	text-align: justify;
+}
+
+.about ul{
+	margin-top: 20px;
+	margin-bottom: 20px;
+	text-align: justify;
+}
+
+.about ul li{
+	margin-top: 5px;
+	margin-bottom: 5px;
 	text-align: justify;
 }

@@ -14,9 +14,12 @@ for gene in session.query(Gene).all():
 	
 	if nHits == 0:
 		session.query(BlastpHit).filter(BlastpHit.targetID == gene.cds.id).delete()
+		session.query(DbxRef).filter(DbxRef.targetID == gene.cds.id).delete()
 		session.delete(gene.cds)
-		session.delete(gene.utr5)
-		session.delete(gene.utr3)
+		if gene.utr5:
+			session.delete(gene.utr5)
+		if gene.utr3:
+			session.delete(gene.utr3)
 		session.delete(gene)
 		n = n+1
 

@@ -10,6 +10,7 @@ function starGene(){
 	else{
 		$("#star_img").attr("src", "static/img/star.png");
 		$("#geneName").show()
+		$("#geneName").focus();
 	}
 }
 

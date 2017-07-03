@@ -12,7 +12,7 @@ import collections
 
 from tables import *
 from partsdb.tools.Exporters import GenBankExporter
-from sqlalchemy import or_
+from sqlalchemy import or_, desc
 
 def splitString(s,n):
 	return [s[ start:start+n ] for start in range(0, len(s), n) ]
@@ -186,12 +186,12 @@ def findDataIn(marpodbSession, table, queryColumns, equal, returnColumns):
 	if issubclass( cls, AnnotationMixIn ):
 		tCls    = cls.__targetclass__
 		query = marpodbSession.query(tCls)
-
 		for column in returnColumns:
 			query = query.add_columns( column )
 
 		targets = query.filter(tCls.id == cls.targetID).\
 						filter( or_( qC.ilike(equal+'%') for qC in queryColumns ) ).all()
+		print targets
 		if targets:
 			return [ ( partDBID, geneDBID, cols ) for partDBID, geneDBID, cols in zip(
 						[ target[0].dbid for target in targets ],
@@ -200,13 +200,15 @@ def findDataIn(marpodbSession, table, queryColumns, equal, returnColumns):
 					) ]
 	else:
 		if issubclass(cls, PartMixIn):
-			query = marpodbSession.query(cls.dbid, cls.gene.dbid)
+			print "CLS: ", cls.__tablename__
+			print "Columns: ", queryColumns
+			query = marpodbSession.query(cls.dbid, cls)
 			targets = query.filter( or_(qC.ilike(equal+'%') for qC in queryColumns) ).all()
 			if targets:
-				return [ (partDBID, geneDBID, cols) for partDBID, geneDBID, cols in zip(
-							[ target[0] for target in target ],
-							[ target[1] for target in target ],
-							[ {rc.name: '' for rc in returnColumns} ]
+				print "return: ", returnColumns
+				return [ (partDBID, geneDBID, {}) for partDBID, geneDBID in zip(
+							[ target[0] for target in targets ],
+							[ target[1].gene[0].dbid for target in targets ]
 						) ]
 	
 	return {}
@@ -233,7 +235,8 @@ def processQuery(marpodbSession, scope, term, displayColumns, nHits):
 		for hit in newData:
 			partDBID = hit[0]
 			geneDBID = hit[1]
-			cols	 = hit[2]
+			cols = { col: '' for col in displayColumns }
+			cols.update(hit[2])
 			cols["dbid"] = partDBID
 
 
@@ -245,7 +248,7 @@ def processQuery(marpodbSession, scope, term, displayColumns, nHits):
 	for geneDBID in genes:
 		genes[geneDBID].sort(key = lambda hit: hit["eVal"])
 
-	sortedKeys = sorted( genes, key = lambda k: genes[k][0] )
+	sortedKeys = sorted( genes, key = lambda k: genes[k][0]["eVal"] )
 
 	table = {}
 	table["header"] = ["dbid"] + displayColumns
@@ -256,7 +259,7 @@ def processQuery(marpodbSession, scope, term, displayColumns, nHits):
 		rowid += 1
 		geneid = rowid
 		
-		cols = genes[geneDBID][0]
+		cols = genes[geneDBID][0].copy()
 		cols["dbid"] = geneDBID
 
 		row = {"rowid": rowid, "pid": "none", "cols": cols }

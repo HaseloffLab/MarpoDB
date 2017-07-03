@@ -20,15 +20,16 @@
 
 {% block content %}
 
-	<h1>Welcome to the <a href="/#">MarpoDB</a> collection <p>v3</p></h1>			
+	<h1>Welcome to the <a href="/#">MarpoDB</a> collection <p>v3<small><small><small><small><sup><sup><a href="/whatsnew">What's new?</a></sup></sup></small></small></small></small></p></h1>			
 		<form id="form" class="query-form center-form" action="" method="POST">
 			<p class="about_text">MarpoDB is a gene-centric resource of <i>Marchantia polymorpha</i> Cam-1 genetic parts for engineering and plant synthetic biology. For more information visit our <a href="/about" target="_blank">about</a> or <a href="/help">help</a> page.</p>
 			<a id="blast-link" class="right big-label" href="/blast">BLAST to MarpoDB</a>
 			<a id="blast-link" class="right big-label" href="/hmmer">HMMER to MarpoDB&nbsp&nbsp&nbsp&nbsp</a>
-			<p id="description" class = "big-label">Search by gene/family name, keyword, GO term or ID</p>
+			<p id="description" class = "big-label">Search by protein/family name, InterPro/GO term or Phytozome/MarpoDB ID</p>
 			<input id="search-field" class="text-input query-search-field" type="text"  name="term" value="myb">
 			<label id="search-scope" class = "small-label"><input class='search-scope' type=checkbox name=searchScope value = 'interprohit.description|interprohit.refID' checked> InterPro</label>
-			<label id="search-scope" class = "small-label"><input class='search-scope' type=checkbox name=searchScope value = 'blastphit.description|blastphit.refID' checked> Protein Blast</label>
+			<label id="search-scope" class = "small-label"><input class='search-scope' type=checkbox name=searchScope value = 'blastphit.description|blastphit.refID'> Protein Blast</label>
+			<label id="search-scope" class = "small-label"><input class='search-scope' type=checkbox name=searchScope value = 'dbxref.description|cds.dbid'> DBxRef</label>
 			<p><input id='search-button' class="button right" type=submit value=Find></p>
 		</form>		
 	<img class="logo" id='logo' src="/static/img/logo.jpg">

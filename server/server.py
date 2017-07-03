@@ -196,7 +196,7 @@ def details():
 
 @app.route('/hmmer', methods=['GET', 'POST'])
 def hmmer():
-	title = 'HMMER search (Beta)'
+	title = 'HMMER search'
 
 	if request.method == 'POST':
 			smaFile = request.files['file']
@@ -562,6 +562,10 @@ def about():
 @app.route('/help')
 def help():
 	return render_template("help.html", title='Help')
+
+@app.route('/whatsnew')
+def whatsnew():
+	return render_template("whatsnew.html", title="What's new?")
 
 if __name__ == '__main__':
 	marpodb = PartsDB('postgresql:///' + os.environ["MARPODB_DB_NAME"], Base = Base)

@@ -27,8 +27,13 @@ for locus in session.query(Locus).all():
 			primaryGene = max( genes, key = lambda gene: len( coordinatesToLocation(gene.cds.coordinates) ) )
 			genes.remove(primaryGene)
 			for gene in genes:
+				session.query(BlastpHit).filter(gene.cds.id == BlastpHit.targetID).delete(synchronize_session='fetch')
+				session.query(InterProHit).filter(gene.cds.id == InterProHit.targetID).delete(synchronize_session='fetch')
+				session.query(DbxRef).filter(gene.cds.id == DbxRef.targetID).delete(synchronize_session='fetch')
 				session.delete(gene.cds)
-				session.delete(gene.utr5)
-				session.delete(gene.utr3)
+				if gene.utr5:
+					session.delete(gene.utr5)
+				if gene.utr3:
+					session.delete(gene.utr3)
 				session.delete(gene)
 	session.commit()
