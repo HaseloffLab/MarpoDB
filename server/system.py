@@ -106,7 +106,7 @@ def generateNewMap(User):
 		r = requests.get("https://maps.googleapis.com/maps/api/place/textsearch/json", params = data)
 		print r.url
 		print r.json
-		if r.status_code == requests.codes.ok:
+		if r.status_code == requests.codes.ok and r.json()["results"]:
 			markers.append(u"{0},{1}".format(r.json()["results"][0]["geometry"]["location"]["lat"], r.json()["results"][0]["geometry"]["location"]["lng"]))	
 
 	with open('server/static/json/map_style.json') as dataFile:    
@@ -227,7 +227,7 @@ def processQuery(marpodbSession, scope, term, displayColumns, nHits):
 			scopeDict[scTable] = []
 		scopeDict[scTable].append(scColumn)
 
-	# Processing queries
+	# Processing queriesx
 	genes = {}
 	for scTable in scopeDict:
 		scColumns = scopeDict[scTable]
