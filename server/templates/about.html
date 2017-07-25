@@ -19,6 +19,16 @@
 		<p class="about_text">MarpoDB was developed by Bernardo Pollak (BP)*, Mihails Delmans(MD)* under the supervision of Prof. Jim Haseloff at the OpenPlant Centre in the Department of Plant Sciences of the University of Cambridge. BP performed extraction experiments and carried out high-throughput sequencing and assembled the genome and transcriptome. BP in conjunction with MD did the downstream analyses, prepared the datasets and programmed the front-end and MD developed the back-end and database models.</p>
 		<p class="about_text">* Equal contribution.</p>
 		
+		<h2>Access to the databse</h2>
+		<p class="about_text">In order to have a direct access to the MarpoDB databse you can either use a <a href="https://www.postgresql.org/" target="_blank">PostrgeSQL</a> client or a <i>console.sh</i> script, which will load a Python interpreter with a <a href="https://www.sqlalchemy.org/" target="_blank">SQLAlchemy</a> <i>session</i> object defined and connected to the MarpoDB.
+		</p>
+
+		<p class="about_text">To access the database using PostgreSQL client use the following credentials:<i><br><br>host: marpodb.io<br>database: marpodb3<br>user: common<br><br></i>In Unix command line this can be achived by running<br><br><i>psql -d marpodb3 -h marpodb.io -U common</i>
+		</p>
+
+		<p class="about_text">To use <i>console.sh</i> script just run it in Unix console from /server folder with<br><br><i>./console.sh</i><br><br>You can then use the session object to make queries to the databse, e.g.<br><br><i>>>session.query(Gene).all()</i><br><br> will select all the genes in the MarpoDB. To learn more about querying system please reffer to <a href="https://www.sqlalchemy.org/library.html" target="_blank">SQLAlchemy documentation</a>.
+		</p>
+
 		<h2>Disclaimer</h2>
 		<p class="about_text">This software is provided by the authors "as is" and any express or implied warranties, including, but not limited to, the implied warranties of merchantability and fitness for a particular purpose are disclaimed. The entire risk as to the quality and performance of the program is with you. In no event shall the authors, be liable for any direct, indirect, incidental, special, exemplary, or consequential damages (including, but not limited to, procurement of substitute goods or services; loss of data or data being rendered inaccurate; loss of use or profits; or business interruption) however caused and on any theory of liability, whether in contract, strict liability, or tort (including negligence or otherwise) arising in any way out of the use of this software, even if advised of the possibility of such damage.<br \><br \></p>
 	</div>

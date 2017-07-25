@@ -696,6 +696,10 @@ a:hover{
 	text-align: justify;
 }
 
+.about_text b{
+	font-weight: bold;
+}
+
 .about ul{
 	margin-top: 20px;
 	margin-bottom: 20px;

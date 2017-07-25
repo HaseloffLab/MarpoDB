@@ -265,7 +265,7 @@ def processQuery(marpodbSession, scope, term, displayColumns, nHits):
 		row = {"rowid": rowid, "pid": "none", "cols": cols }
 		table["data"].append(row)
 
-		for hit in genes[geneDBID]:
+		for hit in genes[geneDBID][0:5]:
 			rowid +=1
 			row = {"rowid": rowid, "pid": geneid, "cols": hit }
 			table["data"].append(row)
