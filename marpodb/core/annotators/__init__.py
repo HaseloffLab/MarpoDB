@@ -1,0 +1,2 @@
+from BlastAnnotator import BlastAnnotator
+from InterproAnnotator import InterproAnnotator

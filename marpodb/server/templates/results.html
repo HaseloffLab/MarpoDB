@@ -1,0 +1,66 @@
+{% extends "layout.html" %}
+{% block content %}
+
+{% set headerLabels = {
+	"dbid"			: "MarpoID",
+	"name"			: "Name",
+	"description" 	: "Description",
+	"proteinName"	: "Description",
+	"origin"		: "Origin",
+	"eVal"			: "E-value"
+
+}%}
+
+{% set hitLabels = {
+	"pfamHit"		: "Pfam",
+	"blastpHit"	    : "Protein BLAST",
+	"cds"			: "CDS"
+}%}
+	
+	<div id="table" class="results-table-div">
+		<table class="results_table" style="border-bottom: solid 1.5px black !important; border-top: solid 1.5px black !important;">
+			<tr class="theader">
+				{% for item in table["header"] %}
+					{% if headerLabels[item] == "MarpoID"  %}
+						<th class="tdheader" style="min-width:80px"> {{headerLabels[item]}} </th>
+					{% elif headerLabels[item] == "Description" %}
+						<th class="tdheader" style="min-width:200px"> {{headerLabels[item]}} </th>
+					{% elif headerLabels[item] == "E-value" %}
+						<th class="tdheader center"> {{headerLabels[item]}} </th>
+					{% elif headerLabels[item] == "Origin" %}
+						<th class="tdheader" style="min-width:120px"> {{headerLabels[item]}} </th>
+					{% endif %}
+				{% endfor %}
+			</tr>
+
+
+			{% for row in table["data"] %}
+				{% if row["pid"] == "none" %}
+					<tr class="header locus" id="header{{row['rowid']}}" parent-id="header{{row['pid']}}">
+				{% else %}
+					<tr class="header hit" id="header{{row['rowid']}}" parent-id="header{{row['pid']}}">
+				{% endif %}
+					{% for col in table["header"] %}
+						
+						{% if col == "dbid" %}
+							
+							{% if row["pid"] == "none" %}
+								<td><span class="ident"></span><img src="../static/img/expand.png"/><a href="details?dbid={{row['cols']['dbid']}}" target="_blank">{{row['cols']["dbid"]}}</a></td>
+							{% else %}
+								<td><span class="ident"></span>{{row['cols']['dbid']}}</td>
+							{% endif %}
+
+						{% else %}
+							<td class="truncate">{{row['cols'][col]|string}}</td>
+						{% endif %}
+
+					{% endfor %}
+
+				</tr>
+
+			{% endfor %}
+		
+		</table>
+	</div>	
+	<script src="/static/javascript/nestedtable.js"></script>
+{% endblock %}
