@@ -38,6 +38,6 @@ def annotateInfoNames(client, infoNames = "../../data/marpodb4/Info_names"):
 if __name__ == "__main__":
 	marpodb = MarpoDB("/marpodb4")
 	# marpodb.annotate("interprohit", xmlFile = "../../data/marpodb4/marpodb4_cam_tak_2018_06_27.fa.xml")
-	annotateInfoNames(marpodb)
-	# marpodb.annotate("blastphit", blastFileName = "../../data/marpodb4/marpodb4_cam_tak_2018_06_27_vs_uniprot_2018_07_02.outfmt6", uniprotInfoFileName = "../../data/misc/uniprot/uniprot_viridiplantae_trans_prot_evidence_02_07_2018.tab")
+	# annotateInfoNames(marpodb)
+	marpodb.annotate("blastphit", blastFileName = "../../data/marpodb4/marpodb4_cam_tak_2018_06_27_vs_uniprot_prot_2018_07.02.outfmt6", uniprotInfoFileName = "../../data/misc/uniprot/uniprot_viridiplantae_trans_prot_evidence_02_07_2018.tab")
 	

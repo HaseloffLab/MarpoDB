@@ -80,30 +80,30 @@ class Gene(Base,BaseMixIn):
 	locus   		= relationship(Locus,		backref=backref("gene"),	enable_typechecks=False)
 	dataset			= relationship(Dataset,		backref=backref("gene"),	enable_typechecks=False)
 
-	# @hybrid_property
-	# def record(self):
-	# 	keys = ["promoter", "utr5", "cds", "utr3", "terminator"]
-	# 	parts = [  getattr(self, key) for key in keys ]
+	@hybrid_property
+	def record(self):
+		keys = ["promoter", "utr5", "cds", "utr3", "terminator"]
+		parts = [  getattr(self, key) for key in keys ]
 
-	# 	print "### DEBUG"
-	# 	print self.dbid
-	# 	print self
-	# 	print "### DEBUG"
+		print "### DEBUG"
+		print self.dbid
+		print self
+		print "### DEBUG"
 
-	# 	record = SeqRecord(id = self.dbid, name = str(self.dbid), seq = '' )
+		record = SeqRecord(id = self.dbid, name = str(self.dbid), seq = '' )
 
-	# 	for partType, part in zip( keys, parts):
-	# 		l = len(self.seq)
-	# 		if isinstance(part, PartMixIn):
-	# 			if isinstance(part, ExonMixIn):
-	# 				feature = SeqFeature( type = partType, location = coordinatesToLocation(part.coordinates)._shift( l ), id=part.dbid )
-	# 			else:
-	# 				feature = SeqFeature( type = partType, location = FeatureLocation( l, l + len(part.seq) ), id=part.dbid )
+		for partType, part in zip( keys, parts):
+			l = len(record)
+			if isinstance(part, PartMixIn):
+				if isinstance(part, ExonMixIn):
+					feature = SeqFeature( type = partType, location = coordinatesToLocation(part.coordinates)._shift( l ), id=part.dbid )
+				else:
+					feature = SeqFeature( type = partType, location = FeatureLocation( l, l + len(part.seq) ), id=part.dbid )
 
-	# 			record.seq += Seq(part.seq, generic_dna)
-	# 			record.features.append(feature)
+				record.seq += Seq(part.seq, generic_dna)
+				record.features.append(feature)
 
-	# 	return record
+		return record
 
 	@hybrid_property
 	def seq(self):

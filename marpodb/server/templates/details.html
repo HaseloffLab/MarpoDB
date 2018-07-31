@@ -1,0 +1,138 @@
+{% extends "layout.html" %}
+{% block head %}
+	<!-- CHART -->
+	<script src="/static/javascript/Scribl.1.1.4.1.min.js" type="text/javascript"></script>
+	<!-- SEQVIEW -->
+	<script src="/static/javascript/sequence-viewer.bundle.js" type="text/javascript"></script>
+	<script src="/static/javascript/seqviewer.js"></script>
+	<script src="/static/javascript/blast-viz.js"></script>
+	<!-- CLIPBOARD -->
+	<script src="/static/javascript/clipboard.min.js" type="text/javascript"></script>
+	<script src="/static/javascript/clipboard_tooltip.js"></script>
+	<!-- USER INTRACTION -->
+	<script src="/static/javascript/user_interaction.js"></script>
+	<!-- RECODE -->
+	<script src="/static/javascript/recode.js"></script>
+	<!-- INTERPRO -->
+    <link href="/static/interpro/resources/css/type_colours.css" rel="stylesheet" type="text/css"/>
+    <link href="/static/interpro/resources/css/protein.css" rel="stylesheet" type="text/css"/>
+    <script src="/static/interpro/resources/javascript/jquery/jquery-1.7.1.min.js" type="text/javascript"></script>
+    <script src="/static/interpro/resources/javascript/qtip2/jquery.qtip.min.js" type="text/javascript"></script>
+    <link href="/static/interpro/resources/javascript/qtip2/jquery.qtip.css" rel="stylesheet" type="text/css"/>
+    <script src="/static/interpro/resources/javascript/common.js" type="text/javascript"></script>
+    <script src="/static/interpro/resources/javascript/protein.js" type="text/javascript"></script>
+    <script src="/static/interpro/resources/javascript/protein-popups.js" type="text/javascript"></script>
+	<script>
+		var seq = "{{seq}}";
+		var cdsDBID = "{{cdsDBID}}"
+		var geneDBID = "{{geneDBID}}"
+
+		selectedDBID = cdsDBID;
+		seqType = "cds";
+		parts = {}
+
+		{% for dbid, coordinates in geneCoordinates.iteritems() %}
+			parts["{{dbid}}"] = "{{coordinates}}"
+		{% endfor %}
+
+	</script>
+
+
+{% endblock %}
+
+
+{% block content %}
+
+{% if alias%}
+	{% for source, annotation in alias.iteritems() %}
+		<h2 class = "subtitle">
+			<a href={{annotation[1]}} target="_blank">{{annotation[0]}}</a>
+		</h2>
+	{% endfor %}
+{%endif%}
+
+{% if current_user.is_authenticated %}
+	<h2 class = "subtitle">
+		<input id ="geneName" class="geneName" type="text" value = "{{user_data["starGenes"][cdsDBID]}}">
+	</h2>
+{% endif %}
+
+<div class="gene-details">
+	<div class = "geneStucture">
+		<div class = "geneView" >
+				<canvas id = "geneViewCanvas" width="740px"></canvas>
+		</div>
+
+		<!--<h2 class="section" >Sequence-viewer</h2>-->
+
+		<div id="seqView" class="seqView"></div>
+		
+		<div id="clipboard" class="clipboard">
+			<button id="clipboard_btn" class="button right" data-clipboard-text="">Copy</button>
+			<button id="download_gb_btn" class="button right" onclick="location.href = '/export/gene?dbid={{geneDBID}}';">Genbank file{{cdsdbid}}</button>
+			<button id="recode_btn" class="button right" onclick="go_recode('{{geneDBID}}', seqType)">Recode</button>
+		</div>
+
+		<div class = "panels" data-collapse>
+			<h2 class="section">InterPro</h2>
+			<div id = "interproPanel">
+				{{interpro | safe}}
+			</div>
+			<h2 class="section">Protein Blast</h2>
+			<div id = "blastpPanel">
+				<table id = "blastpTable" class = "blastTable">
+					{% for row in blastp["rows"] %}
+						<tr class="header">
+							<td class="blast-canvas-container">
+								<canvas id = "row{{loop.index}}"></canvas>
+							</td>
+							<td class="truncate">
+									<a href="http://www.uniprot.org/uniprot/{{row['uniID']}}" target="_blank">{{row["proteinName"]}}
+							</td>
+							<td class="truncate">
+									{{row["origin"]}}
+							</td>
+							<td class="truncate">
+									{{row["eVal"]}}
+							</td>
+						</tr>
+					{% endfor %}
+				</table>	
+			</div>
+		</div>
+
+	</div>
+</div>
+
+<script>
+	$(function(){
+
+		// var seqType = 'cds';
+
+		$("#geneName").change( function(){
+			changeStarName();
+		});
+		
+		var clipboard = new Clipboard('#clipboard_btn')
+		$("#clipboard_btn").mouseleave(function(){
+				$(this).removeClass('tooltipped');
+				$(this).attr('aria-label', '');
+		});
+
+		clipboard.on('error', function(e) {
+			showTooltip(e.trigger, fallbackMessage(e.action));
+		});
+
+		clipboard.on('success', function(e) {
+			showTooltip(e.trigger, "Coppied to clipboard");
+		});
+
+		draw("geneViewCanvas");
+		seqviewer(seq, "#seqView");
+		console.log({{blastp['rows'] | tojson |safe}});
+		blastviz("#blastpTable", {{blastp["maxLen"]}}, {{blastp['rows'] | tojson |safe}});
+
+	});
+</script>
+
+{% endblock %}

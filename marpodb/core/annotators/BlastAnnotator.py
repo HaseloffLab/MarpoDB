@@ -49,14 +49,15 @@ class BlastAnnotator(Annotator):
 
 				data = dict( zip(names, tabs) )
 				
-				data["uniID"] = data["uniID"].split('|')[2]
-				searchID = data["uniID"].split('_')[0]
+				uniID = data["uniID"].split('|')[1]
 
-				if not searchID in unidb:
+				if not uniID in unidb:
+					# print "No {0} in unidb".format( uniID )
 					continue
 
-				data["proteinName"] = unidb[searchID][0]
-				data["origin"] 		= unidb[searchID][1]
+				data["uniID"] = uniID
+				data["proteinName"] = unidb[uniID][0]
+				data["origin"] 		= unidb[uniID][1]
 				
 				hit = self.cls()
 				hit.refID					= data["uniID"]

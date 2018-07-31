@@ -1,0 +1,18 @@
+Metadata-Version: 1.1
+Name: marpodb
+Version: 4.0
+Summary: Marchantia polymorpha gene-centric database
+Home-page: UNKNOWN
+Author: Mihails Delmans
+Author-email: md656@cam.ac.uk
+License: MIT
+Description-Content-Type: UNKNOWN
+Description: UNKNOWN
+Keywords: bioinfomratics
+Platform: UNKNOWN
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Science/Research
+Classifier: Topic :: Scientific/Engineering :: Bio-Informatics
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 2.7

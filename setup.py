@@ -30,7 +30,7 @@ setup(
 		# that you indicate whether you support Python 2, Python 3 or both.
 		'Programming Language :: Python :: 2.7',
 	],
-	keywords='bioinfomratics parts synthetic biology loop assembly',
+	keywords='bioinfomratics',
 	packages=find_packages(),
 	install_requires=[
 		'sqlalchemy', 'partsdb',
@@ -46,7 +46,8 @@ setup(
 				"server/static/javascript/*",
 				"server/static/img/*",
 				"server/static/json/*",
-				"server/static/interpro/*"
+				"server/static/interpro/*",
+				"server/static/interpro/resources/*"
 			]
 	},
 	include_package_data=True

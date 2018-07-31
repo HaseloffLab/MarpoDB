@@ -1,0 +1,97 @@
+{% extends "layout.html" %}
+
+{% block head %}
+	<script src="/static/javascript/blast-viz.js"></script>
+{% endblock %}
+
+{% block content %}
+
+<!-- All possible headers:
+	hit_strand
+	hit_from
+	num
+	gaps
+	hit_to
+	query_to
+	bit_score
+	qseq
+	identity
+	midline
+	query_strand
+	align_len
+	query_from
+	evalue
+	score
+	hseq
+	cdsName 
+
+	!!! First header element should allways be 'cdsName'
+-->
+
+{% set colNames = {
+	'hit_strand' : 'Hit strand',
+	'hit_from' : 'Hit from',
+	'num' : 'Num',
+	'gaps' : 'Gaps',
+	'hit_to' : 'Hit to',
+	'query_to' : 'Query to',
+	'bit_score' : 'Bit score',
+	'identity' : 'Identity',
+	'coverage' : 'Coverage',
+	'query_strand' : 'Query strand',
+	'align_len' : 'Length of alignment',
+	'query_from' : 'Query from',
+	'evalue' : 'e-value',
+	'score' : 'Score',
+	'dbid' : idType+' id',
+	'locusdbid' : 'Locus id'
+} %}
+
+
+{% set header = ['dbid', 'locusdbid', 'bit_score', 'evalue']%}
+
+<div id="blast_results" class="results-table-div">
+	<table>
+		<tr>
+			{% for key in header %}
+				<td class="tdheader"> {{colNames[key]}} </td>
+			{% endfor %}
+			<td class="tdheader"> Alignment </td>
+		</tr>
+
+		{% for row in result%}
+			<tr class="header" id="{{loop.index * 2}}">
+				<td style="width: 20%" ><span><img src="../static/img/expand.png"/></span><a href="/details?dbid={{row['dbid']}}" target="_blank">{{row['dbid']}}</a></td>
+				<td style="width: 20%" ><a href="/details?dbid={{row['locusdbid']}}" target="_blank">{{row['locusdbid']}}</a></td>
+
+				{% for key in header[2:] %}
+					<td>{{ row[key] }}</td>
+				{% endfor %}
+					<td class="blast-canvas-container">
+						<canvas id = "row{{loop.index}}"></canvas>
+					</td>
+			</tr>
+
+			<tr class="header" id="{{ loop.index * 2 + 1 }}" parent-id="{{loop.index * 2}}" style="display:none">
+				<td colspan = "{{header|length}}">
+					{% for i in range( row['qseq']|length ) %}
+						<span style="display:inline-block; width: 60px;">Query:</span><tt>{{row['qseq'][i]}}</tt></br>
+						<span style="display:inline-block; width: 60px;"></span><tt>{{row['midline'][i]|safe}}</tt></br>
+						<span style="display:inline-block; width: 60px;">Target:</span><tt>{{row['hseq'][i]}}</tt></br>
+						<tt>{{empty}}</tt></br>
+					{% endfor %}
+				</td>
+			</tr>
+
+		{% endfor %}
+	</table>
+	<script src="/static/javascript/nestedtable.js"></script>
+</div>
+
+<script>
+	$(function(){
+		blastviz("#blast_results", {{maxLen}}, {{result | tojson |safe}});
+	});
+</script>
+
+{% endblock %}

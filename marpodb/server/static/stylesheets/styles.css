@@ -51,7 +51,7 @@ h2.subtitle{
 	text-align: center;
 	margin:0 0 20px;
 	font-size:25px;
-	padding-bottom: 20px;
+	/*padding-bottom: 20px;*/
 }
 
 h2.section{
@@ -587,7 +587,7 @@ th, td {
 
 .blast-parameters{
 	position: relative;
-	width: 300px;
+	width: 400px;
 	border-spacing:5px;
 }
 
@@ -601,6 +601,14 @@ th, td {
 
 .p-col{
 	width: 75px;
+}
+
+.i-col{
+	width: 50px;
+}
+
+.d-col{
+	width: 50px;
 }
 
 .blast-button{

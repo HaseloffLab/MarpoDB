@@ -16,70 +16,39 @@ def getColumnByName(cls, columnName):
 			return c
 	return None
 
-def queryTable(session, table, queryColumns, equal, returnColumns):
-	
-	if table in marpodb.classes:
-		cls = marpodb.classes[table]
-	else:
-		return {}
+def getClassByTablename(tablename):
+	for c in Base._decl_class_registry.values():
+		if hasattr(c, '__tablename__') and c.__tablename__ == tablename:
+			return c
+	return None
 
-	labels = ["partID"] + returnColumns
 
-	queryColumns  = [ getColumnByName(cls, name) for name in queryColumns ]
-	returnColumns = [ getColumnByName(cls, columnName) for columnName in returnColumns ] 
+def findDataIn(marpodbSession, table, queryColumns, equal, returnColumns, dataset):
+	cls 			= getClassByTablename(table)
+	queryColumns	= [ getColumnByName(cls, name) for name in queryColumns ]
+	returnColumns	= [ getColumnByName(cls, columnName) for columnName in returnColumns ] 
 
 	if issubclass( cls, AnnotationMixIn ):
 		tCls    = cls.__targetclass__
-		query = session.query(cls.targetID)
-
-		for column in returnColumns:
-			query = query.add_columns( column )
-
-		hits = query.filter( or_( qC.ilike(equal+'%') for qC in queryColumns ) ).all()
-
+		
+		partIDColumn = getColumnByName(Gene, "{0}ID".format(tCls.__tablename__))
+		
+		query	= marpodbSession.query(tCls.dbid, Gene.dbid, *returnColumns).filter(Gene.datasetID == Dataset.id).filter(Dataset.name.in_(dataset))
+		hits	= query.filter(partIDColumn == tCls.id).filter(tCls.id == cls.targetID).\
+						filter( or_( qC.ilike("{0}%".format(equal)) for qC in queryColumns ) ).all()
 		if hits:
-			hitDataFrame = pd.DataFrame.from_records(hits, columns=labels)
-			# hitDataFrame["partDBID"] = session.query()
-			
-			return hitDataFrame
+			return [ ( hit[0], hit[1], {rc.name: val for rc, val in zip(returnColumns, hit[2:])} ) for hit in hits ]
 
-			# Add columns that contain partDBID and geneDB id. Remove transcript evidence blast to make everything quick.
+	if issubclass( cls, PartMixIn ):
+		partIDColumn = getColumnByName(Gene, "{0}ID".format(cls.__tablename__))
+		query	= marpodbSession.query( cls.dbid, Gene.dbid ).filter(Gene.datasetID == Dataset.id).filter(Dataset.name.in_(dataset))
+		hits	= query.filter(partIDColumn == cls.id).filter( or_( qC.ilike("{0}%".format(equal)) for qC in queryColumns ) ).all()
+		if hits:
+			return [ (hit[0], hit[1], {}) for hit in hits ]
 
-			# data = {
-			# 	"pdbid" : [hit.target.dbid for hit in hits],
-			# 	"gdbid" : [hit.target.gene.dbid for ]
-			# }
+	return []
 
-
-		# if hits:
-
-		# 	partDBIDs = [hit.target.dbid for hit in hits]
-		# 	geneDBIDs = [hit.target.gene[0].dbid for hit in hits ]
-		# 	cols = [{ rc: getattr(hit, rc) for rc in returnColumns } for hit in hits]
- 	# 		return [ (pdbid, dbid, col) for pdbid, dbid, col in zip( partDBIDs, geneDBIDs, cols ) ]
-			# return [ ( partDBID, geneDBID, cols ) for partDBID, geneDBID, cols in zip(
-			# 			[ target[0].dbid for target in targets ],
-			# 			[ target[0].gene[0].dbid for target in targets ],
-			# 			[ {rc.name: val for rc, val in zip( returnColumns, target[1:])} for target in targets ]
-			# 		) ]
-	else:
-		if issubclass(cls, PartMixIn):
-			
-			print "CLS: ", cls.__tablename__
-			print "Columns: ", queryColumns
-
-			query = session.query(cls.dbid, cls)
-			targets = query.filter( or_(qC.ilike(equal+'%') for qC in queryColumns) ).all()
-			if targets:
-				print "return: ", returnColumns
-				return [ (partDBID, geneDBID, {}) for partDBID, geneDBID in zip(
-							[ target[0] for target in targets ],
-							[ target[1].gene[0].dbid for target in targets ]
-						) ]
-	
-	return {}
-
-def processQuery(sesion, scope, term, displayColumns, nHits):
+def processQuery(marpodbSession, scope, term, dataset, displayColumns, nHits):
 
 	# Creating a scope map
 	scopeDict = {}
@@ -94,51 +63,128 @@ def processQuery(sesion, scope, term, displayColumns, nHits):
 		scopeDict[scTable].append(scColumn)
 
 	# Processing queries
+	genes = {}
 	for scTable in scopeDict:
 		scColumns = scopeDict[scTable]
-		data = pd.DataFrame(columns=["ID"] + displayColumns)
-		newData = queryTable(sesion, scTable, scColumns, term, displayColumns)
-
-		data.append(newData, ignore_index = True, sort = False)
-
-	# 	for hit in newData:
-	# 		partDBID = hit[0]
-	# 		geneDBID = hit[1]
-	# 		cols = { col: '' for col in displayColumns }
-	# 		cols.update(hit[2])
-	# 		cols["dbid"] = partDBID
+		newData = findDataIn(marpodbSession, scTable, scColumns, term, displayColumns, dataset)
+		for hit in newData:
+			partDBID = hit[0]
+			geneDBID = hit[1]
+			cols = { col: '' for col in displayColumns }
+			cols.update(hit[2])
+			cols["dbid"] = partDBID
 
 
-	# 		if not geneDBID in genes:
-	# 			genes[geneDBID] = []
+			if not geneDBID in genes:
+				genes[geneDBID] = []
 
-	# 		genes[geneDBID].append( cols )
+			genes[geneDBID].append( cols )
 
-	# for geneDBID in genes:
-	# 	genes[geneDBID].sort(key = lambda hit: hit["eVal"])
+	for geneDBID in genes:
+		genes[geneDBID].sort(key = lambda hit: hit["eVal"])
 
-	# sortedKeys = sorted( genes, key = lambda k: genes[k][0]["eVal"] )
+	sortedKeys = sorted( genes, key = lambda k: genes[k][0]["eVal"] )
 
-	# table = {}
-	# table["header"] = ["dbid"] + displayColumns
-	# table["data"] = []
+	table = {}
+	table["header"] = ["dbid"] + displayColumns
+	table["data"] = []
 
-	# rowid = 0
-	# for geneDBID in sortedKeys:
-	# 	rowid += 1
-	# 	geneid = rowid
+	rowid = 0
+	for geneDBID in sortedKeys:
+		rowid += 1
+		geneid = rowid
 		
-	# 	cols = genes[geneDBID][0].copy()
-	# 	cols["dbid"] = geneDBID
+		cols = genes[geneDBID][0].copy()
+		cols["dbid"] = geneDBID
 
-	# 	row = {"rowid": rowid, "pid": "none", "cols": cols }
-	# 	table["data"].append(row)
+		row = {"rowid": rowid, "pid": "none", "cols": cols }
+		table["data"].append(row)
 
-	# 	for hit in genes[geneDBID][0:5]:
-	# 		rowid +=1
-	# 		row = {"rowid": rowid, "pid": geneid, "cols": hit }
-	# 		table["data"].append(row)
+		for hit in genes[geneDBID][0:5]:
+			rowid +=1
+			row = {"rowid": rowid, "pid": geneid, "cols": hit }
+			table["data"].append(row)
 
-	# for row in table["data"]:
-	# 	print row
+	for row in table["data"]:
+		print row
 	return table
+
+def parseInterProHTML(html):
+	mainContentString = '<div class="grid_19 omega main-content">'
+	bottom = mainContentString.join( html.split(mainContentString)[1:] )
+
+	nobody = bottom.split('</body>')[0]
+
+	html = '<div class="container_24">\n\
+			<div class="grid_24 clearfix" id="content" >\n\
+			<div class="grid_19 omega main-content">' + nobody
+
+	return html.replace('resources/', '/static/interpro/resources/')
+
+def getBlastpHits(marpodbSession, cdsDBID):
+	returnTable = {'rows' : [], 'maxLen' : -1}
+	hits = marpodbSession.query(BlastpHit).filter(BlastpHit.targetID==CDS.id).filter(CDS.dbid == cdsDBID).all()
+
+	if hits:
+		for hit in hits:
+			coordinates = [ [hit.start, hit.end, hit.tStart, hit.tEnd, hit.identity] ]
+			returnTable["maxLen"] = max(returnTable["maxLen"], hit.tLen)
+			
+			row = {}
+			row['uniID'] = hit.refID
+			row['tLen'] = hit.tLen
+			row['qLen'] = hit.qLen
+			row['proteinName'] = hit.description
+			row['origin'] = hit.origin
+			row['eVal'] = hit.eVal
+			row['coordinates'] = coordinates
+
+			returnTable['rows'].append(row)
+
+		returnTable['maxLen'] = max(returnTable["maxLen"], hits[0].qLen)
+	
+	returnTable['rows'].sort(key =lambda x: x['eVal'])
+
+	return returnTable
+
+def getDbxRef(marpodbSession, cdsDBID):
+	hits = marpodbSession.query(DbxRef.origin, DbxRef.description).filter(DbxRef.targetID==CDS.id).filter(CDS.dbid == cdsDBID).all()
+	
+	links = {
+		"Phytozome MP-Tak 3.1" : "https://phytozome.jgi.doe.gov/pz/portal.html#!results?search=0&crown=1&star=1&method=5040&searchText={0}&offset=0",
+		"MarpolBase" : "http://marchantia.info/nomenclature/{0}"
+	}
+
+	if hits:
+		hits = { hit[0]: [ hit[1], links[hit[0]].format(hit[1]) ] for hit in hits }
+
+	return hits
+
+def getCDSDetails(marpodbSession, cdsDBID):
+
+	response = {}
+	response['blastp'] = getBlastpHits(marpodbSession, cdsDBID)
+	response['dbxref'] = getDbxRef(marpodbSession, cdsDBID)
+	return response
+
+def getGeneDetails(marpodbSession, dbid):
+	gene = marpodbSession.query(Gene).filter(Gene.dbid == dbid).first()
+	
+	if not gene:
+		return None
+
+	record = gene.record
+
+	response = { "parts": {}, "seq": record.seq }
+
+	for feature in record.features:
+		try:
+			locations = feature.location.parts
+		except:
+			locations = [feature.location]
+
+		coordinates = ";".join([ "{0}:{1}".format(part.start, part.end) for part in locations  ])
+		
+		response["parts"][feature.id] = coordinates
+
+	return response
