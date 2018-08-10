@@ -51,7 +51,8 @@ setup(
 				"server/static/interpro/resources/css/*",
 				"server/static/interpro/resources/freeMarker/*",
 				"server/static/interpro/resources/images/*",
-				"server/static/interpro/resources/javascript/*"
+				"server/static/interpro/resources/javascript/*",
+				"server/static/interpro/resources/javascript/qtip2/*"
 			]
 	},
 	include_package_data=True
