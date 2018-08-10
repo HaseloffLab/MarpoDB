@@ -246,9 +246,11 @@ def blast():
 
 		if query == "":
 			flash('Please provide a query sequence')
-
+			return redirect(url_for('blast'))
+		
 		if not (query and evalue and program and matrix and perc and dataset):
 			flash('Request error')
+			return redirect(url_for('blast'))
 
 		if ( program.startswith('blastn')  ):
 			dbRoute = 'MarpoDB_{0}_Genes'.format(dataset)
@@ -275,11 +277,13 @@ def blast():
 
 		if not out:
 			flash('BLAST output error')
+			return redirect(url_for('blast'))
 
 		results = parseBlastResult(out)
 
 		if not results:
 			flash('No hits found')
+			return redirect(url_for('blast'))
 
 		return render_template('blast_result.html', title='BLAST result', result = results, idType = idType, maxLen = max([ row["len"] for row in results ]) )	
 
