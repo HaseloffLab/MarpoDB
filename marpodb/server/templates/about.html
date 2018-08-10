@@ -1,0 +1,49 @@
+{% extends "layout.html" %}
+{% block content %}
+	<div class="about">
+		<h2>Description and Motivation</h2>
+		<h3 class="about_text">MarpoDB is a gene-centric database for <i>Marchantia polymorpha</i> genetic parts designed for the purposes of genetic engineering and synthetic biology. Our motivation to develop this resource emerged from the need to handle and facilitate access to annotated sequences in the most simple, clean and straightforward manner possible.</h3>
+		
+		<h2>Datasets</h2>
+
+		<h3>Cam Dataset</h3>
+		<p class="about_text">The Cam dataset is derived from the <i>Marchantia polymorpha</i> Cam-1 & Cam-2 strains isolated by Prof. Jim Haseloff in Cambridge, UK.</p>
+
+		<p class="about_text">DNA and RNA data was obtained by performing 100 bp paired-end Illumina sequencing and generating a <i>de novo</i> genome assembly using the <a href="http://jgi.doe.gov/data-and-tools/meraculous/" target="_blank">Meraculous 2.0</a> and a <i>de novo</i> transcriptome assembly by using <a href="https://github.com/fmaguire/Bridger_Assembler" target="_blank">Bridger Assembler</a>. See more information about the methods in <a href="https://doi.org/10.1093/pcp/pcw201">MarpoDB: An Open Registry for Marchantia Polymorpha Genetic Parts</a>.</p>
+
+		<p class="about_text">The ORF predictions were produced using <a href="https://transdecoder.github.io" target="_blank">Transdecoder</a>, guided by the protein motifs identified by <a href="https://www.ebi.ac.uk/interpro/" target="_blank">InterpoScan</a> and homologous protein sequences found by <a href="http://blast.ncbi.nlm.nih.gov/Blast.cgi" target="_blank">Blast</a> to a Viridiplantae dataset of <a href="https://www.uniprot.org/">Uniprot</a>.</p>
+
+		<h3>Tak Dataset</h3>
+		<p class="about_text"> The Tak dataset is produced by processing the version 3.1 of <i>Marchantia polymorpha</i> genome and transriptome data available at <a href="https://phytozome.jgi.doe.gov/pz/portal.html#!info?alias=Org_Mpolymorpha" target="_blank">Phytozome</a>. More information about the genome can be found in <a href="https://doi.org/10.1016/j.cell.2017.09.030">Insights into Land Plant Evolution Garnered from the Marchantia polymorpha Genome</a>.</p>
+
+		<h2>Annotation</h2>
+
+		<p class="about_text">Currently, we only hold CDS annotations, and cross-references to other <i>Marchantia polymorpha</i> resources.</p>
+
+		<h3>Interpro</h3>
+		<p class="about_text">The complete Interpro analysis of all putative protein sequences is performed, and forms the basis for the keyword search. In addition, the protein motifs are displayed in the Details section for each gene in the Interpro html format.</p>
+
+		<h3>Uniprot</h3>
+		<p class="about_text">We have selected all sequences from the Viridiplantae clade that have evidence at the protein level from the <a href="https://www.uniprot.org/">Uniprot</a> database and blasted MarpoDB data against them. This allows to search for close homologs in MarpoDB by supplying either a protein description or a Uniprot ID as a search term at the main page. In addition, the BLAST results can be viewed in the Details section for each gene.</p>
+
+		<h3>Phytozome</h3>
+		<p class="about_text">We appreciate all the hard work behind the <i>Marchantia polymorpha</i> genome sequencing project and the official genome resource hosted at <a href="https://phytozome.jgi.doe.gov/pz/portal.html#!info?alias=Org_Mpolymorpha" target="_blank">Phytozome</a>. We hope that our complimentary approaches to storing genomic data will give rise to a broad range of <i>Marchantia polymorpha</i> associated projects. We store cross-links to the <a href="https://phytozome.jgi.doe.gov/pz/portal.html#!info?alias=Org_Mpolymorpha" target="_blank">Phytozome</a>, so you can use Phytozome ID for the keyword search, and have a direct link to the Phytozome record from the Details section. All genes from the Tak dataset have an associated Mapoloy ID. Some genes from the Cam dataset have no Phytozome association, because we couldn't find a gene record with a similar sequence in the Tak dataset.</p>
+
+		<h3>MarpolBase</h3>
+		<p class="about_text"><a href="http://marchantia.info/nomenclature/">Marchantia Gene Nomenclature</a>, which <i>aims to provide a consistent and organized nomenclature system for Marchantia genes</i>, stores the name registry for <i>Marchantia polymorpha</i> gene names. You can use the registered names for the search queries, and will be presented with the registered name of the gene in the Details section.</p>
+
+		<h2>Technical details</h2>
+
+		<p class="about_text">The backend is served by a <a href="http://flask.pocoo.org" target="_blank">Flask</a> server, enhanced by <a href="http://biopython.org" target="_blank">Biopython</a> and <a href="https://www.sqlalchemy.org/">SQLAlchemy</a>. The database is stored as a <a href="https://www.postgresql.org" target="_blank">PostgreSQL</a> instance. If you are interested in building your own gene-centric resource, check out our source code: <a href="https://github.com/HaseloffLab/MarpoDB">MarpoDB</a> and <a href="https://github.com/HaseloffLab/PartsDB">PartsDB</a></p>
+
+		<p class="about_text">The frontend is written in the old-school JavaScript + jQuery with the help of <a href="http://chmille4.github.io/Scribl/" target="_blank">Scribl</a>, <a href="https://github.com/calipho-sib/sequence-viewer" target="_blank">SeqViewer</a> and <a href="https://clipboardjs.com" target="_blank">Clipboard</a> libraries.</p>
+		
+		<h2>People</h2>
+
+		<p class="about_text">MarpoDB was developed by Bernardo Pollak (BP)* and Mihails Delmans(MD)* under the supervision of Prof. Jim Haseloff at the Department of Plant Sciences of the University of Cambridge. The project was funded by the <a href="https://www.openplant.org/">OpenPlant</a> initiative. BP performed extraction experiments, carried out high-throughput sequencing and assembled the Cam genome and transcriptome. BP in conjunction with MD did the downstream analyses, prepared the datasets and programmed the frontend. MD developed the backend and the database models.</p>
+		<p class="about_text">* Equal contribution.</p>
+
+		<h2>Disclaimer</h2>
+		<p class="about_text">This software is provided by the authors "as is" and any express or implied warranties, including, but not limited to, the implied warranties of merchantability and fitness for a particular purpose are disclaimed. The entire risk as to the quality and performance of the program is with you. In no event shall the authors, be liable for any direct, indirect, incidental, special, exemplary, or consequential damages (including, but not limited to, procurement of substitute goods or services; loss of data or data being rendered inaccurate; loss of use or profits; or business interruption) however caused and on any theory of liability, whether in contract, strict liability, or tort (including negligence or otherwise) arising in any way out of the use of this software, even if advised of the possibility of such damage.<br \><br \></p>
+	</div>
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+{% block content %}
+	<div id="registration_form" class="center-form registration-form">
+		<form method="POST" action="/register" id="registration_form">
+				<p>{{ form.username.label(class_="big-label") }} {{ form.username(class_="text-input right") }}</p>
+					{% if form.username.errors %}
+						<ul class="registration-error">{% for error in form.username.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+					{% endif %}
+				<p>{{ form.email.label(class_="big-label") }} {{ form.email(class_="text-input right") }}</p>
+					{% if form.email.errors %}
+						<ul class="registration-error">{% for error in form.email.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+					{% endif %}
+				<p>{{ form.password.label(class_="big-label") }} {{ form.password(class_="text-input right") }}</p>
+					{% if form.password.errors %}
+						<ul class="registration-error">{% for error in form.password.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+					{% endif %}
+				<p>{{ form.affiliation.label(class_="big-label") }} {{ form.affiliation(class_="text-input right") }}</p>
+					{% if form.affiliation.errors %}
+						<ul class="registration-error">{% for error in form.affiliation.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+					{% endif %}
+				<input id='registration-button' class="button right" type=submit value="Register">
+		</form>
+	</div>
+{% endblock %}

@@ -43,19 +43,23 @@
 
 {% block content %}
 
-{% if alias%}
-	{% for source, annotation in alias.iteritems() %}
-		<h2 class = "subtitle">
-			<a href={{annotation[1]}} target="_blank">{{annotation[0]}}</a>
-		</h2>
-	{% endfor %}
-{%endif%}
 
-{% if current_user.is_authenticated %}
+{% if 'Phytozome MP-Tak 3.1' in alias %}
+	<h2 class = "subtitle">
+		<a href={{alias["Phytozome MP-Tak 3.1"][1]}} target="_blank">{{alias["Phytozome MP-Tak 3.1"][0]}}</a>
+	</h2>
+{% endif %}
+
+{% if 'MarpolBase' in alias %}
+	<h2 class = "subtitle">
+		<a href={{alias["MarpolBase"][1]}} target="_blank">{{alias["MarpolBase"][0]}}</a>
+	</h2>
+{% elif current_user.is_authenticated %}
 	<h2 class = "subtitle">
 		<input id ="geneName" class="geneName" type="text" value = "{{user_data["starGenes"][cdsDBID]}}">
 	</h2>
 {% endif %}
+
 
 <div class="gene-details">
 	<div class = "geneStucture">

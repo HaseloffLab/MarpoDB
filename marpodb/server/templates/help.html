@@ -1,0 +1,45 @@
+{% extends "layout.html" %}
+{% block content %}
+	<div class="about">	
+		<img class="help" id='help' src="/static/img/help.png">
+
+		<p class="about_text">The first page the user is presented to is the <a href="/query">Home</a> page. Here in the search bar, keywords can be used to identify genes of interest. Keywords can be GO terms, protein names, protein families, MarpoDB IDs.At the top left, a sliding sidebar can be triggered, which presents information regarding geographical locations of users, Top favoured genes and the user's saved genes.
+		</p>
+
+		<h3>How do I use the keyword search ? </h3>
+		<p class="about_text">Please enter a gene description, gene name, GO term, protein motif, etc. in the field at the <a href="/query">Home</a> page and press 'Find' button</p>
+
+		<h3>Can I search by Phytozome ID?</h3>
+		<p class="about_text">Yes, you can. Also by names, registered at <a href = "http://marchantia.info/">MarpolBase</a> and MarpoDB IDs. Just make sure the <b>DbxRef</b> checkbox is selected.</p>
+
+		<h3>Can I search for Tak genes ?</h3>
+		<p class="about_text">Yes, you can. Make sure the relevant checkbox is selected / unselected when you do your searches.</p>
+
+		<h3>What do Query Results mean?</h3>
+		<p class="about_text">The result table lists all genes that have your search term somewhere in the annotation. You can select which annotation tables to search by selecting the relevant checkboxes. See more information on annotation at the <a href="/about">About</a> page. The Origin column shows where the annotation comes from. It's either the name of a database for the protein motifs, or name of the species for homologous sequences. The E-value shows how significant is the annotation for the corresponding gene. The hits are sorted by the E-value of the best hit for each gene. To see all hits, press a small triangle to the left of the gene id.</p>
+
+		<h3>How do I do a BLAST search?</h3>
+		<p class="about_text">Go to the <a href="/blast">Blast</a> page, and enter either a protein or nucleotide sequence into the search field and select the dataset you want to BLAST against. The E-value field sets a threshold for the hits: the smaller E-value will select more significant hits. Select and algorithm, either blastn, megablastn or blastx for a nucleotide query; or blaspt for the protein query. In addition you can select a score matrix or sequence identity threshold.</p>
+
+		<p class="about_text">Brief overview of BLAST algorithms:</p>
+		<ul>
+			<li>blastn: Compare nucleotide search sequence with the complete sequences of the MarpoDB genes.</li>
+			<li>megablastn: Similar to blastn, but works better for highly similar sequences.</li>
+			<li>blastx: Compare translated nucleotide search sequence with the protein sequences in MarpoDB. You can use it to query by a CDS of interest.</li>
+			<li>blastp: Compare protein search sequence with the protein sequences in MarpoDB.</li>
+		</ul>
+
+		<h3>What is the deal with HMMER search?</h3>
+		<p class="about_text">Sometimes you have a collection of related sequences, for example a list of proteins with similar function from different species, and you want to find a Marchantia candidate to add to your collection. Then HMMER search is for you. First, you need to create an alignment of your collection and export it in the STOCKHOLM format. You can do so, for example, by using a <a href="https://www.ebi.ac.uk/Tools/msa/clustalo/">Clustal Omega</a> tool. Once you have the alignment file ready, upload it at the <a href="/hmmer">HMMER</a> page and run the query. See more info about <a href="http://hmmer.org/">HMMER</a>.</p>
+
+		<h3>How do I extract the sequences?</h3>
+		<p class="about_text">When you open a details page of a gene, you will see a gene model and a sequence viewer below. Clicking on a gene feature will highlight the corresponding sequence in the viewer. From here you can copy the sequence to a clipboard by pressing Copy button. You can also use a Recode tool for promoters and CDSs that will help you to domesticate the selected part for a Type II assembly following the <a href="http://2016.igem.org/Resources/Plant_Synthetic_Biology/PhytoBricks">Phytobricks</a> standard. You can also download an annotated gene sequence by pressing Genebank file button.</p>
+
+		<h3>What the starts are about?</h3>
+		<p class="about_text">You have probably noticed there is a little star next to a title in the Details section of a gene. If you click on it, the record will be added to your personal collection, which is accessible through a slideout menu in the header of a page. If you are not logged in your collection will be cleared after you close the webpage. However, if you are, the starred genes will remain in your collection until you unstar them. In addition, the registered users can assign the preferred names to the genes in their collection.</p>
+
+		<p class="about_text">
+			If you have any doubts or comments, please e-mail <a href="mailto:bp358@cam.ac.uk?Subject=MarpoDB - Help">Bernardo Pollak</a> - bp358[at]cam[dot]ac[dot]uk or <a href="mailto:md656@cam.ac.uk?Subject=MarpoDB - Help">Mihails Delmans</a> - md656[at]cam[dot]ac[dot]uk. Happy hunting! <br/><br/><br/>
+		</p>
+	</div>
+{% endblock content%}

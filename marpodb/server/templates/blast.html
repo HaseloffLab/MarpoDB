@@ -24,24 +24,20 @@ ATGACAGGGCTGCATTCGCTGTCCGATGGATTGCATACATCCGATGGAAAGAAGCCAGATGATGATATAGTCATGGAAGA
 		
 		<table class="blast-parameters">
 			<tr>
+				<th class="d-col small-label">Dataset</th>
 				<th class="e-col small-label">E-value</th>
 				<th class="p-col small-label">Program</th>
 				<th class="m-col small-label hidden">Matrix</th>
-				<th class="i-col small-label">Identity %</th>
-				
-				<th class="d-col small-label">
-					<label id="search-scope" class="small-label">
-						<input class ="search-scope" type =checkbox name=dataset value = "tak" checked>Tak 3.1
-					</label>
-				</th>
-				<th class="d-col small-label">
-					<label id="search-scope" class="small-label">
-						<input class ="search-scope" type =checkbox name=dataset value = "tak" checked>Cam
-					</label>
-				</th>
-				
+				<th class="i-col small-label">Identity %</th>	
 			</tr>
 			<tr>
+				<td class="d-col blast-parameter-selector">
+					<select id="selector" name="dataset" type="text">
+						<option value="cam">Cam</option>
+						<option value="tak" selected>Tak 3.1</option>
+					</select>
+				</td>
+
 				<td class="e-col blast-parameter-selector">
 					<select id="selector" name="evalue" type="text">
 						<option value="10e-2">0.01</option>
@@ -55,7 +51,6 @@ ATGACAGGGCTGCATTCGCTGTCCGATGGATTGCATACATCCGATGGAAAGAAGCCAGATGATGATATAGTCATGGAAGA
 					<select id="selector" name="program" type="text" onChange="show(this.value)">
 						<option value="blastn -task blastn">blastn</option>
 						<option value="blastn -task megablast">megablastn</option>
-						<option value="tblastx">tblastx</option>
 						<option value="blastx">blastx</option>
 						<option value="blastp">blastp</option>
 					</select>

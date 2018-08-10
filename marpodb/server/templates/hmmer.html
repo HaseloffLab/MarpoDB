@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<form id="form" action="" class="center-form" method="POST" enctype="multipart/form-data">
+	<p id="description" class ="big-label">Please upload STOCKHOLM alignment file. You can generate one using <a href=http://www.ebi.ac.uk/Tools/msa/clustalo/ target="_blank"  >Clustal Omega</a> service.</p>
+	<div class="hmmer-form">
+		<input type=file name=file>
+		<label class = "small-label">Dataset:
+		<select id="selector" name="dataset" type="text">
+			<option value="cam">Cam</option>
+			<option value="tak" selected>Tak 3.1</option>
+		</select>
+		</label>
+
+		<input id="blast-button" class = "button hmmer-button" type=submit value=HMMER>
+	</div>
+
+</form>
+{% endblock %}

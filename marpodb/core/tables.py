@@ -83,14 +83,18 @@ class Gene(Base,BaseMixIn):
 	@hybrid_property
 	def record(self):
 		keys = ["promoter", "utr5", "cds", "utr3", "terminator"]
+
+		colors = {
+			"promoter":		"#ffffc8",
+			"terminator":	"#fac8c8",
+			"cds":			"#beffbe",
+			"utr5":			"#c8f0fa",
+			"utr3":			"#c8f0fa"
+		}
+
 		parts = [  getattr(self, key) for key in keys ]
 
-		print "### DEBUG"
-		print self.dbid
-		print self
-		print "### DEBUG"
-
-		record = SeqRecord(id = self.dbid, name = str(self.dbid), seq = '' )
+		record = SeqRecord(id = self.dbid, name = str(self.dbid), seq = "", description = "" )
 
 		for partType, part in zip( keys, parts):
 			l = len(record)
@@ -99,6 +103,9 @@ class Gene(Base,BaseMixIn):
 					feature = SeqFeature( type = partType, location = coordinatesToLocation(part.coordinates)._shift( l ), id=part.dbid )
 				else:
 					feature = SeqFeature( type = partType, location = FeatureLocation( l, l + len(part.seq) ), id=part.dbid )
+
+				feature.qualifiers['ApEinfo_fwdcolor'] = colors[partType]
+				feature.qualifiers['ApEinfo_revcolor'] = colors[partType]
 
 				record.seq += Seq(part.seq, generic_dna)
 				record.features.append(feature)

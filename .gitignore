@@ -3,3 +3,5 @@
 /data/*
 /output/*
 /marpodb.egg-info/*
+/scripts/client/*
+/scripts/sysntesis/*

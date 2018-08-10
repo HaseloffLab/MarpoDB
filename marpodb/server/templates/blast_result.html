@@ -48,7 +48,7 @@
 } %}
 
 
-{% set header = ['dbid', 'locusdbid', 'bit_score', 'evalue']%}
+{% set header = ['dbid', 'bit_score', 'evalue']%}
 
 <div id="blast_results" class="results-table-div">
 	<table>
@@ -56,15 +56,14 @@
 			{% for key in header %}
 				<td class="tdheader"> {{colNames[key]}} </td>
 			{% endfor %}
-			<td class="tdheader"> Alignment </td>
+			<td style="width: 50%" class="tdheader"> Alignment </td>
 		</tr>
 
 		{% for row in result%}
 			<tr class="header" id="{{loop.index * 2}}">
 				<td style="width: 20%" ><span><img src="../static/img/expand.png"/></span><a href="/details?dbid={{row['dbid']}}" target="_blank">{{row['dbid']}}</a></td>
-				<td style="width: 20%" ><a href="/details?dbid={{row['locusdbid']}}" target="_blank">{{row['locusdbid']}}</a></td>
 
-				{% for key in header[2:] %}
+				{% for key in header[1:] %}
 					<td>{{ row[key] }}</td>
 				{% endfor %}
 					<td class="blast-canvas-container">

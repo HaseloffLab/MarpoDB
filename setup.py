@@ -36,7 +36,7 @@ setup(
 		'sqlalchemy', 'partsdb',
 		'biopython', 'psycopg2-binary',
 		'wtforms', 'flask', 'flask-user',
-		'Flask-SQLAlchemy', 'Flask-Restless', 'pandas'
+		'Flask-SQLAlchemy', 'flask_bcrypt', 'Flask-Restless'
 	],
 	package_data={
 			"marpodb":
