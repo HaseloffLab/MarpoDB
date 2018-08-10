@@ -3,7 +3,6 @@ from ..server import app
 from ..server import LoginForm, RegisterForm
 from ..server import loginManager, User, StarGene, bcrypt, userDB
 
-from .user import *
 from .backend import *
 
 from flask_login import logout_user, login_user, current_user, login_required
@@ -251,7 +250,7 @@ def blast():
 		if not (query and evalue and program and matrix and perc and dataset):
 			flash('Request error')
 
-		if program.startswith('blastn'):
+		if ( program.startswith('blastn')  ):
 			dbRoute = 'MarpoDB_{0}_Genes'.format(dataset)
 			idType = 'Gene'
 		else:
