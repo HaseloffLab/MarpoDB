@@ -114,7 +114,7 @@ def starGene():
 			if cdsdbid in starGenes:
 				starGenes.pop(cdsdbid)
 			else:
-				starGenes[cdsdbid] = cdsdbid
+				starGenes[cdsdbid] = geneName
 
 			session["starGenes"] = starGenes
 
