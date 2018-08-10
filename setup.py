@@ -47,7 +47,11 @@ setup(
 				"server/static/img/*",
 				"server/static/json/*",
 				"server/static/interpro/*",
-				"server/static/interpro/resources/*"
+				"server/static/interpro/resources/*",
+				"server/static/interpro/resources/css/*",
+				"server/static/interpro/resources/freeMarker/*",
+				"server/static/interpro/resources/images/*",
+				"server/static/interpro/resources/javascript/*"
 			]
 	},
 	include_package_data=True
