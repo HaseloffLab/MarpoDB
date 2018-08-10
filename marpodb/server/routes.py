@@ -267,7 +267,7 @@ def blast():
 		if (program.startswith('blastn') ):
 			cmd = subprocess.Popen( blastRoute.split() + ['-db', dbRoute, '-evalue', evalue,'-num_alignments', '10', '-num_threads', '1', '-outfmt', '15', '-perc_identity' , perc, '-strand', 'plus'], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 		else:
-			cmd = subprocess.Popen( blastRoute.split() + ['-db', dbRoute, '-evalue', evalue,'-num_alignments', '10', '-num_threads', '1', '-outfmt', '15', '-matrix', matrix, '-strand', 'plus'], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+			cmd = subprocess.Popen( blastRoute.split() + ['-db', dbRoute, '-evalue', evalue,'-num_alignments', '10', '-num_threads', '1', '-outfmt', '15', '-matrix', matrix], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 		
 		out,error = cmd.communicate(query)
 
