@@ -38,9 +38,9 @@ Now you should be ready to access the database using the Python bindings.
 ## Creating a session
 
 1. The followig code connects to the marpodb database, and creates a SQLAlchemy session object:
-
-from marpodb.core import *
 ``` python
+from marpodb.core import *
+
 marpodb = MarpoDB('/marpodb')
 
 session = marpodb.Session()
