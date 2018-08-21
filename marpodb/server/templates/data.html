@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+{% block content %}
+	<div class="about">
+		<h2>Database access</h2>
+		<p class="about_text">Unfortunately we can't provide you with a direct access to the database that serves marpodb.io for security reasons. However, we are happy to share the database in a form of a dump, so you can restore and use it locally.</p>
+
+		<p class="about_text">In order to do so, you will need a PostgreSQL server installed on your local machine. The binaries for Mac OS, Linux and Windows are provided at PostgeSQL <a href="https://www.postgresql.org/download/" target="_blank">downlaod</a> page. For Mac OS we recommend using <a href="https://postgresapp.com/" target="_blank">Postgres.app</a>.</p>
+
+		<p class="about_text">If you are not familiar with command line, we also recommend using a client that provides a graphical user interface. The extensive list of clients can be found <a href="https://wiki.postgresql.org/wiki/PostgreSQL_Clients" target="_blank">here</a></p>
+
+		<p class="about_text">Finally, you need to download a <a href="/data/marpodb4.dump" target="_blank">dump</a> of the marpodb4 database, create a new database locally and restore it from the dump.</a></p>
+
+		<p class="about_text">See the database schema below:</p>
+
+		<img class="help" id='help' src="/static/img/schema.png">
+		<p class="about_text right">* The visualisation prepared with a help of <a href="https://pgmodeler.io/" target="_blank">pgModeler</a></p>
+		<h2>Sequences</h2>
+		<p class="about_text">Here you can download collections of sequences stored in MarpoDB:
+			<ul>
+				<li>Promoters [<a href="/data/tak_promoter.fa">Tak3.1</a> | <a href="/data/cam_promoter.fa">Cam</a>]</li>
+				<li>5'UTRs [<a href="/data/tak_utr5.fa">Tak3.1</a> | <a href="/data/cam_utr5.fa">Cam</a>]</li>
+				<li>CDSs [<a href="/data/tak_cds.fa">Tak3.1</a> | <a href="/data/cam_cds.fa">Cam</a>]</li>
+				<li>Proteins [<a href="/data/tak_prot.fa">Tak3.1</a> | <a href="/data/cam_prot.fa">Cam</a>]</li>
+				<li>3'UTRs [<a href="/data/tak_utr3.fa">Tak3.1</a> | <a href="/data/cam_utr3.fa">Cam</a>]</li>
+				<li>Terminators [<a href="/data/tak_term.fa">Tak3.1</a> | <a href="/data/cam_term.fa">Cam</a>]</li>
+				<li>Genes (Promoter + 5'UTR + CDS + 3'UTR + Terminator) [<a href="/data/tak_gene.fa">Tak3.1</a> | <a href="/data/cam_gene.fa">Cam</a>]</li>
+			</ul>
+		</p>
+
+		<h2>Annotations</h2>
+		<p class="about_text">Here are the raw annotation data, used in MarpoDB:
+			<ul>
+				<li>Interpro [<a href="/data/interpro.html.tar.gz">HTML</a> | <a href="/data/interpro.xml">XML</a>]</li>
+				<li>BLAST to Uniprot viridiplantae [<a href="/data/uniprotblast.outfmt6">outfmt6</a>]</li>
+			</ul>
+		</p>
+
+	</div>
+{% endblock %}

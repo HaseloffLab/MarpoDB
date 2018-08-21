@@ -11,12 +11,16 @@ import os
 import md5
 import subprocess
 
-from flask import redirect, render_template, make_response, url_for, request, abort, safe_join, flash, session
+from flask import redirect, render_template, make_response, url_for, request, abort, safe_join, flash, session, send_from_directory
 
 ############################## USER/LOGIN ROUTES ##############################
 @app.context_processor
 def user_data():
 	return {"user_data" : current_user.data}
+
+@app.route('/data/<path:filename>')
+def sendData(filename):
+	return send_from_directory(app.config["DATA_PATH"], filename, as_attachment=True)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -471,6 +475,8 @@ def exportrecode():
 	response.headers["Content-Disposition"] = "attachement; filename={0}".format(geneName+'.gb')
 	return response
 
+############################## STATIC ROUTES ##############################
+
 @app.route('/help')
 def help():
 	return render_template('help.html', title = "Help")
@@ -482,4 +488,8 @@ def about():
 @app.route('/whatsnew')
 def whatsnew():
 	return render_template('whatsnew.html', title = "What's new?")
+
+@app.route('/data')
+def data():
+	return render_template('data.html', title = "Data")
 
