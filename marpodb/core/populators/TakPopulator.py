@@ -101,11 +101,11 @@ class TakPopulator(Populator):
 			rightBorder = min( mRNAEnd+3000, len(self.scaffoldDict[seqID]) )
 
 			if mRNAStrand == 1:
-				promoterLocation = FeatureLocation( leftBorder, mRNAStart-1, 1 )
+				promoterLocation = FeatureLocation( leftBorder, max( mRNAStart-1, 0), 1 )
 				terminatorLocation = FeatureLocation( mRNAEnd+1, rightBorder, 1 )
 			else:
 				promoterLocation = FeatureLocation( mRNAEnd+1, rightBorder, -1 )
-				terminatorLocation = FeatureLocation( leftBorder, mRNAStart-1, -1 )
+				terminatorLocation = FeatureLocation( leftBorder, max( mRNAStart-1, 0), -1 )
 
 			promoter = self.db.addPart("promoter", seq = self.extractSequence(seqID, promoterLocation) )
 			terminator = self.db.addPart("terminator", seq = self.extractSequence(seqID, terminatorLocation) )
