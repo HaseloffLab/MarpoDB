@@ -1,0 +1,75 @@
+#!/usr/bin/env python
+
+import argparse
+
+from sqlalchemy_utils import database_exists, create_database, drop_database
+import urllib2
+from sh import pg_restore
+
+parser = argparse.ArgumentParser(description='Install marpodb locally either from a dump file or from the server (default).')
+
+parser.add_argument('dbname',		type=str,
+	help = 'name of the local database' )
+
+parser.add_argument('--clean',		action = 'store_true',
+	default = False,
+	help = 'Erase all data and create an emtty database')
+
+parser.add_argument('--filename',	type = str,
+	help = 'The file to restore database from')
+
+parser.add_argument('--url',	type = str,
+	default = "http://marpodb.io/data/marpodb4.dump",
+	help = 'The url to restore database from')
+
+args = parser.parse_args()
+
+
+dbURL = "postgresql:///{0}".format(args.dbname)
+
+if database_exists(dbURL):
+	if not args.clean:
+		raise ValueError("The database {0} already exists. If you want to erase it and recover it from the file or server run with --clean flag".format(args.dbname))
+	else:
+		print "Dropping existing database..."
+		drop_database(dbURL)
+
+print "Creating a new database {0}".format(args.dbname)
+create_database(dbURL)
+
+if args.filename:
+	if not os.path.exists(args.filename):
+		raise ValueError("File with name {0} does not exist".format(args.filename))
+	else:
+		print "Trying to restore the database from {0}...".format(args.filename)
+		res = pg_restore("-d", args.dbname, args.filename)
+		if res.exit_code == 0:
+			print "Restoration succesfull!"
+		else:
+			print "Restoration failed: Error in pg_restore."
+
+elif args.url:
+	url = urllib2.urlopen(args.url)
+	tempFileName = "marpodb.dump"
+	tempFile = open(tempFileName, "wb")
+	
+	fileSize = int( url.info().getheaders('Content-Length')[0] )
+	print "Downloading the dump into temporaty file {0} from {1}...".format(tempFileName, args.url)
+	blockSize = 10000
+	
+	while True:
+		buff = url.read(blockSize)
+		if not buff:
+			tempFile.close()
+			break
+
+		tempFile.write(buff)
+
+	print "Trying to restore the database from {0}...".format(tempFileName)
+
+	res = pg_restore("-d", args.dbname, tempFileName)
+
+	if res.exit_code == 0:
+		print "Restoration succesfull!"
+	else:
+		print "Restoration failed: Error in pg_restore."

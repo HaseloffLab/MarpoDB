@@ -36,7 +36,8 @@ setup(
 		'sqlalchemy', 'partsdb',
 		'biopython', 'psycopg2-binary',
 		'wtforms', 'flask', 'flask-user',
-		'Flask-SQLAlchemy', 'flask_bcrypt', 'Flask-Restless'
+		'Flask-SQLAlchemy', 'flask_bcrypt', 'Flask-Restless', 'sqlalchemy-utils',
+		'sh'
 	],
 	package_data={
 			"marpodb":
@@ -55,6 +56,7 @@ setup(
 				"server/static/interpro/resources/javascript/qtip2/*"
 			]
 	},
-	include_package_data=True
+	include_package_data=True,
+	scripts=['scripts/installmarpodb']
 )
 
