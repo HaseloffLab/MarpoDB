@@ -7,13 +7,32 @@ This is a stripped down version of the master branch, which is enough to run a l
 * virtualenv
 
 ## Setting up
-1. Create a new virtual environment:
+
+We recommend to use virtual environemt. You can create on by
 ``` bash
 virtualenv -p python2.7 marpodb
 ```
-and activate it:
+and activate it with
 ``` bash
 source marpodb/bin/activate
+```
+
+### Automatic
+
+1. Clone the marpodb4 branch to you virtual environment folder:
+``` bash
+git clone https://github.com/HaseloffLab/MarpoDB.git -b marpodb4 marpodb4
+```
+2. Install the package using pip:
+```bash
+pip install .
+```
+3. This should install the MarpoDB package toogether with an installation script, which will create a database for you, download the dump from the server and restore it locally. To do so, simply run
+```bash
+installmarpodb -dbname marpodb
+```
+
+### Manual
 ```
 2. Create a new PostgreSQL database:
 ``` bash
@@ -63,7 +82,7 @@ You can check out the database schema at marpodb.io/data and learn more about SQ
 
 ## Exporting sequences
 
-Once you have selected part or list of parts you exprot them using a call to the MarpoDB object, e.g.
+Once you have selected part or list of parts you export them using a call to the MarpoDB object, e.g.
 ``` python
 marpodb.export( [myPromoter, myGene], "parts.fa", format = "fasta", pep = False)
 ```
