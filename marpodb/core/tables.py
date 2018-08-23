@@ -17,7 +17,7 @@ class PartMixIn(object):
 
 	@hybrid_property
 	def record(self):
-		return SeqRecord( seq = Seq(self.seq), id = self.dbid, description = "" )
+		return SeqRecord( seq = Seq(self.seq), id = self.dbid, description = "({0})".format( ",".join( [gene.dbid for gene in self.gene] ) ) )
 
 
 def coordinatesToLocation(coordinates):

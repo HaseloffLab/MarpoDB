@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block content %}
 	<div class="about">
-		<h2>Database access</h2>
+		<!-- <h2>Database access</h2>
 		<p class="about_text">Unfortunately we can't provide you with a direct access to the database that serves marpodb.io for security reasons. However, we are happy to share the database in a form of a dump, so you can restore and use it locally.</p>
 
 		<p class="about_text">In order to do so, you will need a PostgreSQL server installed on your local machine. The binaries for Mac OS, Linux and Windows are provided at PostgeSQL <a href="https://www.postgresql.org/download/" target="_blank">downlaod</a> page. For Mac OS we recommend using <a href="https://postgresapp.com/" target="_blank">Postgres.app</a>.</p>
@@ -13,7 +13,7 @@
 		<p class="about_text">See the database schema below:</p>
 
 		<img class="help" id='help' src="/static/img/schema.png">
-		<p class="about_text right">* The visualisation prepared with a help of <a href="https://pgmodeler.io/" target="_blank">pgModeler</a></p>
+		<p class="about_text right">* The visualisation prepared with a help of <a href="https://pgmodeler.io/" target="_blank">pgModeler</a></p> -->
 		<h2>Sequences</h2>
 		<p class="about_text">Here you can download collections of sequences stored in MarpoDB:
 			<ul>
@@ -34,6 +34,15 @@
 				<li>BLAST to Uniprot viridiplantae [<a href="/data/uniprotblast.outfmt6">outfmt6</a>]</li>
 			</ul>
 		</p>
+
+		<h2>Dump</h2>
+
+		<p class="about_text">If you want to have a local version of the complete MarpoDB, you can download a PostgreSQL <a href="/data/marpodb4.dump" target="_blank">dump</a> and recover it using pg_recover tool:
+		</p>
+
+		<p class="about_text">pg_restore -d marpodb --no-owner marpodb4.dump</p>
+
+		<p class="about_text">Where '-d marpodb' should be substituted with the name of an empty local database.</p>
 
 	</div>
 {% endblock %}
