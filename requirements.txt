@@ -8,6 +8,6 @@ Flask-User==0.6.8
 Flask-WTF==0.12
 Jinja2==2.8
 psycopg2==2.6.1
-pillow==3.4.2
+pillow==8.1.1
 requests==2.11.1
 bcbio-gff==0.6.4
